@@ -34,7 +34,7 @@ func (l *AddArticleLogic) AddArticle(req *types.AddArticleRequest) (resp *types.
 	_, err = l.svcCtx.TagModel.ExistTagByID(l.ctx, req.TagId)
 	if err != nil {
 		if err == model.ErrNotFound {
-			return app.Response(e.ERROR_NOT_EXIST_TAG, nil, nil)
+			return app.Response(e.ERROR_NOT_EXIST_TAG, nil), nil
 		}
 		l.Logger.Errorf("failed to check to tag existence :%v", err)
 		return nil, fmt.Errorf("%s: %v", e.GetMsg(e.ERROR_EXIST_TAG_FAIL), err)
@@ -60,5 +60,5 @@ func (l *AddArticleLogic) AddArticle(req *types.AddArticleRequest) (resp *types.
 	}
 
 	l.Logger.Info("article added with ID: %d", id)
-	return app.Response(e.SUCCESS, nil, nil)
+	return app.Response(e.SUCCESS, nil), nil
 }

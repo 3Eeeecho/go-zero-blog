@@ -32,7 +32,7 @@ func NewAddTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddTagLogi
 func (l *AddTagLogic) AddTag(req *types.AddTagRequest) (resp *types.Response, err error) {
 	// 1. 验证请求参数
 	if req.Name == "" || req.State < 0 {
-		app.Response(e.INVALID_PARAMS, nil, nil)
+		return app.Response(e.INVALID_PARAMS, nil), nil
 	}
 
 	// 2. 构造标签数据
@@ -47,10 +47,10 @@ func (l *AddTagLogic) AddTag(req *types.AddTagRequest) (resp *types.Response, er
 	err = l.svcCtx.TagModel.Insert(l.ctx, tag)
 	if err != nil {
 		l.Logger.Errorf("failed to add tag, req: %+v, error: %v", req, err)
-		app.Response(e.ERROR_ADD_TAG_FAIL, nil, err)
+		return app.Response(e.ERROR_ADD_TAG_FAIL, nil), err
 	}
 
 	// 4. 构造成功响应
 	l.Logger.Infof("tag added successfully, name: %s, state: %d", req.Name, req.State)
-	return app.Response(e.SUCCESS, tag, nil)
+	return app.Response(e.SUCCESS, tag), nil
 }

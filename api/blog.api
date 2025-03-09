@@ -21,8 +21,8 @@ type Article {
 }
 
 // --- GetArticle ---
-type GetArticleResponse {
-	Article Article `json:"article"`
+type GetArticleRequest {
+	Id int `path:"id"` //必填
 }
 
 // --- GetArticles ---
@@ -34,8 +34,12 @@ type GetArticlesRequest {
 }
 
 type GetArticlesResponse {
-	Lists []Article `json:"lists"`
-	Total int64     `json:"total"`
+	Code     int         `json:"code"`
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"` // 文章列表
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
 }
 
 // --- AddArticle ---
@@ -51,12 +55,13 @@ type AddArticleRequest {
 
 // --- EditArticle ---
 type EditArticleRequest {
+	Id            int    `path:"id"` //必填
 	TagId         int    `json:"tag_id"` // 必填
 	Title         string `json:"title"` // 必填
 	Desc          string `json:"desc"` // 必填
 	Content       string `json:"content"` // 必填
 	ModifiedBy    string `json:"modified_by"` // 必填
-	CoverImageUrl string `json:"cover_image_url"` // 必填
+	CoverImageUrl string `json:"cover_image_url,optional"` // 可选
 	State         int    `json:"state,optional"` // 可选
 }
 
@@ -152,7 +157,7 @@ service blog-api {
 		description: "根据文章ID获取文章数据"
 	)
 	@handler GetArticle
-	get /api/v1/articles/:id returns (GetArticleResponse)
+	get /api/v1/articles/:id returns (Response)
 
 	@doc (
 		summary:     "获取文章列表"

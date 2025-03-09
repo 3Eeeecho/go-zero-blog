@@ -36,13 +36,14 @@ type DeleteArticleRequest struct {
 }
 
 type EditArticleRequest struct {
-	TagId         int    `json:"tag_id"`          // 必填
-	Title         string `json:"title"`           // 必填
-	Desc          string `json:"desc"`            // 必填
-	Content       string `json:"content"`         // 必填
-	ModifiedBy    string `json:"modified_by"`     // 必填
-	CoverImageUrl string `json:"cover_image_url"` // 必填
-	State         int    `json:"state,optional"`  // 可选
+	Id            int    `path:"id"`                       //必填
+	TagId         int    `json:"tag_id"`                   // 必填
+	Title         string `json:"title"`                    // 必填
+	Desc          string `json:"desc"`                     // 必填
+	Content       string `json:"content"`                  // 必填
+	ModifiedBy    string `json:"modified_by"`              // 必填
+	CoverImageUrl string `json:"cover_image_url,optional"` // 可选
+	State         int    `json:"state,optional"`           // 可选
 }
 
 type EditTagRequest struct {
@@ -66,8 +67,8 @@ type GenerateArticlePosterResponse struct {
 	PosterSaveUrl string `json:"poster_save_url"`
 }
 
-type GetArticleResponse struct {
-	Article Article `json:"article"`
+type GetArticleRequest struct {
+	Id int `path:"id"` //必填
 }
 
 type GetArticlesRequest struct {
@@ -78,8 +79,12 @@ type GetArticlesRequest struct {
 }
 
 type GetArticlesResponse struct {
-	Lists []Article `json:"lists"`
-	Total int64     `json:"total"`
+	Code     int         `json:"code"`
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"` // 文章列表
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
 }
 
 type GetAuthRequest struct {
