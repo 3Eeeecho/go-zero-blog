@@ -87,26 +87,36 @@ type Tag {
 
 // --- GetTags ---
 type GetTagsRequest {
-	Name     string `json:"name,optional"` // 查询参数，可选
-	State    int    `json:"state,optional"` // 查询参数，可选
-	PageNum  int    `json:"page_num,optional"` // 分页参数，可选
-	PageSize int    `json:"page_size,optional"` // 分页参数，可选
+	Name     string `form:"name,optional" json:"name,optional"` // 从查询参数解析
+	State    int    `form:"state,optional" json:"state,optional"` // 从查询参数解析
+	PageNum  int    `form:"page_num,optional" json:"page_num,optional"` // 分页参数
+	PageSize int    `form:"page_size,optional" json:"page_size,optional"` // 分页参数
 }
 
 type GetTagsResponse {
-	Lists []Tag `json:"lists"`
-	Total int64 `json:"total"`
+	Code     int         `json:"code"`
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"`
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
 }
 
-// --- AddTag ---
+//--- AddTag ---
 type AddTagRequest {
 	Name      string `json:"name"` // 必填
 	CreatedBy string `json:"created_by"` // 必填
 	State     int    `json:"state,optional"` // 可选
 }
 
+// --- DeleteTag ---
+type DeleteTagRequest {
+	Id int `path:"id"`
+}
+
 // --- EditTag ---
 type EditTagRequest {
+	Id         int    `path:"id"`
 	Name       string `json:"name"` // 必填
 	ModifiedBy string `json:"modified_by"` // 必填
 	State      int    `json:"state,optional"` // 可选
@@ -128,14 +138,24 @@ type ImportTagRequest {
 	File string `json:"file"` // 表示 multipart 文件，go-zero 不直接处理文件流，这里用 string 占位
 }
 
-// --- GetAuth ---
-type GetAuthRequest {
+// --- User ---
+type User{
+	Id       int    `gorm:"primaryKey;column:id"`
+	Username string `gorm:"column:username"`
+	Password string `gorm:"column:password"` // 实际应加密存储
+}
+
+// --- Login ---
+type LoginRequest {
 	Username string `json:"username"` // 必填
 	Password string `json:"password"` // 必填
 }
 
-type GetAuthResponse {
-	Token string `json:"token"`
+type LoginResponse {
+	Code    int    `json:"code"`
+	Msg     string `json:"msg"`
+	Token   string `json:"token"`
+	Expires int    `json:"expiration"`
 }
 
 // --- UpLoadImage ---
@@ -244,15 +264,15 @@ service blog-api {
 }
 
 @server (
-	group: auth
+	group: user
 )
 service blog-api {
 	@doc (
 		summary:     "获取授权 Token"
 		description: "通过用户名和密码进行验证，成功后返回一个 Token，供后续请求验证使用"
 	)
-	@handler GetAuth
-	get /auth (GetAuthRequest) returns (GetAuthResponse)
+	@handler Login
+	get /user/login (LoginRequest) returns (LoginResponse)
 }
 
 @server (

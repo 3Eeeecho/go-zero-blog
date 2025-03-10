@@ -26,7 +26,7 @@ type (
 		Insert(ctx context.Context, data *BlogTag) error
 		ExistTagByID(ctx context.Context, id int) (bool, error)
 		ExistTagByName(ctx context.Context, name string) (bool, error)
-		GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]BlogTag, error)
+		GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error)
 		CountByCondition(ctx context.Context, maps any) (int64, error)
 		Delete(ctx context.Context, id int) error
 		Edit(ctx context.Context, id int, data any) error
@@ -67,21 +67,30 @@ func (m *defaultTagModel) ExistTagByName(ctx context.Context, name string) (bool
 	return tag.Id > 0, nil
 }
 
-func (m *defaultTagModel) GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]BlogTag, error) {
+func (m *defaultTagModel) GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error) {
 	var (
-		tags []BlogTag
+		tags []*BlogTag
 		err  error
 	)
+	query := m.db.WithContext(ctx)
 
+	// 应用过滤条件
+	if maps != nil {
+		query = query.Where(maps)
+	}
+
+	// 处理分页
 	if pageNum > 0 && pageSize > 0 {
-		err = m.db.WithContext(ctx).Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags).Error
+		offset := (pageNum - 1) * pageSize // 修正偏移量
+		err = query.Offset(offset).Limit(pageSize).Find(&tags).Error
 	} else {
-		err = m.db.WithContext(ctx).Where(maps).Find(&tags).Error
+		err = query.Find(&tags).Error
 	}
 
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
+
 	return tags, nil
 }
 

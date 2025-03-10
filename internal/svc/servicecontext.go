@@ -12,7 +12,7 @@ type ServiceContext struct {
 	Config       config.Config
 	ArticleModel model.BlogArticleModel
 	TagModel     model.BlogTagModel
-	AuthModel    model.BlogAuthModel
+	UserModel    model.BlogUserModel
 	Redis        *redis.Redis
 }
 
@@ -34,7 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		ArticleModel: model.NewBlogArticleModel(db),
 		TagModel:     model.NewBlogTagModel(db),
-		AuthModel:    model.NewBlogAuthModel(db),
+		UserModel:    model.NewBlogUserModel(db),
 		Redis:        rdb,
 	}
 }

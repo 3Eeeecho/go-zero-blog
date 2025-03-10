@@ -13,7 +13,6 @@ type Config struct {
 	}
 	Redis redis.RedisConf // Redis 配置，使用 go-zero 内置结构体
 	App   struct {        // 应用相关配置
-		JwtSecret       string
 		PageSize        int
 		PrefixUrl       string
 		RuntimeRootPath string
@@ -26,5 +25,8 @@ type Config struct {
 		TimeFormat      string
 		ExportSavePath  string
 		QrCodeSavePath  string
+	}
+	User struct {
+		AccessExpire int64
 	}
 }

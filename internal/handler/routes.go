@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	article "github.com/3Eeeecho/go-zero-blog/internal/handler/article"
-	auth "github.com/3Eeeecho/go-zero-blog/internal/handler/auth"
 	tag "github.com/3Eeeecho/go-zero-blog/internal/handler/tag"
 	upload "github.com/3Eeeecho/go-zero-blog/internal/handler/upload"
+	user "github.com/3Eeeecho/go-zero-blog/internal/handler/user"
 	"github.com/3Eeeecho/go-zero-blog/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -53,17 +53,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/api/v1/articles/poster/generate",
 				Handler: article.GenerateArticlePosterHandler(serverCtx),
-			},
-		},
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				// 获取授权 Token
-				Method:  http.MethodGet,
-				Path:    "/auth",
-				Handler: auth.GetAuthHandler(serverCtx),
 			},
 		},
 	)
@@ -116,6 +105,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/api/v1/tags/upload/image",
 				Handler: upload.UpLoadImageHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 获取授权 Token
+				Method:  http.MethodGet,
+				Path:    "/user/login",
+				Handler: user.LoginHandler(serverCtx),
 			},
 		},
 	)

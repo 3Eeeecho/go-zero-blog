@@ -35,6 +35,10 @@ type DeleteArticleRequest struct {
 	Id int `path:"id"`
 }
 
+type DeleteTagRequest struct {
+	Id int `path:"id"`
+}
+
 type EditArticleRequest struct {
 	Id            int    `path:"id"`                       //必填
 	TagId         int    `json:"tag_id"`                   // 必填
@@ -47,6 +51,7 @@ type EditArticleRequest struct {
 }
 
 type EditTagRequest struct {
+	Id         int    `path:"id"`
 	Name       string `json:"name"`           // 必填
 	ModifiedBy string `json:"modified_by"`    // 必填
 	State      int    `json:"state,optional"` // 可选
@@ -87,29 +92,36 @@ type GetArticlesResponse struct {
 	PageSize int         `json:"page_size"`
 }
 
-type GetAuthRequest struct {
-	Username string `json:"username"` // 必填
-	Password string `json:"password"` // 必填
-}
-
-type GetAuthResponse struct {
-	Token string `json:"token"`
-}
-
 type GetTagsRequest struct {
-	Name     string `json:"name,optional"`      // 查询参数，可选
-	State    int    `json:"state,optional"`     // 查询参数，可选
-	PageNum  int    `json:"page_num,optional"`  // 分页参数，可选
-	PageSize int    `json:"page_size,optional"` // 分页参数，可选
+	Name     string `form:"name,optional" json:"name,optional"`           // 从查询参数解析
+	State    int    `form:"state,optional" json:"state,optional"`         // 从查询参数解析
+	PageNum  int    `form:"page_num,optional" json:"page_num,optional"`   // 分页参数
+	PageSize int    `form:"page_size,optional" json:"page_size,optional"` // 分页参数
 }
 
 type GetTagsResponse struct {
-	Lists []Tag `json:"lists"`
-	Total int64 `json:"total"`
+	Code     int         `json:"code"`
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"`
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
 }
 
 type ImportTagRequest struct {
 	File string `json:"file"` // 表示 multipart 文件，go-zero 不直接处理文件流，这里用 string 占位
+}
+
+type LoginRequest struct {
+	Username string `json:"username"` // 必填
+	Password string `json:"password"` // 必填
+}
+
+type LoginResponse struct {
+	Code    int    `json:"code"`
+	Msg     string `json:"msg"`
+	Token   string `json:"token"`
+	Expires int    `json:"expiration"`
 }
 
 type Response struct {

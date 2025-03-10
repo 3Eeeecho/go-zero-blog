@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -8,30 +9,41 @@ import (
 
 type Claims struct {
 	Username string `json:"username"`
-	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string) (string, error) {
-	nowTime := time.Now()
-	expireTime := nowTime.Add(3 * time.Hour)
+// TODO JwtSecert测试使用233,应该替换更安全的
+func GenerateToken(username string, expires int) (string, error) {
+	expireTime := time.Now().Add(time.Duration(expires) * time.Second)
 	claims := Claims{
 		username,
-		password,
 		jwt.StandardClaims{
+			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: expireTime.Unix(),
-			Issuer:    "gin-blog",
+			Issuer:    "3Eeeecho",
 		},
 	}
 
+	jwtSecret := []byte("233")
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString(233)
+	token, err := tokenClaims.SignedString(jwtSecret)
+	if err != nil {
+		return "", err
+	}
 	return token, err
 }
 
-func ParseToken(token string) (*Claims, error) {
-	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(t *jwt.Token) (interface{}, error) {
-		return 233, nil
+func ParseToken(tokenStr string) (*Claims, error) {
+	if tokenStr == "" {
+		return nil, errors.New("token cannot be empty")
+	}
+
+	tokenClaims, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (any, error) {
+		// 验证签名方法
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return []byte("233"), nil
 	})
 
 	if tokenClaims != nil {

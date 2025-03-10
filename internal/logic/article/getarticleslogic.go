@@ -38,15 +38,12 @@ func (l *GetArticlesLogic) GetArticles(req *types.GetArticlesRequest) (resp *typ
 	}
 
 	// 构造过滤条件
-	var maps map[string]any
-	if req.TagId != 0 || req.State != 0 {
-		maps = make(map[string]interface{})
-		if req.TagId != 0 {
-			maps["tag_id"] = req.TagId
-		}
-		if req.State != 0 {
-			maps["state"] = req.State
-		}
+	maps := make(map[string]any)
+	if req.TagId != 0 {
+		maps["tag_id"] = req.TagId
+	}
+	if req.State != 0 {
+		maps["state"] = req.State
 	}
 
 	articles, err := l.svcCtx.ArticleModel.GetArticles(l.ctx, pageNum, pageSize, maps)

@@ -23,3 +23,23 @@ func GetArticlesResponse(code int, data interface{}, total int64, pageNum, pageS
 		PageSize: pageSize,
 	}
 }
+
+func GetTagsResponse(code int, data interface{}, total int64, pageNum, pageSize int) *types.GetTagsResponse {
+	return &types.GetTagsResponse{
+		Code:     code,
+		Msg:      e.GetMsg(code),
+		Data:     data,
+		Total:    total,
+		PageNum:  pageNum,
+		PageSize: pageSize,
+	}
+}
+
+func LoginResponse(code int, token string) *types.LoginResponse {
+	return &types.LoginResponse{
+		Code:    code,
+		Msg:     e.GetMsg(code),
+		Token:   token,
+		Expires: 0,
+	}
+}
