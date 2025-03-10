@@ -2,6 +2,7 @@ Name: blog-api
 Host: 0.0.0.0
 Port: 8000
 Timeout: 60000     # ReadTimeout 和 WriteTimeout 合并为毫秒
+MaxBytes: 10485760 #大小限制为10MB
 
 Mysql:
   Dsn: "root:root@tcp(localhost:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"

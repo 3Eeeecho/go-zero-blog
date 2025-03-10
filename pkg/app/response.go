@@ -43,3 +43,11 @@ func LoginResponse(code int, token string) *types.LoginResponse {
 		Expires: 0,
 	}
 }
+
+func UpLoadImageResponse(code int, imageUrl string) *types.UpLoadImageResponse {
+	return &types.UpLoadImageResponse{
+		Code:     code,
+		Msg:      e.GetMsg(code),
+		ImageURL: imageUrl,
+	}
+}

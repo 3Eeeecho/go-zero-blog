@@ -139,10 +139,18 @@ type Tag struct {
 }
 
 type UpLoadImageRequest struct {
-	Image string `json:"image"` // 占位，表示 multipart 文件
+	UserId int64  `json:"user_id" form:"user_id"` // 用户ID，可选
+	Image  []byte `json:"image" form:"image"`     // 图片二进制数据
 }
 
 type UpLoadImageResponse struct {
-	ImageUrl     string `json:"image_url"`
-	ImageSaveUrl string `json:"image_save_url"`
+	Code     int    `json:"code"`
+	Msg      string `json:"msg"`
+	ImageURL string `json:"image_url"` // 图片访问路径
+}
+
+type User struct {
+	Id       int    `gorm:"primaryKey;column:id"`
+	Username string `gorm:"column:username"`
+	Password string `gorm:"column:password"` // 实际应加密存储
 }

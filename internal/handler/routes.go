@@ -103,7 +103,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				// 上传图片
 				Method:  http.MethodPost,
-				Path:    "/api/v1/tags/upload/image",
+				Path:    "/upload/image",
 				Handler: upload.UpLoadImageHandler(serverCtx),
 			},
 		},
