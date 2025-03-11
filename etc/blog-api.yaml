@@ -34,3 +34,6 @@ App:
 
 User:
   AccessExpire: 3600
+
+LogConf:
+  Mode: file

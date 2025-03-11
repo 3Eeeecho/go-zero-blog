@@ -111,7 +111,6 @@ type GetTagsResponse struct {
 }
 
 type ImportTagRequest struct {
-	File string `json:"file"` // 表示 multipart 文件，go-zero 不直接处理文件流，这里用 string 占位
 }
 
 type LoginRequest struct {

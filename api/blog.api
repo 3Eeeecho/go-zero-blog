@@ -136,9 +136,7 @@ type ExportTagResponse {
 }
 
 // --- ImportTag ---
-type ImportTagRequest {
-	File string `json:"file"` // 表示 multipart 文件，go-zero 不直接处理文件流，这里用 string 占位
-}
+type ImportTagRequest {}
 
 // --- User ---
 type User {

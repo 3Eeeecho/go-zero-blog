@@ -13,6 +13,14 @@ func Response(errCode int, data any) *types.Response {
 	}
 }
 
+func ResponseMsg(errCode int, msg string, data any) *types.Response {
+	return &types.Response{
+		Code: errCode,
+		Msg:  msg,
+		Data: data,
+	}
+}
+
 func GetArticlesResponse(code int, data interface{}, total int64, pageNum, pageSize int) *types.GetArticlesResponse {
 	return &types.GetArticlesResponse{
 		Code:     code,

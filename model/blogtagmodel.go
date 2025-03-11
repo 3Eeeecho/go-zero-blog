@@ -24,6 +24,7 @@ func (BlogTag) TableName() string {
 type (
 	BlogTagModel interface {
 		Insert(ctx context.Context, data *BlogTag) error
+		InsertBatch(ctx context.Context, tags []*BlogTag) error
 		ExistTagByID(ctx context.Context, id int) (bool, error)
 		ExistTagByName(ctx context.Context, name string) (bool, error)
 		GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error)
@@ -45,6 +46,20 @@ func NewBlogTagModel(db *gorm.DB) BlogTagModel {
 
 func (m *defaultTagModel) Insert(ctx context.Context, data *BlogTag) error {
 	return m.db.WithContext(ctx).Create(data).Error
+}
+
+func (m *defaultTagModel) InsertBatch(ctx context.Context, data []*BlogTag) error {
+	if len(data) == 0 {
+		return nil // 没有数据直接返回
+	}
+
+	// 使用 GORM 的 Create 方法进行批量插入
+	err := m.db.WithContext(ctx).Create(data).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (m *defaultTagModel) ExistTagByID(ctx context.Context, id int) (bool, error) {

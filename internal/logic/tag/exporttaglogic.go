@@ -98,5 +98,6 @@ func (l *ExportTagLogic) ExportTag(req *types.ExportTagRequest) (resp *types.Exp
 	exportURL := fmt.Sprintf("http://localhost:%d/%s", l.svcCtx.Config.RestConf.Port, filePath)
 	exportSaveURL := filePath // 本地保存路径
 
+	l.Logger.Infof("tags exported successfully, tag_count: %d, export_url: %s", len(tags), exportURL)
 	return app.ExportTagsResponse(e.SUCCESS, exportURL, exportSaveURL), nil
 }

@@ -38,6 +38,7 @@ var MsgFlags = map[int]string{
 	ERROR_UPLOAD_CREATE_DIR_FAIL:    "创建上传目录失败",
 
 	ERROR_CREATE_NEWSHEAT_FAIL: "导入标签时创建表格失败",
+	ERROR_INVALID_FILE:         "打开上传文件失败",
 }
 
 func GetMsg(code int) string {
