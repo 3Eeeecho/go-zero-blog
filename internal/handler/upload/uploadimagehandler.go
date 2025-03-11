@@ -16,7 +16,8 @@ import (
 func UpLoadImageHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// 解析 multipart/form-data 请求
-		err := r.ParseMultipartForm(10 << 20) // 限制最大 10MB
+		maxBytes := int64(svcCtx.Config.App.ImageMaxSize << 20)
+		err := r.ParseMultipartForm(maxBytes) // 限制最大 10MB
 		if err != nil {
 			httpx.OkJson(w, &types.UpLoadImageResponse{
 				Code: e.INVALID_PARAMS,

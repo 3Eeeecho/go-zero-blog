@@ -19,8 +19,8 @@ App:
   PageSize: 10
   PrefixUrl: "http://127.0.0.1:8000"
   RuntimeRootPath: "runtime/"
-  ImageSavePath: "upload/images/"
-  ImageMaxSize: 5
+  ImageSavePath: "runtime/upload/images/"
+  ImageMaxSize: 10
   ImageAllowExts:
     - ".jpg"
     - ".jpeg"
@@ -29,8 +29,8 @@ App:
   LogSaveName: "log"
   LogFileExt: "log"
   TimeFormat: "20060102"
-  ExportSavePath: "export/"
-  QrCodeSavePath: "qrcode/"
+  ExportSavePath: "runtime/export/"
+  QrCodeSavePath: "runtime/qrcode/"
 
 User:
   AccessExpire: 3600

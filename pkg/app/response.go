@@ -51,3 +51,12 @@ func UpLoadImageResponse(code int, imageUrl string) *types.UpLoadImageResponse {
 		ImageURL: imageUrl,
 	}
 }
+
+func ExportTagsResponse(code int, ExportUrl, ExportSaveUrl string) *types.ExportTagResponse {
+	return &types.ExportTagResponse{
+		Code:          code,
+		Msg:           e.GetMsg(code),
+		ExportUrl:     ExportUrl,
+		ExportSaveUrl: ExportSaveUrl,
+	}
+}

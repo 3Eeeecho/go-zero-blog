@@ -63,6 +63,8 @@ type ExportTagRequest struct {
 }
 
 type ExportTagResponse struct {
+	Code          int    `json:"code"`
+	Msg           string `json:"msg"`
 	ExportUrl     string `json:"export_url"`
 	ExportSaveUrl string `json:"export_save_url"`
 }

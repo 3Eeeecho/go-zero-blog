@@ -34,7 +34,7 @@ func (l *GetTagsLogic) GetTags(req *types.GetTagsRequest) (resp *types.GetTagsRe
 		pageNum = 1 // 默认第1页
 	}
 	if pageSize <= 0 {
-		pageSize = 10 // 默认每页10条
+		pageSize = l.svcCtx.Config.App.PageSize // 使用默认配置
 	}
 
 	// 构造查询条件，支持按名称和状态过滤
@@ -45,7 +45,6 @@ func (l *GetTagsLogic) GetTags(req *types.GetTagsRequest) (resp *types.GetTagsRe
 	if req.State != 0 { // 假设 0 表示未指定状态
 		conditions["state"] = req.State
 	}
-	l.Logger.Infof("query conditions: %v", conditions) // 调试条件
 
 	// 获取标签列表
 	tags, err := l.svcCtx.TagModel.GetAll(l.ctx, pageNum, pageSize, conditions)
