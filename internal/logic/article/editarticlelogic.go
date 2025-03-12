@@ -52,7 +52,6 @@ func (l *EditArticleLogic) EditArticle(req *types.EditArticleRequest) (resp *typ
 	}
 
 	// 构造更新数据
-	//TODO CoverImageUrl参数的处理
 	article := &model.BlogArticle{
 		Id:         req.Id,
 		TagId:      req.TagId,

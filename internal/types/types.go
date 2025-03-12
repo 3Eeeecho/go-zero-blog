@@ -4,13 +4,12 @@
 package types
 
 type AddArticleRequest struct {
-	TagId         int    `json:"tag_id"`                   // 必填
-	Title         string `json:"title"`                    // 必填
-	Desc          string `json:"desc"`                     // 必填
-	Content       string `json:"content"`                  // 必填
-	CreatedBy     string `json:"created_by"`               // 必填
-	CoverImageUrl string `json:"cover_image_url,optional"` // 可选
-	State         int    `json:"state,optional"`           // 可选
+	TagId     int    `json:"tag_id"`         // 必填
+	Title     string `json:"title"`          // 必填
+	Desc      string `json:"desc"`           // 必填
+	Content   string `json:"content"`        // 必填
+	CreatedBy string `json:"created_by"`     // 必填
+	State     int    `json:"state,optional"` // 可选
 }
 
 type AddTagRequest struct {
@@ -20,15 +19,14 @@ type AddTagRequest struct {
 }
 
 type Article struct {
-	Id            int    `json:"id"`
-	TagId         int    `json:"tag_id"`
-	Title         string `json:"title"`
-	Desc          string `json:"desc"`
-	Content       string `json:"content"`
-	CoverImageUrl string `json:"cover_image_url,optional"`
-	State         int    `json:"state,optional"`
-	CreatedBy     string `json:"created_by,optional"`
-	ModifiedBy    string `json:"modified_by,optional"`
+	Id         int    `json:"id"`
+	TagId      int    `json:"tag_id"`
+	Title      string `json:"title"`
+	Desc       string `json:"desc"`
+	Content    string `json:"content"`
+	State      int    `json:"state,optional"`
+	CreatedBy  string `json:"created_by,optional"`
+	ModifiedBy string `json:"modified_by,optional"`
 }
 
 type DeleteArticleRequest struct {
@@ -40,14 +38,13 @@ type DeleteTagRequest struct {
 }
 
 type EditArticleRequest struct {
-	Id            int    `path:"id"`                       //必填
-	TagId         int    `json:"tag_id"`                   // 必填
-	Title         string `json:"title"`                    // 必填
-	Desc          string `json:"desc"`                     // 必填
-	Content       string `json:"content"`                  // 必填
-	ModifiedBy    string `json:"modified_by"`              // 必填
-	CoverImageUrl string `json:"cover_image_url,optional"` // 可选
-	State         int    `json:"state,optional"`           // 可选
+	Id         int    `path:"id"`             //必填
+	TagId      int    `json:"tag_id"`         // 必填
+	Title      string `json:"title"`          // 必填
+	Desc       string `json:"desc"`           // 必填
+	Content    string `json:"content"`        // 必填
+	ModifiedBy string `json:"modified_by"`    // 必填
+	State      int    `json:"state,optional"` // 可选
 }
 
 type EditTagRequest struct {
@@ -67,11 +64,6 @@ type ExportTagResponse struct {
 	Msg           string `json:"msg"`
 	ExportUrl     string `json:"export_url"`
 	ExportSaveUrl string `json:"export_save_url"`
-}
-
-type GenerateArticlePosterResponse struct {
-	PosterUrl     string `json:"poster_url"`
-	PosterSaveUrl string `json:"poster_save_url"`
 }
 
 type GetArticleRequest struct {

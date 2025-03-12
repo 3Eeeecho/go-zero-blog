@@ -28,14 +28,23 @@ func NewAddTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddTagLogi
 	}
 }
 
-// TODO 防止重复插入
 func (l *AddTagLogic) AddTag(req *types.AddTagRequest) (resp *types.Response, err error) {
-	// 1. 验证请求参数
+	// 验证请求参数
 	if req.Name == "" || req.State < 0 {
 		return app.Response(e.INVALID_PARAMS, nil), nil
 	}
 
-	// 2. 构造标签数据
+	exist, err := l.svcCtx.TagModel.ExistTagByName(l.ctx, req.Name)
+	if err != nil {
+		return app.Response(e.ERROR_EXIST_TAG_FAIL, nil), err
+	}
+
+	//防止重复插入
+	if exist {
+		return app.ResponseMsg(e.ERROR, "已经存在相同标签", nil), nil
+	}
+
+	//  构造标签数据
 	tag := &model.BlogTag{
 		Name:      req.Name,
 		State:     req.State,
@@ -43,14 +52,14 @@ func (l *AddTagLogic) AddTag(req *types.AddTagRequest) (resp *types.Response, er
 		CreatedOn: time.Now().Unix(),
 	}
 
-	// 3. 插入数据库
+	// 插入数据库
 	err = l.svcCtx.TagModel.Insert(l.ctx, tag)
 	if err != nil {
 		l.Logger.Errorf("failed to add tag, req: %+v, error: %v", req, err)
 		return app.Response(e.ERROR_ADD_TAG_FAIL, nil), err
 	}
 
-	// 4. 构造成功响应
+	// 构造成功响应
 	l.Logger.Infof("tag added successfully, name: %s, state: %d", req.Name, req.State)
 	return app.Response(e.SUCCESS, tag), nil
 }

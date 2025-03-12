@@ -9,15 +9,14 @@ type Response {
 
 // Article 结构体，表示文章实体
 type Article {
-	Id            int    `json:"id"`
-	TagId         int    `json:"tag_id"`
-	Title         string `json:"title"`
-	Desc          string `json:"desc"`
-	Content       string `json:"content"`
-	CoverImageUrl string `json:"cover_image_url,optional"`
-	State         int    `json:"state,optional"`
-	CreatedBy     string `json:"created_by,optional"`
-	ModifiedBy    string `json:"modified_by,optional"`
+	Id         int    `json:"id"`
+	TagId      int    `json:"tag_id"`
+	Title      string `json:"title"`
+	Desc       string `json:"desc"`
+	Content    string `json:"content"`
+	State      int    `json:"state,optional"`
+	CreatedBy  string `json:"created_by,optional"`
+	ModifiedBy string `json:"modified_by,optional"`
 }
 
 // --- GetArticle ---
@@ -44,36 +43,28 @@ type GetArticlesResponse {
 
 // --- AddArticle ---
 type AddArticleRequest {
-	TagId         int    `json:"tag_id"` // 必填
-	Title         string `json:"title"` // 必填
-	Desc          string `json:"desc"` // 必填
-	Content       string `json:"content"` // 必填
-	CreatedBy     string `json:"created_by"` // 必填
-	CoverImageUrl string `json:"cover_image_url,optional"` // 可选
-	State         int    `json:"state,optional"` // 可选
+	TagId     int    `json:"tag_id"` // 必填
+	Title     string `json:"title"` // 必填
+	Desc      string `json:"desc"` // 必填
+	Content   string `json:"content"` // 必填
+	CreatedBy string `json:"created_by"` // 必填
+	State     int    `json:"state,optional"` // 可选
 }
 
 // --- EditArticle ---
 type EditArticleRequest {
-	Id            int    `path:"id"` //必填
-	TagId         int    `json:"tag_id"` // 必填
-	Title         string `json:"title"` // 必填
-	Desc          string `json:"desc"` // 必填
-	Content       string `json:"content"` // 必填
-	ModifiedBy    string `json:"modified_by"` // 必填
-	CoverImageUrl string `json:"cover_image_url,optional"` // 可选
-	State         int    `json:"state,optional"` // 可选
+	Id         int    `path:"id"` //必填
+	TagId      int    `json:"tag_id"` // 必填
+	Title      string `json:"title"` // 必填
+	Desc       string `json:"desc"` // 必填
+	Content    string `json:"content"` // 必填
+	ModifiedBy string `json:"modified_by"` // 必填
+	State      int    `json:"state,optional"` // 可选
 }
 
 // --- DeleteArticle ---
 type DeleteArticleRequest {
 	Id int `path:"id"`
-}
-
-// --- GenerateArticlePoster ---
-type GenerateArticlePosterResponse {
-	PosterUrl     string `json:"poster_url"`
-	PosterSaveUrl string `json:"poster_save_url"`
 }
 
 // Tag 结构体，表示标签实体
@@ -208,13 +199,6 @@ service blog-api {
 	)
 	@handler DeleteArticle
 	delete /api/v1/articles/:id (DeleteArticleRequest) returns (Response)
-
-	@doc (
-		summary:     "生成文章海报"
-		description: "生成文章的二维码海报并返回下载地址"
-	)
-	@handler GenerateArticlePoster
-	get /api/v1/articles/poster/generate returns (GenerateArticlePosterResponse)
 }
 
 @server (

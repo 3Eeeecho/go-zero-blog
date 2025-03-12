@@ -48,12 +48,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/api/v1/articles/:id",
 				Handler: article.DeleteArticleHandler(serverCtx),
 			},
-			{
-				// 生成文章海报
-				Method:  http.MethodGet,
-				Path:    "/api/v1/articles/poster/generate",
-				Handler: article.GenerateArticlePosterHandler(serverCtx),
-			},
 		},
 	)
 
