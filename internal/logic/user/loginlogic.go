@@ -8,6 +8,7 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/pkg/app"
 	"github.com/3Eeeecho/go-zero-blog/pkg/e"
 	"github.com/3Eeeecho/go-zero-blog/pkg/util"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -41,9 +42,24 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 		return app.LoginResponse(e.ERROR_USER_CHECK_TOKEN_FAIL, ""), err
 	}
 
-	//TODO 实际应加密校验
-	if user == nil || user.Password != req.Password { // 简单比较
-		l.Logger.Errorf("invalid username or password, req: %+v", req)
+	if user == nil {
+		l.Logger.Errorf("user not found, username: %s", req.Username)
+		return app.LoginResponse(e.ERROR_USER, ""), nil
+	}
+
+	// 采用AES256加密校验
+	// 解密客户端传来的密码
+	plainPassword, err := util.DecryptPassword(l.svcCtx.Config, req.Password)
+	if err != nil {
+		l.Logger.Errorf("failed to decrypt password, error: %v", err)
+		return app.LoginResponse(e.ERROR_INVALID_PASSWORD, ""), nil
+	}
+
+	// 校验密码（bcrypt 比较）
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(plainPassword))
+	l.Logger.Info("plain password:", plainPassword)
+	if err != nil {
+		l.Logger.Errorf("password mismatch, username: %s", req.Username)
 		return app.LoginResponse(e.ERROR_USER, ""), nil
 	}
 

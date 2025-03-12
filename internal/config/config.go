@@ -27,7 +27,10 @@ type Config struct {
 		QrCodeSavePath  string
 	}
 	User struct {
-		JwtSecret    string `json:"jwtSecret"` // JWT 密钥
+		JwtSecret    string // JWT 密钥
 		AccessExpire int
+	}
+	Crypto struct {
+		Key string
 	}
 }
