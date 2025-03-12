@@ -1,0 +1,2 @@
+{"@timestamp":"2025-03-12T18:58:02.377+08:00","caller":"user/loginlogic.go:40","content":"failed to find user, username: test, error: Error 1146 (42S02): Table 'blog.blog_user' doesn't exist","level":"error","span":"2946f75ff603f493","trace":"b013090c8d560578a8be1e44de7b4257"}
+{"@timestamp":"2025-03-12T19:00:38.226+08:00","caller":"user/loginlogic.go:46","content":"invalid username or password, req: &{Username:test Password:test123456}","level":"error","span":"d525b9839647c463","trace":"a385a92c6d1fcc784ff72625ff1e31eb"}

@@ -15,7 +15,6 @@ Redis:
   IdleTimeout: 200 # 单位：秒
 
 App:
-  JwtSecret: "233"
   PageSize: 10
   PrefixUrl: "http://127.0.0.1:8000"
   RuntimeRootPath: "runtime/"
@@ -33,4 +32,5 @@ App:
   QrCodeSavePath: "runtime/qrcode/"
 
 User:
+  jwtSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
   AccessExpire: 3600

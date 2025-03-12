@@ -52,7 +52,7 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	// 先尝试从 Redis 获取 token
 	if cachedToken, err := l.svcCtx.Redis.Get(tokenKey); err == nil && cachedToken != "" {
 		// 检查 token 是否有效
-		if claims, err := util.ParseToken(cachedToken); err == nil && claims.Username == req.Username {
+		if claims, err := util.ParseToken(l.svcCtx.Config, cachedToken); err == nil && claims.Username == req.Username {
 			// 获取剩余过期时间
 			if ttl, err := l.svcCtx.Redis.Ttl(tokenKey); err == nil && ttl > 0 {
 				l.Logger.Infof("user login successful, using cached token, username: %s, token: %s, expires: %d", req.Username, cachedToken, ttl)
@@ -65,7 +65,7 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 
 	// 如果 Redis 中没有有效 token，则生成新 token
 	expiration := l.svcCtx.Config.User.AccessExpire
-	token, err := util.GenerateToken(req.Username, int(expiration))
+	token, err := util.GenerateToken(l.svcCtx.Config, req.Username, expiration)
 	if err != nil {
 		l.Logger.Errorf("generate token failed: %v", err)
 		return app.LoginResponse(e.ERROR_USER_GENERATE_TOKEN, ""), err

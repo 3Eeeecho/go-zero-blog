@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/3Eeeecho/go-zero-blog/internal/config"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -13,7 +14,7 @@ type Claims struct {
 }
 
 // TODO JwtSecert测试使用233,应该替换更安全的
-func GenerateToken(username string, expires int) (string, error) {
+func GenerateToken(c config.Config, username string, expires int) (string, error) {
 	expireTime := time.Now().Add(time.Duration(expires) * time.Second)
 	claims := Claims{
 		username,
@@ -24,7 +25,7 @@ func GenerateToken(username string, expires int) (string, error) {
 		},
 	}
 
-	jwtSecret := []byte("233")
+	jwtSecret := []byte(c.User.JwtSecret)
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
 	if err != nil {
@@ -33,9 +34,15 @@ func GenerateToken(username string, expires int) (string, error) {
 	return token, err
 }
 
-func ParseToken(tokenStr string) (*Claims, error) {
+func ParseToken(c config.Config, tokenStr string) (*Claims, error) {
 	if tokenStr == "" {
 		return nil, errors.New("token cannot be empty")
+	}
+
+	// 从配置文件读取密钥
+	jwtSecret := []byte(c.User.JwtSecret)
+	if len(jwtSecret) == 0 {
+		return nil, errors.New("JWT secret is not configured")
 	}
 
 	tokenClaims, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (any, error) {
@@ -43,7 +50,7 @@ func ParseToken(tokenStr string) (*Claims, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return []byte("233"), nil
+		return jwtSecret, nil
 	})
 
 	if tokenClaims != nil {
@@ -51,5 +58,6 @@ func ParseToken(tokenStr string) (*Claims, error) {
 			return claims, nil
 		}
 	}
+
 	return nil, err
 }
