@@ -1,0 +1,12 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8001
+Mode: dev
+
+JwtAuth:
+  AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
+  
+UsercenterRpcConf:
+  Endpoints:
+    - 127.0.0.1:2001
+  NonBlock: true

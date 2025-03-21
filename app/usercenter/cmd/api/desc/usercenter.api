@@ -1,0 +1,47 @@
+syntax = "v1"
+
+import (
+	"user/user.api"
+)
+
+@server (
+	prefix: usercenter
+	group:  user
+)
+service user-api {
+	@doc (
+		summary:     "获取授权 Token"
+		description: "通过用户名和密码进行验证，成功后返回一个 Token，供后续请求验证使用"
+	)
+	@handler Login
+	get /login (LoginRequest) returns (LoginResponse)
+
+	@doc (
+		summary: "用户注册"
+		desc:    "注册新用户，密码需加密传输"
+	)
+	@handler RegisterHandler
+	post /register (RegisterRequest) returns (RegisterResponse)
+}
+
+@server (
+	prefix: usercenter
+	group:  user
+	jwt:    JwtAuth
+)
+service user-api {
+	@doc (
+		summary: "修改用户名"
+		desc:    "更新用户的新用户名，需要 JWT 认证"
+	)
+	@handler UpdateUsernameHandler
+	put /username (UpdateUsernameRequest) returns (UpdateUsernameResponse)
+
+	@doc (
+		summary: "修改密码"
+		desc:    "更新用户的新密码，需要 JWT 认证，密码需加密传输"
+	)
+	@handler UpdatePasswordHandler
+	put /password (UpdatePasswordRequest) returns (UpdatePasswordResponse)
+}
+

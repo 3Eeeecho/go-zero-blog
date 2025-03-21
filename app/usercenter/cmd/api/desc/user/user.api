@@ -1,0 +1,52 @@
+syntax = "v1"
+
+// --- User ---
+type User {
+	Id       int    `gorm:"primaryKey;column:id"`
+	Username string `gorm:"column:username"`
+	Password string `gorm:"column:password"` // 实际应加密存储
+}
+
+type BaseResponse {
+	Msg  string `json:"msg"`
+}
+
+// --- Login ---
+type (LoginRequest {
+	Username string `json:"username"` // 必填
+	Password string `json:"password"` // 必填
+}
+LoginResponse {
+	Token   string `json:"token"`
+	Expires int    `json:"expiration"`
+}
+) 
+
+// --- Register ---
+type (
+	RegisterRequest {
+	Username string `json:"username"` // 必填
+	Password string `json:"password"` // 必填
+}
+	RegisterResponse {
+	Token   string `json:"token"`
+	Expires int    `json:"expiration"`
+}
+)
+
+type(
+ UpdateUsernameRequest {
+	NewUsername string `json:"username"`
+}
+UpdateUsernameResponse {
+	BaseResponse
+}
+)
+
+type (UpdatePasswordRequest {
+	NewPassword string `json:"password"` // 加密后的密码
+}
+UpdatePasswordResponse {
+	BaseResponse
+}
+)

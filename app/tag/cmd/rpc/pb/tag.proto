@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./pb";
+
+// 通用响应结构
+message TagCommonResponse {
+  string msg = 1;
+}
+
+// Tag 结构体，表示标签实体
+message Tag {
+  int64 id = 1;
+  string name = 2;
+  string created_by = 3;
+  string modified_by = 4;
+  int64 state = 5;
+}
+
+// --- GetTags ---
+message GetTagsRequest {
+  string name = 1;      // 从查询参数解析
+  int64 state = 2;      // 从查询参数解析
+  int64 page_num = 3;   // 分页参数
+  int64 page_size = 4;  // 分页参数
+}
+
+message GetTagsResponse {
+  string msg = 1;
+  repeated Tag data = 2; // 返回标签列表
+  int64 total = 3;       // 总条数
+  int64 page_num = 4;    // 当前页码
+  int64 page_size = 5;   // 每页大小
+}
+
+// --- AddTag ---
+message AddTagRequest {
+  string name = 1;      // 必填
+  string created_by = 2; // 必填
+  int64 state = 3;      // 可选
+}
+
+// --- DeleteTag ---
+message DeleteTagRequest {
+  int64 id = 1; // 路径参数
+}
+
+// --- EditTag ---
+message EditTagRequest {
+  int64 id = 1;          // 路径参数
+  string name = 2;       // 必填
+  string modified_by = 3; // 必填
+  int64 state = 4;       // 可选
+}
+
+// --- ExportTag ---
+message ExportTagRequest {
+  string name = 1;  // 可选
+  int64 state = 2;  // 可选
+}
+
+message ExportTagResponse {
+  string msg = 1;
+  string export_url = 2;      // 导出文件的下载地址
+  string export_save_url = 3; // 导出文件的保存地址
+}
+
+// --- ImportTag ---
+message ImportTagRequest {
+  bytes file_content = 1;
+}
+
+message ImportTagResponse {
+  string msg = 1 ;
+  string file_url = 2 ; // 文件存储后的 URL
+}
+
+message FoundTagRequest{
+  int64 id =1;
+}
+
+message FoundTagResponse{
+  bool found=1;
+}
+
+// 定义服务
+service TagService {
+  // 获取标签列表
+  rpc GetTags (GetTagsRequest) returns (GetTagsResponse);
+
+  // 新增文章标签
+  rpc AddTag (AddTagRequest) returns (TagCommonResponse);
+
+  // 修改文章标签
+  rpc EditTag (EditTagRequest) returns (TagCommonResponse);
+
+  // 删除文章标签
+  rpc DeleteTag (DeleteTagRequest) returns (TagCommonResponse);
+
+  // 导出标签信息
+  rpc ExportTag (ExportTagRequest) returns (ExportTagResponse);
+
+  // 导入标签信息
+  rpc ImportTag (ImportTagRequest) returns (ImportTagResponse);
+
+  rpc FoundTag (FoundTagRequest) returns (FoundTagResponse);
+}

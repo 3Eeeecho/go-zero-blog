@@ -1,0 +1,16 @@
+Name: tag-api
+Host: 0.0.0.0
+Port: 8002
+Mode: dev
+
+JwtAuth:
+  AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
+  AccessExpire: 3600
+
+App:
+  ImageMaxSize: 10485760
+
+TagServiceRpcConf:
+  Endpoints:
+    - 127.0.0.1:2002
+  NonBlock: true

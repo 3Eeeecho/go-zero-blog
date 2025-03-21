@@ -1,0 +1,21 @@
+Name: tag.rpc
+ListenOn: 0.0.0.0:2002
+Mode: dev
+MaxBytes: 10485760
+
+Mysql:
+  Dsn: "root:root@tcp(localhost:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
+  TablePrefix: "blog_"
+
+CustomRedis:
+  Host: "127.0.0.1:6379"
+  Pass: ""         # Password 为空时用空字符串
+  Type: "node"     # 单节点 Redis，go-zero 默认要求
+  IdleTimeout: 200 # 单位：秒
+
+JwtAuth:
+  AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
+
+App:
+  PageSize: 10
+  ExportSavePath: "runtime/export/"

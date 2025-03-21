@@ -1,0 +1,113 @@
+syntax = "v1"
+
+// 通用响应结构
+type ArticleCommonResponse {
+	Msg string `json:"msg"`
+}
+
+// Article 结构体，表示文章实体
+type Article {
+	Id         int    `json:"id"`
+	TagId      int    `json:"tag_id"`
+	Title      string `json:"title"`
+	Desc       string `json:"desc"`
+	Content    string `json:"content"`
+	State      int    `json:"state,optional"`
+	CreatedBy  string `json:"created_by,optional"`
+	ModifiedBy string `json:"modified_by,optional"`
+}
+
+// --- GetArticle ---
+type GetArticleRequest {
+	Id int `path:"id"` //必填
+}
+
+type GetArticleResponse {
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data,optional"`
+}
+
+// --- GetArticles ---
+type GetArticlesRequest {
+	State    int `json:"state,optional"` // 可选，0: 草稿，1: 已发布
+	TagId    int `json:"tag_id,optional"` // 可选，标签ID
+	PageNum  int `json:"page_num,optional"` // 分页参数
+	PageSize int `json:"page_size,optional"` // 分页参数
+}
+
+type GetArticlesResponse {
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"` // 文章列表
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
+}
+
+// --- AddArticle ---
+type AddArticleRequest {
+	TagId     int    `json:"tag_id"` // 必填
+	Title     string `json:"title"` // 必填
+	Desc      string `json:"desc"` // 必填
+	Content   string `json:"content"` // 必填
+	CreatedBy string `json:"created_by"` // 必填
+	State     int    `json:"state,optional"` // 可选
+}
+
+// --- EditArticle ---
+type EditArticleRequest {
+	Id         int    `path:"id"` //必填
+	TagId      int    `json:"tag_id"` // 必填
+	Title      string `json:"title"` // 必填
+	Desc       string `json:"desc"` // 必填
+	Content    string `json:"content"` // 必填
+	ModifiedBy string `json:"modified_by"` // 必填
+	State      int    `json:"state,optional"` // 可选
+}
+
+// --- DeleteArticle ---
+type DeleteArticleRequest {
+	Id int `path:"id"`
+}
+
+@server (
+	group:  article
+	prefix: /api/v1
+	jwt:    JwtAuth
+)
+service article-api {
+	@doc (
+		summary:     "获取单篇文章的详细信息"
+		description: "根据文章ID获取文章数据"
+	)
+	@handler GetArticle
+	get /articles/:id returns (ArticleCommonResponse)
+
+	@doc (
+		summary:     "获取文章列表"
+		description: "根据请求参数（如状态、标签ID）返回文章列表数据和总数"
+	)
+	@handler GetArticles
+	get /articles (GetArticlesRequest) returns (GetArticlesResponse)
+
+	@doc (
+		summary:     "新增一篇文章"
+		description: "通过传入文章的相关信息来新增一篇文章"
+	)
+	@handler AddArticle
+	post /articles (AddArticleRequest) returns (ArticleCommonResponse)
+
+	@doc (
+		summary:     "修改文章"
+		description: "通过文章ID和更新的参数修改文章信息"
+	)
+	@handler EditArticle
+	put /articles/:id (EditArticleRequest) returns (ArticleCommonResponse)
+
+	@doc (
+		summary:     "删除文章"
+		description: "通过文章ID删除指定的文章"
+	)
+	@handler DeleteArticle
+	delete /articles/:id (DeleteArticleRequest) returns (ArticleCommonResponse)
+}
+

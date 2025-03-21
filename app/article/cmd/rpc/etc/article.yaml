@@ -1,0 +1,25 @@
+Name: article.rpc
+ListenOn: 0.0.0.0:2003
+Mode: dev
+
+Mysql:
+  Dsn: "root:root@tcp(localhost:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
+  TablePrefix: "blog_"
+
+CustomRedis:
+  Host: "127.0.0.1:6379"
+  Pass: ""         # Password 为空时用空字符串
+  Type: "node"     # 单节点 Redis，go-zero 默认要求
+  IdleTimeout: 200 # 单位：秒
+
+App:
+  PageSize: 10
+
+JwtAuth:
+  AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
+  AccessExpire: 3600
+
+TagServiceRpcConf:
+  Endpoints:
+    - 127.0.0.1:2002
+  NonBlock: true

@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./pb";
+
+// 通用响应结构
+message ArticleCommonResponse {
+  string msg = 1;
+}
+
+// Article 结构体，表示文章实体
+message Article {
+  int64 id = 1;
+  int64 tag_id = 2;
+  string title = 3;
+  string desc = 4;
+  string content = 5;
+  int64 state = 6;       // 可选，0: 草稿，1: 已发布
+  string created_by = 7; // 可选
+  string modified_by = 8;// 可选
+}
+
+// --- GetArticle ---
+message GetArticleRequest {
+  int64 id = 1; // 路径参数
+}
+
+message GetArticleResponse {
+  string msg = 1;
+  Article data = 2; // 返回单篇具体文章
+}
+
+// --- GetArticles ---
+message GetArticlesRequest {
+  int64 state = 1;      // 可选，0: 草稿，1: 已发布
+  int64 tag_id = 2;     // 可选，标签ID
+  int64 page_num = 3;   // 分页参数
+  int64 page_size = 4;  // 分页参数
+}
+
+message GetArticlesResponse {
+  string msg = 1;
+  repeated Article data = 2; // 返回文章列表
+  int64 total = 3;          // 总条数
+  int64 page_num = 4;       // 当前页码
+  int64 page_size = 5;      // 每页大小
+}
+
+// --- AddArticle ---
+message AddArticleRequest {
+  int64 tag_id = 1;     // 必填
+  string title = 2;     // 必填
+  string desc = 3;      // 必填
+  string content = 4;   // 必填
+  string created_by = 5;// 必填
+  int64 state = 6;      // 可选
+}
+
+// --- EditArticle ---
+message EditArticleRequest {
+  int64 id = 1;          // 路径参数
+  int64 tag_id = 2;      // 必填
+  string title = 3;      // 必填
+  string desc = 4;       // 必填
+  string content = 5;    // 必填
+  string modified_by = 6;// 必填
+  int64 state = 7;       // 可选
+}
+
+// --- DeleteArticle ---
+message DeleteArticleRequest {
+  int64 id = 1; // 路径参数
+}
+
+// 定义服务
+service ArticleService {
+  // 获取单篇文章的详细信息
+  rpc GetArticle (GetArticleRequest) returns (GetArticleResponse);
+
+  // 获取文章列表
+  rpc GetArticles (GetArticlesRequest) returns (GetArticlesResponse);
+
+  // 新增一篇文章
+  rpc AddArticle (AddArticleRequest) returns (ArticleCommonResponse);
+
+  // 修改文章
+  rpc EditArticle (EditArticleRequest) returns (ArticleCommonResponse);
+
+  // 删除文章
+  rpc DeleteArticle (DeleteArticleRequest) returns (ArticleCommonResponse);
+}
