@@ -1,51 +1,77 @@
 #!/bin/bash
 
-# 定义服务路径
-RPC_PATH="/home/eecho/go/src/go-zero-blog/app/tag/cmd/rpc/tag.go"
-API_PATH="/home/eecho/go/src/go-zero-blog/app/tag/cmd/api/tag.go"
+# 定义颜色
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # 无颜色
 
-# 定义配置文件路径
-RPC_CONFIG="/home/eecho/go/src/go-zero-blog/app/tag/cmd/rpc/etc/tag.yaml"
-API_CONFIG="/home/eecho/go/src/go-zero-blog/app/tag/cmd/api/etc/tag-api.yaml"
+# 项目根目录
+BASE_DIR="/home/eecho/go/src/go-zero-blog"
 
-# 启动 rpc 服务
-gnome-terminal --title="Tag RPC" -- bash -c "go run $RPC_PATH -f $RPC_CONFIG; exec bash"
+# 函数：启动服务
+start_service() {
+    local service_name=$1
+    local rpc_name=$2
+    local api_name=$3
 
-# 启动 api 服务
-gnome-terminal --title="Tag API" -- bash -c "go run $API_PATH -f $API_CONFIG; exec bash"
+    # 根据服务名称设置文件名
+    local rpc_file="${rpc_name:-$service_name}"
+    local api_file="${api_name:-$service_name}"
 
-echo "Tag RPC 和 Tag API 服务已启动"
+    local rpc_path="${BASE_DIR}/app/${service_name}/cmd/rpc/${rpc_file}.go"
+    local api_path="${BASE_DIR}/app/${service_name}/cmd/api/${api_file}.go"
+    local rpc_config="${BASE_DIR}/app/${service_name}/cmd/rpc/etc/${rpc_file}.yaml"
+    local api_config="${BASE_DIR}/app/${service_name}/cmd/api/etc/${api_file}-api.yaml"
 
-#------------------------------------------------------------------
-# 定义服务路径
-RPC_PATH="/home/eecho/go/src/go-zero-blog/app/usercenter/cmd/rpc/usercenter.go"
-API_PATH="/home/eecho/go/src/go-zero-blog/app/usercenter/cmd/api/user.go"
+    # 检查文件是否存在
+    for file in "$rpc_path" "$api_path" "$rpc_config" "$api_config"; do
+        if [ ! -f "$file" ]; then
+            echo -e "${RED}错误: 文件 $file 不存在${NC}"
+            return 1
+        fi
+    done
 
-# 定义配置文件路径
-RPC_CONFIG="/home/eecho/go/src/go-zero-blog/app/usercenter/cmd/rpc/etc/usercenter.yaml"
-API_CONFIG="/home/eecho/go/src/go-zero-blog/app/usercenter/cmd/api/etc/user-api.yaml"
+    # 启动 RPC 服务
+    gnome-terminal --title="${service_name^} RPC" -- bash -c "go run '$rpc_path' -f '$rpc_config' || echo 'RPC 启动失败'; exec bash" &
 
-# 启动 rpc 服务
-gnome-terminal --title="User RPC" -- bash -c "go run $RPC_PATH -f $RPC_CONFIG; exec bash"
+    # 启动 API 服务
+    gnome-terminal --title="${service_name^} API" -- bash -c "go run '$api_path' -f '$api_config' || echo 'API 启动失败'; exec bash" &
 
-# 启动 api 服务
-gnome-terminal --title="User API" -- bash -c "go run $API_PATH -f $API_CONFIG; exec bash"
+    echo -e "${GREEN}${service_name^} RPC 和 ${service_name^} API 服务已启动${NC}"
+}
 
-echo "User RPC 和 User API 服务已启动"
+# 主函数：启动所有服务
+main() {
+    echo "开始启动服务..."
+    echo "----------------------------------------"
 
-#------------------------------------------------------------------
-# 定义服务路径
-RPC_PATH="/home/eecho/go/src/go-zero-blog/app/article/cmd/rpc/article.go"
-API_PATH="/home/eecho/go/src/go-zero-blog/app/article/cmd/api/article.go"
+    # 启动 tag 服务
+    start_service "tag" "tag" "tag"
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}启动 tag 服务失败${NC}"
+        exit 1
+    fi
+    sleep 1
 
-# 定义配置文件路径
-RPC_CONFIG="/home/eecho/go/src/go-zero-blog/app/article/cmd/rpc/etc/article.yaml"
-API_CONFIG="/home/eecho/go/src/go-zero-blog/app/article/cmd/api/etc/article-api.yaml"
+    # 启动 usercenter 服务（API 为 user.go，RPC 为 usercenter.go）
+    start_service "usercenter" "usercenter" "user"
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}启动 usercenter 服务失败${NC}"
+        exit 1
+    fi
+    sleep 1
 
-# 启动 rpc 服务
-gnome-terminal --title="Article RPC" -- bash -c "go run $RPC_PATH -f $RPC_CONFIG; exec bash"
+    # 启动 article 服务
+    start_service "article" "article" "article"
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}启动 article 服务失败${NC}"
+        exit 1
+    fi
+    sleep 1
 
-# 启动 api 服务
-gnome-terminal --title="Article API" -- bash -c "go run $API_PATH -f $API_CONFIG; exec bash"
+    echo "----------------------------------------"
+    echo -e "${GREEN}所有服务启动完成${NC}"
+}
 
-echo "Article RPC 和 Article API 服务已启动"
+# 执行主函数
+main

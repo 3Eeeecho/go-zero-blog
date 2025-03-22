@@ -11,6 +11,7 @@ message User {
     int64 id = 1;
     string username = 2;
     string password = 3; // 实际应加密存储
+    string role=4;
 }
   
   
@@ -29,6 +30,7 @@ message User {
   message RegisterRequest {
     string username = 1;
     string password = 2;
+    string role=3;
   }
   
   message RegisterResponse {
@@ -40,6 +42,7 @@ message User {
   message UpdateUsernameRequest {
     int64 Id =1;
     string new_username = 2;
+
   }
   
   message UpdateUsernameResponse {
@@ -66,6 +69,17 @@ message User {
     int64 refresh_after = 3;  // 建议刷新时间（Unix 时间戳）
   }
 
+  // 更新用户角色
+  message UpdateUserRoleRequest {
+    int64 Id=1;
+    string Role=2;
+    int64 AdminId=3;
+  }
+
+  message UpdateUserRoleResponse {
+    string Msg=1;
+  }
+
   // 用户服务定义
 service usercenter {
     // 用户登录
@@ -78,4 +92,6 @@ service usercenter {
     rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse);
     // 生成 token
     rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);
+
+    rpc UpdateUserRole(UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
 }

@@ -25,7 +25,7 @@ func NewDeleteArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 
 // 删除文章
 func (l *DeleteArticleLogic) DeleteArticle(in *pb.DeleteArticleRequest) (*pb.ArticleCommonResponse, error) {
-	err := l.svcCtx.ArticleModel.Delete(l.ctx, int(in.Id))
+	err := l.svcCtx.ArticleModel.Delete(l.ctx, in.Id)
 	if err != nil {
 		l.Logger.Errorf("failed to delete article, id: %d, error: %v", in.Id, err)
 		return nil, err
@@ -33,6 +33,6 @@ func (l *DeleteArticleLogic) DeleteArticle(in *pb.DeleteArticleRequest) (*pb.Art
 
 	l.Logger.Infof("article deleted successfully, id: %d", in.Id)
 	return &pb.ArticleCommonResponse{
-		Msg: "删除标签成功",
+		Msg: "删除文章成功",
 	}, nil
 }

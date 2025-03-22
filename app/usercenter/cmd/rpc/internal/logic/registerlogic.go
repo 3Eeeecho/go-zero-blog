@@ -64,6 +64,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.RegisterResponse, 
 	newUser := &model.BlogUser{
 		Username: in.Username,
 		Password: string(hashedPassword),
+		Role:     in.Role,
 	}
 	err = l.svcCtx.UserModel.Insert(l.ctx, newUser)
 
@@ -75,7 +76,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.RegisterResponse, 
 	//生成token
 	generateTokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
 	tokenResp, err := generateTokenLogic.GenerateToken(&usercenter.GenerateTokenReq{
-		UserId: user.Id,
+		UserId: newUser.Id,
 	})
 	if err != nil {
 		l.Logger.Errorf("generate token failed: %v", err)

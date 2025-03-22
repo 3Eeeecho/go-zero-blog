@@ -4,23 +4,22 @@
 package types
 
 type AddArticleRequest struct {
-	TagId     int    `json:"tag_id"`         // 必填
-	Title     string `json:"title"`          // 必填
-	Desc      string `json:"desc"`           // 必填
-	Content   string `json:"content"`        // 必填
-	CreatedBy string `json:"created_by"`     // 必填
-	State     int    `json:"state,optional"` // 可选
+	TagId     int64  `json:"tag_id"`     // 必填
+	Title     string `json:"title"`      // 必填
+	Desc      string `json:"desc"`       // 必填
+	Content   string `json:"content"`    // 必填
+	CreatedBy int64  `json:"created_by"` // 必填
 }
 
 type Article struct {
-	Id         int    `json:"id"`
-	TagId      int    `json:"tag_id"`
+	Id         int64  `json:"id"`
+	TagId      int64  `json:"tag_id"`
 	Title      string `json:"title"`
 	Desc       string `json:"desc"`
 	Content    string `json:"content"`
-	State      int    `json:"state,optional"`
-	CreatedBy  string `json:"created_by,optional"`
-	ModifiedBy string `json:"modified_by,optional"`
+	State      int32  `json:"state,optional"`
+	CreatedBy  int64  `json:"created_by,optional"`
+	ModifiedBy int64  `json:"modified_by,optional"`
 }
 
 type ArticleCommonResponse struct {
@@ -28,21 +27,21 @@ type ArticleCommonResponse struct {
 }
 
 type DeleteArticleRequest struct {
-	Id int `path:"id"`
+	Id int64 `path:"id"`
 }
 
 type EditArticleRequest struct {
-	Id         int    `path:"id"`             //必填
-	TagId      int    `json:"tag_id"`         // 必填
+	Id         int64  `json:"id"`             //必填
+	TagId      int64  `json:"tag_id"`         // 必填
 	Title      string `json:"title"`          // 必填
 	Desc       string `json:"desc"`           // 必填
 	Content    string `json:"content"`        // 必填
-	ModifiedBy string `json:"modified_by"`    // 必填
-	State      int    `json:"state,optional"` // 可选
+	ModifiedBy int64  `json:"modified_by"`    // 必填
+	State      int32  `json:"state,optional"` // 可选
 }
 
 type GetArticleRequest struct {
-	Id int `path:"id"` //必填
+	Id int64 `path:"id"` //必填
 }
 
 type GetArticleResponse struct {
@@ -51,10 +50,10 @@ type GetArticleResponse struct {
 }
 
 type GetArticlesRequest struct {
-	State    int `json:"state,optional"`     // 可选，0: 草稿，1: 已发布
-	TagId    int `json:"tag_id,optional"`    // 可选，标签ID
-	PageNum  int `json:"page_num,optional"`  // 分页参数
-	PageSize int `json:"page_size,optional"` // 分页参数
+	State    int32 `json:"state,optional"`     // 可选
+	TagId    int64 `json:"tag_id,optional"`    // 可选，标签ID
+	PageNum  int   `json:"page_num,optional"`  // 分页参数
+	PageSize int   `json:"page_size,optional"` // 分页参数
 }
 
 type GetArticlesResponse struct {

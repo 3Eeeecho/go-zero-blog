@@ -7,19 +7,19 @@ type ArticleCommonResponse {
 
 // Article 结构体，表示文章实体
 type Article {
-	Id         int    `json:"id"`
-	TagId      int    `json:"tag_id"`
+	Id         int64  `json:"id"`
+	TagId      int64  `json:"tag_id"`
 	Title      string `json:"title"`
 	Desc       string `json:"desc"`
 	Content    string `json:"content"`
-	State      int    `json:"state,optional"`
-	CreatedBy  string `json:"created_by,optional"`
-	ModifiedBy string `json:"modified_by,optional"`
+	State      int32  `json:"state,optional"`
+	CreatedBy  int64  `json:"created_by,optional"`
+	ModifiedBy int64  `json:"modified_by,optional"`
 }
 
 // --- GetArticle ---
 type GetArticleRequest {
-	Id int `path:"id"` //必填
+	Id int64 `path:"id"` //必填
 }
 
 type GetArticleResponse {
@@ -29,10 +29,10 @@ type GetArticleResponse {
 
 // --- GetArticles ---
 type GetArticlesRequest {
-	State    int `json:"state,optional"` // 可选，0: 草稿，1: 已发布
-	TagId    int `json:"tag_id,optional"` // 可选，标签ID
-	PageNum  int `json:"page_num,optional"` // 分页参数
-	PageSize int `json:"page_size,optional"` // 分页参数
+	State    int32 `json:"state,optional"` // 可选
+	TagId    int64 `json:"tag_id,optional"` // 可选，标签ID
+	PageNum  int   `json:"page_num,optional"` // 分页参数
+	PageSize int   `json:"page_size,optional"` // 分页参数
 }
 
 type GetArticlesResponse {
@@ -45,34 +45,32 @@ type GetArticlesResponse {
 
 // --- AddArticle ---
 type AddArticleRequest {
-	TagId     int    `json:"tag_id"` // 必填
+	TagId     int64  `json:"tag_id"` // 必填
 	Title     string `json:"title"` // 必填
 	Desc      string `json:"desc"` // 必填
 	Content   string `json:"content"` // 必填
-	CreatedBy string `json:"created_by"` // 必填
-	State     int    `json:"state,optional"` // 可选
+	CreatedBy int64  `json:"created_by"` // 必填
 }
 
 // --- EditArticle ---
 type EditArticleRequest {
-	Id         int    `path:"id"` //必填
-	TagId      int    `json:"tag_id"` // 必填
+	Id         int64  `json:"id"` //必填
+	TagId      int64  `json:"tag_id"` // 必填
 	Title      string `json:"title"` // 必填
 	Desc       string `json:"desc"` // 必填
 	Content    string `json:"content"` // 必填
-	ModifiedBy string `json:"modified_by"` // 必填
-	State      int    `json:"state,optional"` // 可选
+	ModifiedBy int64  `json:"modified_by"` // 必填
+	State      int32  `json:"state,optional"` // 可选
 }
 
 // --- DeleteArticle ---
 type DeleteArticleRequest {
-	Id int `path:"id"`
+	Id int64 `path:"id"`
 }
 
 @server (
-	group:  article
-	prefix: /api/v1
-	jwt:    JwtAuth
+	group: article
+	jwt:   JwtAuth
 )
 service article-api {
 	@doc (
@@ -80,7 +78,7 @@ service article-api {
 		description: "根据文章ID获取文章数据"
 	)
 	@handler GetArticle
-	get /articles/:id returns (ArticleCommonResponse)
+	get /articles/:id (GetArticleRequest) returns (ArticleCommonResponse)
 
 	@doc (
 		summary:     "获取文章列表"
@@ -101,7 +99,7 @@ service article-api {
 		description: "通过文章ID和更新的参数修改文章信息"
 	)
 	@handler EditArticle
-	put /articles/:id (EditArticleRequest) returns (ArticleCommonResponse)
+	put /articles (EditArticleRequest) returns (ArticleCommonResponse)
 
 	@doc (
 		summary:     "删除文章"

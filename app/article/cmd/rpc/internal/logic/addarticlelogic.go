@@ -48,13 +48,13 @@ func (l *AddArticleLogic) AddArticle(in *pb.AddArticleRequest) (*pb.ArticleCommo
 
 	// 2.创建文章
 	article := &model.BlogArticle{
-		TagId:      int(in.TagId),
+		TagId:      in.TagId,
 		Title:      in.Title,
 		Desc:       in.Desc,
 		Content:    in.Content,
 		CreatedBy:  in.CreatedBy,
 		CreatedOn:  time.Now().Unix(),
-		State:      int(in.State),
+		State:      StateDraft,
 		ModifiedOn: 0,
 		DeletedOn:  0,
 	}

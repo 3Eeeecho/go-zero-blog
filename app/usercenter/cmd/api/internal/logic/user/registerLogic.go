@@ -31,6 +31,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	registerResp, err := l.svcCtx.UsercenterRpc.Register(l.ctx, &usercenter.RegisterRequest{
 		Username: req.Username,
 		Password: req.Password,
+		Role:     req.Role,
 	})
 	if err != nil {
 		return nil, err

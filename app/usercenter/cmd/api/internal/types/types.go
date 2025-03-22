@@ -20,6 +20,7 @@ type LoginResponse struct {
 type RegisterRequest struct {
 	Username string `json:"username"` // 必填
 	Password string `json:"password"` // 必填
+	Role     string `json:"role"`
 }
 
 type RegisterResponse struct {
@@ -35,6 +36,15 @@ type UpdatePasswordResponse struct {
 	BaseResponse
 }
 
+type UpdateUserRoleRequest struct {
+	Id   int    `json:"id"`
+	Role string `json:"role"` // "user", "author", "admin"
+}
+
+type UpdateUserRoleResponse struct {
+	Msg string `json:"msg"`
+}
+
 type UpdateUsernameRequest struct {
 	NewUsername string `json:"username"`
 }
@@ -47,4 +57,5 @@ type User struct {
 	Id       int    `gorm:"primaryKey;column:id"`
 	Username string `gorm:"column:username"`
 	Password string `gorm:"column:password"` // 实际应加密存储
+	Role     string `gorm:"column:role"`
 }

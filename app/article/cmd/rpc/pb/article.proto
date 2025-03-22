@@ -16,9 +16,9 @@ message Article {
   string title = 3;
   string desc = 4;
   string content = 5;
-  int64 state = 6;       // 可选，0: 草稿，1: 已发布
-  string created_by = 7; // 可选
-  string modified_by = 8;// 可选
+  int32 state = 6;       // 可选，0: 草稿,1: 待审核,2:审核成功,3:审核失败
+  int64 created_by = 7; 
+  int64 modified_by = 8;
 }
 
 // --- GetArticle ---
@@ -33,7 +33,7 @@ message GetArticleResponse {
 
 // --- GetArticles ---
 message GetArticlesRequest {
-  int64 state = 1;      // 可选，0: 草稿，1: 已发布
+  int32 state = 1;      // 可选，0: 草稿，1: 已发布
   int64 tag_id = 2;     // 可选，标签ID
   int64 page_num = 3;   // 分页参数
   int64 page_size = 4;  // 分页参数
@@ -53,8 +53,7 @@ message AddArticleRequest {
   string title = 2;     // 必填
   string desc = 3;      // 必填
   string content = 4;   // 必填
-  string created_by = 5;// 必填
-  int64 state = 6;      // 可选
+  int64 created_by = 5;// 必填
 }
 
 // --- EditArticle ---
@@ -64,8 +63,8 @@ message EditArticleRequest {
   string title = 3;      // 必填
   string desc = 4;       // 必填
   string content = 5;    // 必填
-  string modified_by = 6;// 必填
-  int64 state = 7;       // 可选
+  int64 modified_by = 6;// 必填
+  int32 state = 7;       // 可选
 }
 
 // --- DeleteArticle ---

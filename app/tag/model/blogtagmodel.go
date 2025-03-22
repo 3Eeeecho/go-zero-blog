@@ -18,7 +18,7 @@ type BlogTag struct {
 }
 
 func (BlogTag) TableName() string {
-	return "blog_tag"
+	return "blog_tags"
 }
 
 type (

@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	BlogUserModel interface {
+	BlogUsersModel interface {
 		Insert(ctx context.Context, user *BlogUser) error
 		FindOne(ctx context.Context, id int64) (*BlogUser, error)
 		FindByUsername(ctx context.Context, username string) (*BlogUser, error)
@@ -23,14 +23,15 @@ type (
 		Id       int64  `gorm:"column:id;primaryKey"`
 		Username string `gorm:"column:username"`
 		Password string `gorm:"column:password"`
+		Role     string `gorm:"column:role"`
 	}
 )
 
 func (BlogUser) TableName() string {
-	return "blog_user"
+	return "blog_users"
 }
 
-func NewBlogUserModel(db *gorm.DB) BlogUserModel {
+func NewBlogUsersModel(db *gorm.DB) BlogUsersModel {
 	return &defaultUserModel{db: db}
 }
 

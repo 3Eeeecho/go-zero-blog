@@ -6,6 +6,7 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/usercenter"
+	"github.com/3Eeeecho/go-zero-blog/pkg/ctxdata"
 	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -27,8 +28,10 @@ func NewUpdateUsernameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateUsernameLogic) UpdateUsername(req *types.UpdateUsernameRequest) (resp *types.UpdateUsernameResponse, err error) {
-	updateNameResp, err := l.svcCtx.UsercenterRpc.UpdatePassword(l.ctx, &usercenter.UpdatePasswordRequest{
-		NewPassword: req.NewUsername,
+	userId := ctxdata.GetUidFromCtx(l.ctx)
+	updateNameResp, err := l.svcCtx.UsercenterRpc.UpdateUsername(l.ctx, &usercenter.UpdateUsernameRequest{
+		NewUsername: req.NewUsername,
+		Id:          userId,
 	})
 	if err != nil {
 		return nil, err

@@ -28,12 +28,11 @@ func NewAddArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddArt
 
 func (l *AddArticleLogic) AddArticle(req *types.AddArticleRequest) (resp *types.ArticleCommonResponse, err error) {
 	addArticleResp, err := l.svcCtx.ArticleServiceRpc.AddArticle(l.ctx, &articleservice.AddArticleRequest{
-		TagId:     int64(req.TagId),
+		TagId:     req.TagId,
 		Title:     req.Title,
 		Desc:      req.Desc,
 		Content:   req.Content,
 		CreatedBy: req.CreatedBy,
-		State:     int64(req.State),
 	})
 
 	if err != nil {

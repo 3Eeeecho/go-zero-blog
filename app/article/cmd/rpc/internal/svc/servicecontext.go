@@ -22,6 +22,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		panic("failed to connect database: " + err.Error())
 	}
+
 	rdb := redis.MustNewRedis(c.CustomRedis)
 
 	return &ServiceContext{

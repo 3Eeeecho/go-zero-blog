@@ -10,7 +10,7 @@ import (
 
 type ServiceContext struct {
 	Config    config.Config
-	UserModel model.BlogUserModel
+	UserModel model.BlogUsersModel
 	Redis     *redis.Redis
 }
 
@@ -24,7 +24,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	return &ServiceContext{
 		Config:    c,
-		UserModel: model.NewBlogUserModel(db),
+		UserModel: model.NewBlogUsersModel(db),
 		Redis:     rdb,
 	}
 }

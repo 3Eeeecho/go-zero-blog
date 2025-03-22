@@ -40,6 +40,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: user.UpdatePasswordHandler(serverCtx),
 			},
 			{
+				// 更新用户权限
+				Method:  http.MethodPut,
+				Path:    "/role",
+				Handler: user.UpdateUserRoleHandler(serverCtx),
+			},
+			{
 				// 修改用户名
 				Method:  http.MethodPut,
 				Path:    "/username",

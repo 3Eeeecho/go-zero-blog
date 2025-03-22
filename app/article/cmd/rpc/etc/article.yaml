@@ -18,7 +18,7 @@ App:
 JwtAuth:
   AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
   AccessExpire: 3600
-
+  
 TagServiceRpcConf:
   Endpoints:
     - 127.0.0.1:2002

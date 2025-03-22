@@ -43,5 +43,12 @@ service user-api {
 	)
 	@handler UpdatePasswordHandler
 	put /password (UpdatePasswordRequest) returns (UpdatePasswordResponse)
+
+	@doc (
+		summary: "更新用户权限"
+		desc:    "更新用户的权限，需要管理员操作"
+	)
+	@handler UpdateUserRole
+	put /role (UpdateUserRoleRequest) returns (UpdateUserRoleResponse)
 }
 

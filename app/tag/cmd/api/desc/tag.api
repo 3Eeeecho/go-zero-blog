@@ -66,9 +66,8 @@ type ExportTagResponse {
 type ImportTagRequest {}
 
 @server (
-	group:  tag
-	prefix: /api/v1
-	jwt:    JwtAuth // 开启 jwt 认证
+	group: tag
+	jwt:   JwtAuth // 开启 jwt 认证
 )
 // 定义服务
 service tag-api {

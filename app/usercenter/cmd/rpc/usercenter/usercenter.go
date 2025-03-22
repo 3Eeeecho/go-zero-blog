@@ -22,6 +22,8 @@ type (
 	RegisterResponse       = pb.RegisterResponse
 	UpdatePasswordRequest  = pb.UpdatePasswordRequest
 	UpdatePasswordResponse = pb.UpdatePasswordResponse
+	UpdateUserRoleRequest  = pb.UpdateUserRoleRequest
+	UpdateUserRoleResponse = pb.UpdateUserRoleResponse
 	UpdateUsernameRequest  = pb.UpdateUsernameRequest
 	UpdateUsernameResponse = pb.UpdateUsernameResponse
 	User                   = pb.User
@@ -37,6 +39,7 @@ type (
 		UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordResponse, error)
 		// 生成 token
 		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
+		UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error)
 	}
 
 	defaultUsercenter struct {
@@ -78,4 +81,9 @@ func (m *defaultUsercenter) UpdatePassword(ctx context.Context, in *UpdatePasswo
 func (m *defaultUsercenter) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
 	client := pb.NewUsercenterClient(m.cli.Conn())
 	return client.GenerateToken(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error) {
+	client := pb.NewUsercenterClient(m.cli.Conn())
+	return client.UpdateUserRole(ctx, in, opts...)
 }
