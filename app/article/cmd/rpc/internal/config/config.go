@@ -18,6 +18,7 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int
 	}
-	CustomRedis       redis.RedisConf
-	TagServiceRpcConf zrpc.RpcClientConf
+	CustomRedis        redis.RedisConf
+	TagServiceRpcConf  zrpc.RpcClientConf
+	UserServiceRpcConf zrpc.RpcClientConf
 }

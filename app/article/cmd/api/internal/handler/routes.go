@@ -16,7 +16,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// 获取文章列表
+				// 获取全部文章列表
 				Method:  http.MethodGet,
 				Path:    "/articles",
 				Handler: article.GetArticlesHandler(serverCtx),
@@ -44,6 +44,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodDelete,
 				Path:    "/articles/:id",
 				Handler: article.DeleteArticleHandler(serverCtx),
+			},
+			{
+				// 获取待审核文章列表
+				Method:  http.MethodGet,
+				Path:    "/articles/pending",
+				Handler: article.GetArticlesPendingHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

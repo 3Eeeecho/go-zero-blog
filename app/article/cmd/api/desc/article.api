@@ -81,11 +81,18 @@ service article-api {
 	get /articles/:id (GetArticleRequest) returns (ArticleCommonResponse)
 
 	@doc (
-		summary:     "获取文章列表"
+		summary:     "获取全部文章列表"
 		description: "根据请求参数（如状态、标签ID）返回文章列表数据和总数"
 	)
 	@handler GetArticles
 	get /articles (GetArticlesRequest) returns (GetArticlesResponse)
+
+	@doc (
+		summary:     "获取待审核文章列表"
+		description: "根据请求参数（如状态、标签ID）返回文章列表数据和总数"
+	)
+	@handler GetArticlesPending
+	get /articles/pending (GetArticlesRequest) returns (GetArticlesResponse)
 
 	@doc (
 		summary:     "新增一篇文章"

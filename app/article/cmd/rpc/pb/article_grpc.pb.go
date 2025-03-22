@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ArticleService_GetArticle_FullMethodName    = "/pb.ArticleService/GetArticle"
-	ArticleService_GetArticles_FullMethodName   = "/pb.ArticleService/GetArticles"
-	ArticleService_AddArticle_FullMethodName    = "/pb.ArticleService/AddArticle"
-	ArticleService_EditArticle_FullMethodName   = "/pb.ArticleService/EditArticle"
-	ArticleService_DeleteArticle_FullMethodName = "/pb.ArticleService/DeleteArticle"
+	ArticleService_GetArticle_FullMethodName         = "/pb.ArticleService/GetArticle"
+	ArticleService_GetArticles_FullMethodName        = "/pb.ArticleService/GetArticles"
+	ArticleService_AddArticle_FullMethodName         = "/pb.ArticleService/AddArticle"
+	ArticleService_EditArticle_FullMethodName        = "/pb.ArticleService/EditArticle"
+	ArticleService_DeleteArticle_FullMethodName      = "/pb.ArticleService/DeleteArticle"
+	ArticleService_GetPendingArticles_FullMethodName = "/pb.ArticleService/GetPendingArticles"
 )
 
 // ArticleServiceClient is the client API for ArticleService service.
@@ -42,6 +43,7 @@ type ArticleServiceClient interface {
 	EditArticle(ctx context.Context, in *EditArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 	// 删除文章
 	DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+	GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error)
 }
 
 type articleServiceClient struct {
@@ -102,6 +104,16 @@ func (c *articleServiceClient) DeleteArticle(ctx context.Context, in *DeleteArti
 	return out, nil
 }
 
+func (c *articleServiceClient) GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPendingArticlesResponse)
+	err := c.cc.Invoke(ctx, ArticleService_GetPendingArticles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticleServiceServer is the server API for ArticleService service.
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility.
@@ -118,6 +130,7 @@ type ArticleServiceServer interface {
 	EditArticle(context.Context, *EditArticleRequest) (*ArticleCommonResponse, error)
 	// 删除文章
 	DeleteArticle(context.Context, *DeleteArticleRequest) (*ArticleCommonResponse, error)
+	GetPendingArticles(context.Context, *GetPendingArticlesRequest) (*GetPendingArticlesResponse, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -142,6 +155,9 @@ func (UnimplementedArticleServiceServer) EditArticle(context.Context, *EditArtic
 }
 func (UnimplementedArticleServiceServer) DeleteArticle(context.Context, *DeleteArticleRequest) (*ArticleCommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
+}
+func (UnimplementedArticleServiceServer) GetPendingArticles(context.Context, *GetPendingArticlesRequest) (*GetPendingArticlesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPendingArticles not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 func (UnimplementedArticleServiceServer) testEmbeddedByValue()                        {}
@@ -254,6 +270,24 @@ func _ArticleService_DeleteArticle_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticleService_GetPendingArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPendingArticlesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetPendingArticles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_GetPendingArticles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetPendingArticles(ctx, req.(*GetPendingArticlesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticleService_ServiceDesc is the grpc.ServiceDesc for ArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -280,6 +314,10 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteArticle",
 			Handler:    _ArticleService_DeleteArticle_Handler,
+		},
+		{
+			MethodName: "GetPendingArticles",
+			Handler:    _ArticleService_GetPendingArticles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -4,94 +4,88 @@ package pb;
 
 option go_package = "./pb";
 
-
-
 // --- 用户数据结构 ---
 message User {
-    int64 id = 1;
-    string username = 2;
-    string password = 3; // 实际应加密存储
-    string role=4;
+  int64 id = 1;
+  string username = 2;
+  string password = 3; // 实际应加密存储
+  string role = 4;
 }
-  
-  
-  // --- 登录 ---
-  message LoginRequest {
-    string username = 1;
-    string password = 2;
-  }
-  
-  message LoginResponse {
-    string token = 1;
-    int64 expires = 2;
-  }
-  
-  // --- 注册 ---
-  message RegisterRequest {
-    string username = 1;
-    string password = 2;
-    string role=3;
-  }
-  
-  message RegisterResponse {
-    string token =1;
-    int64 expires = 2;
-  }
-  
-  // --- 修改用户名 ---
-  message UpdateUsernameRequest {
-    int64 Id =1;
-    string new_username = 2;
 
-  }
-  
-  message UpdateUsernameResponse {
-    string Msg=1;
-  }
-  
-  // --- 修改密码 ---
-  message UpdatePasswordRequest {
-    int64 Id =1;
-    string new_password = 2;
-  }
-  
-  message UpdatePasswordResponse {
-    string Msg=1;
-  }
+// --- 登录 ---
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
 
-  message GenerateTokenReq {
-    int64 userId = 1;
-  }
+message LoginResponse {
+  string token = 1;
+  int64 expires = 2;
+}
 
-  message GenerateTokenResp {
-    string access_token = 1;  // 访问 token
-    int64 access_expire = 2;  // 过期时间（Unix 时间戳）
-    int64 refresh_after = 3;  // 建议刷新时间（Unix 时间戳）
-  }
+// --- 注册 ---
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  string role = 3;
+}
 
-  // 更新用户角色
-  message UpdateUserRoleRequest {
-    int64 Id=1;
-    string Role=2;
-    int64 AdminId=3;
-  }
+message RegisterResponse {
+  string token = 1;
+  int64 expires = 2;
+}
 
-  message UpdateUserRoleResponse {
-    string Msg=1;
-  }
+// --- 修改用户名 ---
+message UpdateUsernameRequest {
+  int64 Id = 1;
+  string new_username = 2;
+}
 
-  // 用户服务定义
+message UpdateUsernameResponse { string Msg = 1; }
+
+// --- 修改密码 ---
+message UpdatePasswordRequest {
+  int64 Id = 1;
+  string new_password = 2;
+}
+
+message UpdatePasswordResponse { string Msg = 1; }
+
+message GenerateTokenReq { int64 userId = 1; }
+
+message GenerateTokenResp {
+  string access_token = 1; // 访问 token
+  int64 access_expire = 2; // 过期时间（Unix 时间戳）
+  int64 refresh_after = 3; // 建议刷新时间（Unix 时间戳）
+}
+
+// 更新用户角色
+message UpdateUserRoleRequest {
+  int64 Id = 1;
+  string Role = 2;
+  int64 AdminId = 3;
+}
+
+message UpdateUserRoleResponse { string Msg = 1; }
+
+message GetUserRoleRequest { int64 Id = 1; }
+
+message GetUserRoleResponse { string Role = 1; }
+
+// 用户服务定义
 service usercenter {
-    // 用户登录
-    rpc Login (LoginRequest) returns (LoginResponse);
-    // 用户注册
-    rpc Register (RegisterRequest) returns (RegisterResponse);
-    // 修改用户名
-    rpc UpdateUsername (UpdateUsernameRequest) returns (UpdateUsernameResponse);
-    // 修改密码
-    rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse);
-    // 生成 token
-    rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);
+  // 用户登录
+  rpc Login(LoginRequest) returns (LoginResponse);
+  // 用户注册
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  // 修改用户名
+  rpc UpdateUsername(UpdateUsernameRequest) returns (UpdateUsernameResponse);
+  // 修改密码
+  rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse);
+  // 生成 token
+  rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);
 
-    rpc UpdateUserRole(UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
+  rpc UpdateUserRole(UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
+
+  rpc GetUserRole(GetUserRoleRequest) returns (GetUserRoleResponse);
 }

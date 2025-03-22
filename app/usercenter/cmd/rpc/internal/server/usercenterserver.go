@@ -57,3 +57,8 @@ func (s *UsercenterServer) UpdateUserRole(ctx context.Context, in *pb.UpdateUser
 	l := logic.NewUpdateUserRoleLogic(ctx, s.svcCtx)
 	return l.UpdateUserRole(in)
 }
+
+func (s *UsercenterServer) GetUserRole(ctx context.Context, in *pb.GetUserRoleRequest) (*pb.GetUserRoleResponse, error) {
+	l := logic.NewGetUserRoleLogic(ctx, s.svcCtx)
+	return l.GetUserRole(in)
+}

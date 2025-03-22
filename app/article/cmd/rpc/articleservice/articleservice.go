@@ -14,15 +14,17 @@ import (
 )
 
 type (
-	AddArticleRequest     = pb.AddArticleRequest
-	Article               = pb.Article
-	ArticleCommonResponse = pb.ArticleCommonResponse
-	DeleteArticleRequest  = pb.DeleteArticleRequest
-	EditArticleRequest    = pb.EditArticleRequest
-	GetArticleRequest     = pb.GetArticleRequest
-	GetArticleResponse    = pb.GetArticleResponse
-	GetArticlesRequest    = pb.GetArticlesRequest
-	GetArticlesResponse   = pb.GetArticlesResponse
+	AddArticleRequest          = pb.AddArticleRequest
+	Article                    = pb.Article
+	ArticleCommonResponse      = pb.ArticleCommonResponse
+	DeleteArticleRequest       = pb.DeleteArticleRequest
+	EditArticleRequest         = pb.EditArticleRequest
+	GetArticleRequest          = pb.GetArticleRequest
+	GetArticleResponse         = pb.GetArticleResponse
+	GetArticlesRequest         = pb.GetArticlesRequest
+	GetArticlesResponse        = pb.GetArticlesResponse
+	GetPendingArticlesRequest  = pb.GetPendingArticlesRequest
+	GetPendingArticlesResponse = pb.GetPendingArticlesResponse
 
 	ArticleService interface {
 		// 获取单篇文章的详细信息
@@ -35,6 +37,7 @@ type (
 		EditArticle(ctx context.Context, in *EditArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 		// 删除文章
 		DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+		GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error)
 	}
 
 	defaultArticleService struct {
@@ -76,4 +79,9 @@ func (m *defaultArticleService) EditArticle(ctx context.Context, in *EditArticle
 func (m *defaultArticleService) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
 	client := pb.NewArticleServiceClient(m.cli.Conn())
 	return client.DeleteArticle(ctx, in, opts...)
+}
+
+func (m *defaultArticleService) GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.GetPendingArticles(ctx, in, opts...)
 }

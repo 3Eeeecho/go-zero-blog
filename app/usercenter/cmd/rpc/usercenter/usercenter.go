@@ -16,6 +16,8 @@ import (
 type (
 	GenerateTokenReq       = pb.GenerateTokenReq
 	GenerateTokenResp      = pb.GenerateTokenResp
+	GetUserRoleRequest     = pb.GetUserRoleRequest
+	GetUserRoleResponse    = pb.GetUserRoleResponse
 	LoginRequest           = pb.LoginRequest
 	LoginResponse          = pb.LoginResponse
 	RegisterRequest        = pb.RegisterRequest
@@ -40,6 +42,7 @@ type (
 		// 生成 token
 		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
 		UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error)
+		GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error)
 	}
 
 	defaultUsercenter struct {
@@ -86,4 +89,9 @@ func (m *defaultUsercenter) GenerateToken(ctx context.Context, in *GenerateToken
 func (m *defaultUsercenter) UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error) {
 	client := pb.NewUsercenterClient(m.cli.Conn())
 	return client.UpdateUserRole(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error) {
+	client := pb.NewUsercenterClient(m.cli.Conn())
+	return client.GetUserRole(ctx, in, opts...)
 }

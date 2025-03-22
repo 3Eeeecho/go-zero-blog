@@ -52,3 +52,8 @@ func (s *ArticleServiceServer) DeleteArticle(ctx context.Context, in *pb.DeleteA
 	l := logic.NewDeleteArticleLogic(ctx, s.svcCtx)
 	return l.DeleteArticle(in)
 }
+
+func (s *ArticleServiceServer) GetPendingArticles(ctx context.Context, in *pb.GetPendingArticlesRequest) (*pb.GetPendingArticlesResponse, error) {
+	l := logic.NewGetPendingArticlesLogic(ctx, s.svcCtx)
+	return l.GetPendingArticles(in)
+}

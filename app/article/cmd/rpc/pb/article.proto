@@ -5,9 +5,7 @@ package pb;
 option go_package = "./pb";
 
 // 通用响应结构
-message ArticleCommonResponse {
-  string msg = 1;
-}
+message ArticleCommonResponse { string msg = 1; }
 
 // Article 结构体，表示文章实体
 message Article {
@@ -16,8 +14,8 @@ message Article {
   string title = 3;
   string desc = 4;
   string content = 5;
-  int32 state = 6;       // 可选，0: 草稿,1: 待审核,2:审核成功,3:审核失败
-  int64 created_by = 7; 
+  int32 state = 6; // 可选，0: 草稿,1: 待审核,2:审核成功,3:审核失败
+  int64 created_by = 7;
   int64 modified_by = 8;
 }
 
@@ -33,18 +31,29 @@ message GetArticleResponse {
 
 // --- GetArticles ---
 message GetArticlesRequest {
-  int32 state = 1;      // 可选，0: 草稿，1: 已发布
-  int64 tag_id = 2;     // 可选，标签ID
-  int64 page_num = 3;   // 分页参数
-  int64 page_size = 4;  // 分页参数
+  int32 state = 1;     // 可选，0: 草稿，1: 已发布
+  int64 tag_id = 2;    // 可选，标签ID
+  int64 page_num = 3;  // 分页参数
+  int64 page_size = 4; // 分页参数
 }
 
 message GetArticlesResponse {
   string msg = 1;
   repeated Article data = 2; // 返回文章列表
-  int64 total = 3;          // 总条数
-  int64 page_num = 4;       // 当前页码
-  int64 page_size = 5;      // 每页大小
+  int64 total = 3;           // 总条数
+  int64 page_num = 4;        // 当前页码
+  int64 page_size = 5;       // 每页大小
+}
+
+message GetPendingArticlesRequest {
+  int64 page = 1;
+  int64 size = 2;
+}
+
+message GetPendingArticlesResponse {
+  string msg = 1;
+  repeated Article data = 2;
+  int64 total = 3;
 }
 
 // --- AddArticle ---
@@ -53,7 +62,7 @@ message AddArticleRequest {
   string title = 2;     // 必填
   string desc = 3;      // 必填
   string content = 4;   // 必填
-  int64 created_by = 5;// 必填
+  int64 created_by = 5; // 必填
 }
 
 // --- EditArticle ---
@@ -63,7 +72,7 @@ message EditArticleRequest {
   string title = 3;      // 必填
   string desc = 4;       // 必填
   string content = 5;    // 必填
-  int64 modified_by = 6;// 必填
+  int64 modified_by = 6; // 必填
   int32 state = 7;       // 可选
 }
 
@@ -75,17 +84,20 @@ message DeleteArticleRequest {
 // 定义服务
 service ArticleService {
   // 获取单篇文章的详细信息
-  rpc GetArticle (GetArticleRequest) returns (GetArticleResponse);
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse);
 
   // 获取文章列表
-  rpc GetArticles (GetArticlesRequest) returns (GetArticlesResponse);
+  rpc GetArticles(GetArticlesRequest) returns (GetArticlesResponse);
 
   // 新增一篇文章
-  rpc AddArticle (AddArticleRequest) returns (ArticleCommonResponse);
+  rpc AddArticle(AddArticleRequest) returns (ArticleCommonResponse);
 
   // 修改文章
-  rpc EditArticle (EditArticleRequest) returns (ArticleCommonResponse);
+  rpc EditArticle(EditArticleRequest) returns (ArticleCommonResponse);
 
   // 删除文章
-  rpc DeleteArticle (DeleteArticleRequest) returns (ArticleCommonResponse);
+  rpc DeleteArticle(DeleteArticleRequest) returns (ArticleCommonResponse);
+
+  rpc GetPendingArticles(GetPendingArticlesRequest)
+      returns (GetPendingArticlesResponse);
 }
