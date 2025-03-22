@@ -7,28 +7,28 @@ package usercenter
 import (
 	"context"
 
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	GenerateTokenReq       = pb.GenerateTokenReq
-	GenerateTokenResp      = pb.GenerateTokenResp
-	GetUserRoleRequest     = pb.GetUserRoleRequest
-	GetUserRoleResponse    = pb.GetUserRoleResponse
-	LoginRequest           = pb.LoginRequest
-	LoginResponse          = pb.LoginResponse
-	RegisterRequest        = pb.RegisterRequest
-	RegisterResponse       = pb.RegisterResponse
-	UpdatePasswordRequest  = pb.UpdatePasswordRequest
-	UpdatePasswordResponse = pb.UpdatePasswordResponse
-	UpdateUserRoleRequest  = pb.UpdateUserRoleRequest
-	UpdateUserRoleResponse = pb.UpdateUserRoleResponse
-	UpdateUsernameRequest  = pb.UpdateUsernameRequest
-	UpdateUsernameResponse = pb.UpdateUsernameResponse
-	User                   = pb.User
+	GenerateTokenReq       = userpb.GenerateTokenReq
+	GenerateTokenResp      = userpb.GenerateTokenResp
+	GetUserRoleRequest     = userpb.GetUserRoleRequest
+	GetUserRoleResponse    = userpb.GetUserRoleResponse
+	LoginRequest           = userpb.LoginRequest
+	LoginResponse          = userpb.LoginResponse
+	RegisterRequest        = userpb.RegisterRequest
+	RegisterResponse       = userpb.RegisterResponse
+	UpdatePasswordRequest  = userpb.UpdatePasswordRequest
+	UpdatePasswordResponse = userpb.UpdatePasswordResponse
+	UpdateUserRoleRequest  = userpb.UpdateUserRoleRequest
+	UpdateUserRoleResponse = userpb.UpdateUserRoleResponse
+	UpdateUsernameRequest  = userpb.UpdateUsernameRequest
+	UpdateUsernameResponse = userpb.UpdateUsernameResponse
+	User                   = userpb.User
 
 	Usercenter interface {
 		// 用户登录
@@ -58,40 +58,40 @@ func NewUsercenter(cli zrpc.Client) Usercenter {
 
 // 用户登录
 func (m *defaultUsercenter) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
 }
 
 // 用户注册
 func (m *defaultUsercenter) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.Register(ctx, in, opts...)
 }
 
 // 修改用户名
 func (m *defaultUsercenter) UpdateUsername(ctx context.Context, in *UpdateUsernameRequest, opts ...grpc.CallOption) (*UpdateUsernameResponse, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.UpdateUsername(ctx, in, opts...)
 }
 
 // 修改密码
 func (m *defaultUsercenter) UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordResponse, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.UpdatePassword(ctx, in, opts...)
 }
 
 // 生成 token
 func (m *defaultUsercenter) GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.GenerateToken(ctx, in, opts...)
 }
 
 func (m *defaultUsercenter) UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.UpdateUserRole(ctx, in, opts...)
 }
 
 func (m *defaultUsercenter) GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error) {
-	client := pb.NewUsercenterClient(m.cli.Conn())
+	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.GetUserRole(ctx, in, opts...)
 }

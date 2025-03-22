@@ -57,3 +57,13 @@ func (s *ArticleServiceServer) GetPendingArticles(ctx context.Context, in *pb.Ge
 	l := logic.NewGetPendingArticlesLogic(ctx, s.svcCtx)
 	return l.GetPendingArticles(in)
 }
+
+func (s *ArticleServiceServer) SubmitArticle(ctx context.Context, in *pb.SubmitArticleRequest) (*pb.SubmitArticleResponse, error) {
+	l := logic.NewSubmitArticleLogic(ctx, s.svcCtx)
+	return l.SubmitArticle(in)
+}
+
+func (s *ArticleServiceServer) ReviewArticle(ctx context.Context, in *pb.ReviewArticleRequest) (*pb.ReviewArticleResponse, error) {
+	l := logic.NewReviewArticleLogic(ctx, s.svcCtx)
+	return l.ReviewArticle(in)
+}

@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,7 +25,7 @@ func NewUpdateUsernameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 // 修改用户名
-func (l *UpdateUsernameLogic) UpdateUsername(in *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+func (l *UpdateUsernameLogic) UpdateUsername(in *userpb.UpdateUsernameRequest) (*userpb.UpdateUsernameResponse, error) {
 	if in.NewUsername == "" {
 		l.Logger.Errorf("new username is empty, in: %+v", in)
 		return nil, errors.New("用户名为空")
@@ -63,7 +63,7 @@ func (l *UpdateUsernameLogic) UpdateUsername(in *pb.UpdateUsernameRequest) (*pb.
 
 	l.Logger.Info("username updated successfully")
 
-	return &pb.UpdateUsernameResponse{
+	return &userpb.UpdateUsernameResponse{
 		Msg: "成功修改用户名",
 	}, nil
 }

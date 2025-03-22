@@ -9,12 +9,12 @@ import (
 
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/logic"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 )
 
 type UsercenterServer struct {
 	svcCtx *svc.ServiceContext
-	pb.UnimplementedUsercenterServer
+	userpb.UnimplementedUsercenterServer
 }
 
 func NewUsercenterServer(svcCtx *svc.ServiceContext) *UsercenterServer {
@@ -24,41 +24,41 @@ func NewUsercenterServer(svcCtx *svc.ServiceContext) *UsercenterServer {
 }
 
 // 用户登录
-func (s *UsercenterServer) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
+func (s *UsercenterServer) Login(ctx context.Context, in *userpb.LoginRequest) (*userpb.LoginResponse, error) {
 	l := logic.NewLoginLogic(ctx, s.svcCtx)
 	return l.Login(in)
 }
 
 // 用户注册
-func (s *UsercenterServer) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+func (s *UsercenterServer) Register(ctx context.Context, in *userpb.RegisterRequest) (*userpb.RegisterResponse, error) {
 	l := logic.NewRegisterLogic(ctx, s.svcCtx)
 	return l.Register(in)
 }
 
 // 修改用户名
-func (s *UsercenterServer) UpdateUsername(ctx context.Context, in *pb.UpdateUsernameRequest) (*pb.UpdateUsernameResponse, error) {
+func (s *UsercenterServer) UpdateUsername(ctx context.Context, in *userpb.UpdateUsernameRequest) (*userpb.UpdateUsernameResponse, error) {
 	l := logic.NewUpdateUsernameLogic(ctx, s.svcCtx)
 	return l.UpdateUsername(in)
 }
 
 // 修改密码
-func (s *UsercenterServer) UpdatePassword(ctx context.Context, in *pb.UpdatePasswordRequest) (*pb.UpdatePasswordResponse, error) {
+func (s *UsercenterServer) UpdatePassword(ctx context.Context, in *userpb.UpdatePasswordRequest) (*userpb.UpdatePasswordResponse, error) {
 	l := logic.NewUpdatePasswordLogic(ctx, s.svcCtx)
 	return l.UpdatePassword(in)
 }
 
 // 生成 token
-func (s *UsercenterServer) GenerateToken(ctx context.Context, in *pb.GenerateTokenReq) (*pb.GenerateTokenResp, error) {
+func (s *UsercenterServer) GenerateToken(ctx context.Context, in *userpb.GenerateTokenReq) (*userpb.GenerateTokenResp, error) {
 	l := logic.NewGenerateTokenLogic(ctx, s.svcCtx)
 	return l.GenerateToken(in)
 }
 
-func (s *UsercenterServer) UpdateUserRole(ctx context.Context, in *pb.UpdateUserRoleRequest) (*pb.UpdateUserRoleResponse, error) {
+func (s *UsercenterServer) UpdateUserRole(ctx context.Context, in *userpb.UpdateUserRoleRequest) (*userpb.UpdateUserRoleResponse, error) {
 	l := logic.NewUpdateUserRoleLogic(ctx, s.svcCtx)
 	return l.UpdateUserRole(in)
 }
 
-func (s *UsercenterServer) GetUserRole(ctx context.Context, in *pb.GetUserRoleRequest) (*pb.GetUserRoleResponse, error) {
+func (s *UsercenterServer) GetUserRole(ctx context.Context, in *userpb.GetUserRoleRequest) (*userpb.GetUserRoleResponse, error) {
 	l := logic.NewGetUserRoleLogic(ctx, s.svcCtx)
 	return l.GetUserRole(in)
 }

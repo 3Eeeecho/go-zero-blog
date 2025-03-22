@@ -49,7 +49,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				// 获取待审核文章列表
 				Method:  http.MethodGet,
 				Path:    "/articles/pending",
-				Handler: article.GetArticlesPendingHandler(serverCtx),
+				Handler: article.GetPendingArticlesHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/articles/review",
+				Handler: article.ReviewArticleHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/articles/submit",
+				Handler: article.SubmitArticleHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

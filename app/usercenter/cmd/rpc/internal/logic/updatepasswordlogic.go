@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/util"
 	"golang.org/x/crypto/bcrypt"
 
@@ -27,7 +27,7 @@ func NewUpdatePasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 // 修改密码
-func (l *UpdatePasswordLogic) UpdatePassword(in *pb.UpdatePasswordRequest) (*pb.UpdatePasswordResponse, error) {
+func (l *UpdatePasswordLogic) UpdatePassword(in *userpb.UpdatePasswordRequest) (*userpb.UpdatePasswordResponse, error) {
 	// 获取当前用户信息
 	user, err := l.svcCtx.UserModel.FindByUserId(l.ctx, in.Id)
 	if err != nil {
@@ -63,7 +63,7 @@ func (l *UpdatePasswordLogic) UpdatePassword(in *pb.UpdatePasswordRequest) (*pb.
 	}
 
 	l.Logger.Infof("password updated successfully, username: %s", user.Username)
-	return &pb.UpdatePasswordResponse{
+	return &userpb.UpdatePasswordResponse{
 		Msg: "成功更新密码",
 	}, nil
 }

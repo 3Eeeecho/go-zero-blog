@@ -43,6 +43,20 @@ type GetArticlesResponse {
 	PageSize int         `json:"page_size"`
 }
 
+// --- GetPendingArticles ---
+type GetPendingArticlesRequest {
+	PageNum  int `json:"page_num,optional"` // 分页参数
+	PageSize int `json:"page_size,optional"` // 分页参数
+}
+
+type GetPendingArticlesResponse {
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"` // 文章列表
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
+}
+
 // --- AddArticle ---
 type AddArticleRequest {
 	TagId     int64  `json:"tag_id"` // 必填
@@ -68,6 +82,15 @@ type DeleteArticleRequest {
 	Id int64 `path:"id"`
 }
 
+type SubmitArticleRequest {
+	Id int64 `json:"id"`
+}
+
+type ReviewArticleRequest {
+	Id       int64 `json:"id"`
+	Approved bool  `json:"approved"`
+}
+
 @server (
 	group: article
 	jwt:   JwtAuth
@@ -91,8 +114,8 @@ service article-api {
 		summary:     "获取待审核文章列表"
 		description: "根据请求参数（如状态、标签ID）返回文章列表数据和总数"
 	)
-	@handler GetArticlesPending
-	get /articles/pending (GetArticlesRequest) returns (GetArticlesResponse)
+	@handler GetPendingArticles
+	get /articles/pending (GetPendingArticlesRequest) returns (GetPendingArticlesResponse)
 
 	@doc (
 		summary:     "新增一篇文章"
@@ -114,5 +137,11 @@ service article-api {
 	)
 	@handler DeleteArticle
 	delete /articles/:id (DeleteArticleRequest) returns (ArticleCommonResponse)
+
+	@handler SubmitArticle
+	post /articles/submit (SubmitArticleRequest) returns (ArticleCommonResponse)
+
+	@handler ReviewArticle
+	put /articles/review (ReviewArticleRequest) returns (ArticleCommonResponse)
 }
 

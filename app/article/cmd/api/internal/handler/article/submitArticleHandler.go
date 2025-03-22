@@ -9,17 +9,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-// 获取文章列表
-func GetArticlesPendingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func SubmitArticleHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetArticlesRequest
+		var req types.SubmitArticleRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := article.NewGetArticlesPendingLogic(r.Context(), svcCtx)
-		resp, err := l.GetArticlesPending(&req)
+		l := article.NewSubmitArticleLogic(r.Context(), svcCtx)
+		resp, err := l.SubmitArticle(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

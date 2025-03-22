@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: usercenter.proto
 
-package pb
+package userpb
 
 import (
 	context "context"
@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Usercenter_Login_FullMethodName          = "/pb.usercenter/Login"
-	Usercenter_Register_FullMethodName       = "/pb.usercenter/Register"
-	Usercenter_UpdateUsername_FullMethodName = "/pb.usercenter/UpdateUsername"
-	Usercenter_UpdatePassword_FullMethodName = "/pb.usercenter/UpdatePassword"
-	Usercenter_GenerateToken_FullMethodName  = "/pb.usercenter/GenerateToken"
-	Usercenter_UpdateUserRole_FullMethodName = "/pb.usercenter/UpdateUserRole"
-	Usercenter_GetUserRole_FullMethodName    = "/pb.usercenter/GetUserRole"
+	Usercenter_Login_FullMethodName          = "/userpb.usercenter/Login"
+	Usercenter_Register_FullMethodName       = "/userpb.usercenter/Register"
+	Usercenter_UpdateUsername_FullMethodName = "/userpb.usercenter/UpdateUsername"
+	Usercenter_UpdatePassword_FullMethodName = "/userpb.usercenter/UpdatePassword"
+	Usercenter_GenerateToken_FullMethodName  = "/userpb.usercenter/GenerateToken"
+	Usercenter_UpdateUserRole_FullMethodName = "/userpb.usercenter/UpdateUserRole"
+	Usercenter_GetUserRole_FullMethodName    = "/userpb.usercenter/GetUserRole"
 )
 
 // UsercenterClient is the client API for Usercenter service.
@@ -326,7 +326,7 @@ func _Usercenter_GetUserRole_Handler(srv interface{}, ctx context.Context, dec f
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Usercenter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.usercenter",
+	ServiceName: "userpb.usercenter",
 	HandlerType: (*UsercenterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

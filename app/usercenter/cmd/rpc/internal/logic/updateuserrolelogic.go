@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -30,7 +30,7 @@ func NewUpdateUserRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 	}
 }
 
-func (l *UpdateUserRoleLogic) UpdateUserRole(in *pb.UpdateUserRoleRequest) (*pb.UpdateUserRoleResponse, error) {
+func (l *UpdateUserRoleLogic) UpdateUserRole(in *userpb.UpdateUserRoleRequest) (*userpb.UpdateUserRoleResponse, error) {
 	// 检查调用者是否为管理员（从上下文获取ID）
 	if in.AdminId == 0 {
 		l.Logger.Errorf("admin ID not found in context")
@@ -72,7 +72,7 @@ func (l *UpdateUserRoleLogic) UpdateUserRole(in *pb.UpdateUserRoleRequest) (*pb.
 	}
 
 	l.Logger.Infof("user %d role updated to %s by admin %s", in.Id, in.Role, in.AdminId)
-	return &pb.UpdateUserRoleResponse{
+	return &userpb.UpdateUserRoleResponse{
 		Msg: "用户权限更改成功",
 	}, nil
 }

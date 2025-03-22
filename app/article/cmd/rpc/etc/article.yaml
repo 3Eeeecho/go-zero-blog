@@ -28,3 +28,7 @@ UserServiceRpcConf:
   Endpoints:
     - 127.0.0.1:2001
   NonBlock: true
+
+RabbitMQ:
+  URL: "amqp://guest:guest@localhost:5672/"
+  SubmissionQueue: "article_submission_queue"

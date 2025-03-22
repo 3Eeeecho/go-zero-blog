@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package pb;
+package userpb;
 
-option go_package = "./pb";
+option go_package = "./userpb";
 
 // --- 用户数据结构 ---
 message User {

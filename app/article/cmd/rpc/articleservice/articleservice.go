@@ -25,6 +25,10 @@ type (
 	GetArticlesResponse        = pb.GetArticlesResponse
 	GetPendingArticlesRequest  = pb.GetPendingArticlesRequest
 	GetPendingArticlesResponse = pb.GetPendingArticlesResponse
+	ReviewArticleRequest       = pb.ReviewArticleRequest
+	ReviewArticleResponse      = pb.ReviewArticleResponse
+	SubmitArticleRequest       = pb.SubmitArticleRequest
+	SubmitArticleResponse      = pb.SubmitArticleResponse
 
 	ArticleService interface {
 		// 获取单篇文章的详细信息
@@ -38,6 +42,8 @@ type (
 		// 删除文章
 		DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 		GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error)
+		SubmitArticle(ctx context.Context, in *SubmitArticleRequest, opts ...grpc.CallOption) (*SubmitArticleResponse, error)
+		ReviewArticle(ctx context.Context, in *ReviewArticleRequest, opts ...grpc.CallOption) (*ReviewArticleResponse, error)
 	}
 
 	defaultArticleService struct {
@@ -84,4 +90,14 @@ func (m *defaultArticleService) DeleteArticle(ctx context.Context, in *DeleteArt
 func (m *defaultArticleService) GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error) {
 	client := pb.NewArticleServiceClient(m.cli.Conn())
 	return client.GetPendingArticles(ctx, in, opts...)
+}
+
+func (m *defaultArticleService) SubmitArticle(ctx context.Context, in *SubmitArticleRequest, opts ...grpc.CallOption) (*SubmitArticleResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.SubmitArticle(ctx, in, opts...)
+}
+
+func (m *defaultArticleService) ReviewArticle(ctx context.Context, in *ReviewArticleRequest, opts ...grpc.CallOption) (*ReviewArticleResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.ReviewArticle(ctx, in, opts...)
 }

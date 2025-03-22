@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/usercenter"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/model"
 	"github.com/3Eeeecho/go-zero-blog/pkg/util"
 	"github.com/pkg/errors"
@@ -29,7 +29,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 // 用户注册
-func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+func (l *RegisterLogic) Register(in *userpb.RegisterRequest) (*userpb.RegisterResponse, error) {
 	// 检查用户名和密码是否为空
 	if in.Username == "" || in.Password == "" {
 		return nil, errors.New("账户或密码格式错误")
@@ -83,7 +83,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterRequest) (*pb.RegisterResponse, 
 	}
 
 	l.Logger.Infof("user registered successfully, username: %s", in.Username)
-	return &pb.RegisterResponse{
+	return &userpb.RegisterResponse{
 		Token:   tokenResp.AccessToken,
 		Expires: tokenResp.AccessExpire,
 	}, nil

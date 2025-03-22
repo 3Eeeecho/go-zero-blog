@@ -21,4 +21,8 @@ type Config struct {
 	CustomRedis        redis.RedisConf
 	TagServiceRpcConf  zrpc.RpcClientConf
 	UserServiceRpcConf zrpc.RpcClientConf
+	RabbitMQ           struct {
+		URL             string
+		SubmissionQueue string
+	}
 }

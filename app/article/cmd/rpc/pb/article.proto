@@ -46,14 +46,17 @@ message GetArticlesResponse {
 }
 
 message GetPendingArticlesRequest {
-  int64 page = 1;
-  int64 size = 2;
+  int64 userId = 1;
+  int64 pageNum = 2;
+  int64 pageSize = 3;
 }
 
 message GetPendingArticlesResponse {
   string msg = 1;
   repeated Article data = 2;
   int64 total = 3;
+  int64 page_num = 4;  // 当前页码
+  int64 page_size = 5; // 每页大小
 }
 
 // --- AddArticle ---
@@ -81,6 +84,18 @@ message DeleteArticleRequest {
   int64 id = 1; // 路径参数
 }
 
+message SubmitArticleRequest { int64 id = 1; }
+
+message SubmitArticleResponse { string msg = 1; }
+
+message ReviewArticleRequest {
+  int64 id = 1;
+  bool approved = 2;
+  int64 reviewed_by = 3;
+}
+
+message ReviewArticleResponse { string msg = 1; }
+
 // 定义服务
 service ArticleService {
   // 获取单篇文章的详细信息
@@ -100,4 +115,7 @@ service ArticleService {
 
   rpc GetPendingArticles(GetPendingArticlesRequest)
       returns (GetPendingArticlesResponse);
+
+  rpc SubmitArticle(SubmitArticleRequest) returns (SubmitArticleResponse);
+  rpc ReviewArticle(ReviewArticleRequest) returns (ReviewArticleResponse);
 }

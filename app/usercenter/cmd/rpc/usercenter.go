@@ -7,7 +7,7 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/config"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/server"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
-	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		pb.RegisterUsercenterServer(grpcServer, server.NewUsercenterServer(ctx))
+		userpb.RegisterUsercenterServer(grpcServer, server.NewUsercenterServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

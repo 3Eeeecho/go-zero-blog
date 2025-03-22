@@ -1,0 +1,17 @@
+Name: article-mq
+Host: 0.0.0.0
+Port: 8888
+Mode: dev
+
+Mysql:
+  Dsn: "root:root@tcp(localhost:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
+  TablePrefix: "blog_"
+
+RabbitMQ:
+  URL: "amqp://guest:guest@localhost:5672/"
+  SubmissionQueue: "article_submission_queue"
+
+ArticleServiceRpcConf:
+  Endpoints:
+    - 127.0.0.1:2003
+  NonBlock: true

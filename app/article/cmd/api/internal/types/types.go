@@ -63,3 +63,25 @@ type GetArticlesResponse struct {
 	PageNum  int         `json:"page_num"`
 	PageSize int         `json:"page_size"`
 }
+
+type GetPendingArticlesRequest struct {
+	PageNum  int `json:"page_num,optional"`  // 分页参数
+	PageSize int `json:"page_size,optional"` // 分页参数
+}
+
+type GetPendingArticlesResponse struct {
+	Msg      string      `json:"msg"`
+	Data     interface{} `json:"data,optional"` // 文章列表
+	Total    int64       `json:"total"`
+	PageNum  int         `json:"page_num"`
+	PageSize int         `json:"page_size"`
+}
+
+type ReviewArticleRequest struct {
+	Id       int64 `json:"id"`
+	Approved bool  `json:"approved"`
+}
+
+type SubmitArticleRequest struct {
+	Id int64 `json:"id"`
+}
