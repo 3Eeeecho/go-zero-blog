@@ -50,7 +50,6 @@ type GetArticleResponse struct {
 }
 
 type GetArticlesRequest struct {
-	State    int32 `json:"state,optional"`     // 可选
 	TagId    int64 `json:"tag_id,optional"`    // 可选，标签ID
 	PageNum  int   `json:"page_num,optional"`  // 分页参数
 	PageSize int   `json:"page_size,optional"` // 分页参数

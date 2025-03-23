@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/mq/internal/config"
@@ -23,6 +24,8 @@ func main() {
 	svcCtx := svc.NewServiceContext(c)
 	ctx := context.Background()
 
+	fmt.Printf("Starting RabbitMQ at %s...\n", c.RabbitMQ.URL)
+
 	// 开始消费队列
 	msgs, err := svcCtx.MQChannel.Consume(
 		c.RabbitMQ.SubmissionQueue, // 队列名称
@@ -38,13 +41,14 @@ func main() {
 	}
 
 	// 处理消息
+	//TODO 现在是自动审核,全部通过,可以拓展逻辑,让管理员手动审核
 	for msg := range msgs {
 		var article *model.BlogArticle
 		if err := json.Unmarshal(msg.Body, &article); err != nil {
 			log.Printf("failed to unmarshal message: %v", err)
 			continue
 		}
-		article.State = int32(state.Pending)
+		article.State = int32(state.Approved)
 
 		// 处理文章（例如保存到数据库）
 		err := svcCtx.ArticleModel.Update(ctx, article.Id, article)

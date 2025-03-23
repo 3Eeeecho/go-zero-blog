@@ -31,10 +31,9 @@ message GetArticleResponse {
 
 // --- GetArticles ---
 message GetArticlesRequest {
-  int32 state = 1;     // 可选，0: 草稿，1: 已发布
-  int64 tag_id = 2;    // 可选，标签ID
-  int64 page_num = 3;  // 分页参数
-  int64 page_size = 4; // 分页参数
+  int64 tag_id = 1;    // 可选，标签ID
+  int64 page_num = 2;  // 分页参数
+  int64 page_size = 3; // 分页参数
 }
 
 message GetArticlesResponse {

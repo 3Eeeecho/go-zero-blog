@@ -8,6 +8,8 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/article/model"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/tagservice"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -32,11 +34,11 @@ func (l *EditArticleLogic) EditArticle(in *pb.EditArticleRequest) (*pb.ArticleCo
 	exist, err := l.svcCtx.ArticleModel.ExistArticleByID(l.ctx, in.Id)
 	if err != nil {
 		l.Logger.Errorf("check article existence failed, id: %d, error: %v", in.Id, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "exist article failed")
 	}
 	if !exist {
 		l.Logger.Errorf("article not found, id: %d", in.Id)
-		return nil, nil
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "article not exist")
 	}
 
 	//检查tagID
@@ -45,11 +47,11 @@ func (l *EditArticleLogic) EditArticle(in *pb.EditArticleRequest) (*pb.ArticleCo
 	})
 	if err != nil {
 		l.Logger.Errorf("check tag existence failed, tag_id: %d, error: %v", in.TagId, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "find tag failed")
 	}
 	if !foundResp.Found {
 		l.Logger.Errorf("tag not found, tag_id: %d", in.TagId)
-		return nil, nil
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ERROR_NOT_EXIST_TAG), "tag not exist")
 	}
 
 	// 构造更新数据
@@ -67,7 +69,7 @@ func (l *EditArticleLogic) EditArticle(in *pb.EditArticleRequest) (*pb.ArticleCo
 	err = l.svcCtx.ArticleModel.Update(l.ctx, in.Id, article)
 	if err != nil {
 		l.Logger.Errorf("failed to edit article, id: %d, error: %v", in.Id, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "edit article failed")
 	}
 
 	// 返回成功响应

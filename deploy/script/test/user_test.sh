@@ -40,6 +40,25 @@ start_service() {
     echo -e "${GREEN}${service_name^} RPC 和 ${service_name^} API 服务已启动${NC}"
 }
 
+# 函数：启动 MQ Worker
+start_mq_worker() {
+    local mq_path="${BASE_DIR}/app/article/cmd/mq/article.go"
+    local mq_config="${BASE_DIR}/app/article/cmd/mq/etc/article.yaml"
+
+    # 检查文件是否存在
+    for file in "$mq_path" "$mq_config"; do
+        if [ ! -f "$file" ]; then
+            echo -e "${RED}错误: 文件 $file 不存在${NC}"
+            return 1
+        fi
+    done
+
+    # 启动 MQ Worker
+    gnome-terminal --title="Article MQ Worker" -- bash -c "go run '$mq_path' -f '$mq_config' || echo 'MQ Worker 启动失败'; exec bash" &
+
+    echo -e "${GREEN}Article MQ Worker 已启动${NC}"
+}
+
 # 主函数：启动所有服务
 main() {
     echo "开始启动服务..."
@@ -65,6 +84,14 @@ main() {
     start_service "article" "article" "article"
     if [ $? -ne 0 ]; then
         echo -e "${RED}启动 article 服务失败${NC}"
+        exit 1
+    fi
+    sleep 1
+
+    # 启动 MQ Worker
+    start_mq_worker
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}启动 Article MQ Worker 失败${NC}"
         exit 1
     fi
     sleep 1

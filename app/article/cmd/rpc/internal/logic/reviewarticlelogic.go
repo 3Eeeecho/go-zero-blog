@@ -2,12 +2,14 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
+	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,19 +32,27 @@ func (l *ReviewArticleLogic) ReviewArticle(in *pb.ReviewArticleRequest) (*pb.Rev
 	user, err := l.svcCtx.UserRpc.GetUserRole(l.ctx, &userpb.GetUserRoleRequest{
 		Id: in.ReviewedBy,
 	})
-	if err != nil || user.Role != "admin" {
+	if err != nil {
 		l.Logger.Errorf("user %d is not admin: %v", in.ReviewedBy, err)
-		return nil, errors.New("权限不足")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "get user role failed: %v", err)
+	}
+	if user.Role != "admin" {
+		l.Logger.Errorf("user %d is not admin", in.ReviewedBy)
+		return nil, xerr.NewErrCode(xerr.ERROR_FORBIDDEN)
 	}
 
 	article, err := l.svcCtx.ArticleModel.GetArticle(l.ctx, in.Id)
-	if err != nil {
-		l.Logger.Errorf("article ID %d not found: %v", in.Id, err)
-		return nil, err
+	if err != nil && err != gorm.ErrRecordNotFound {
+		l.Logger.Errorf("get article failed, id: %d", in.Id)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get article failed,id: %d", in.Id)
 	}
-
+	if err == gorm.ErrRecordNotFound {
+		l.Logger.Errorf("article not failed, id: %d", in.Id)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "get article failed,id: %d", in.Id)
+	}
 	if article.State != StatePending {
-		return nil, errors.New("文章不在待审核状态")
+		l.Logger.Errorf("article ID %d is not in pending state: current state %d", in.Id, article.State)
+		return nil, xerr.NewErrCodeMsg(xerr.SERVER_COMMON_ERROR, "文章不在待审核状态")
 	}
 
 	updates := map[string]any{
@@ -53,8 +63,8 @@ func (l *ReviewArticleLogic) ReviewArticle(in *pb.ReviewArticleRequest) (*pb.Rev
 
 	err = l.svcCtx.ArticleModel.Update(l.ctx, in.Id, updates)
 	if err != nil {
-		l.Logger.Errorf("failed to review article ID %d: %v", in.Id, err)
-		return nil, err
+		l.Logger.Errorf("update article failed, id: %d", in.Id)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "update article failed,id: %d", in.Id)
 	}
 
 	l.Logger.Infof("article ID %d reviewed by %d, approved: %v", in.Id, in.ReviewedBy, in.Approved)

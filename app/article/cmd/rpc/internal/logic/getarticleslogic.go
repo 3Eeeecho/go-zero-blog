@@ -2,10 +2,11 @@ package logic
 
 import (
 	"context"
-	"errors"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -41,22 +42,20 @@ func (l *GetArticlesLogic) GetArticles(in *pb.GetArticlesRequest) (*pb.GetArticl
 	if in.TagId != 0 {
 		maps["tag_id"] = in.TagId
 	}
-	if in.State != 0 {
-		maps["state"] = in.State
-	}
+	maps["state"] = StatePublished
 
 	articles, err := l.svcCtx.ArticleModel.GetArticles(l.ctx, int(pageNum), int(pageSize), maps)
 	if err != nil {
 		l.Logger.Errorf("get articles failed, page_num: %d, page_size: %d, maps: %v, error: %v",
 			pageNum, pageSize, maps, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get articles failed")
 	}
 
 	// 文章总数
 	total, err := l.svcCtx.ArticleModel.CountByCondition(l.ctx, maps)
 	if err != nil {
 		l.Logger.Errorf("count articles failed,condition:%v,error:%v", maps, err)
-		return nil, errors.New("count articles failed")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "count articles failed")
 	}
 
 	data := make([]*pb.Article, 0, len(articles))

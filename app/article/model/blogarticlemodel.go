@@ -74,7 +74,7 @@ func (m *defaultArticleModel) GetArticle(ctx context.Context, id int64) (*BlogAr
 		return nil, err
 	}
 
-	return &article, nil
+	return &article, err
 }
 
 func (m *defaultArticleModel) GetArticles(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogArticle, error) {

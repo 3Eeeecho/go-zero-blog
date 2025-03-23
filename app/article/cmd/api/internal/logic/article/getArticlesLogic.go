@@ -30,7 +30,6 @@ func NewGetArticlesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAr
 func (l *GetArticlesLogic) GetArticles(req *types.GetArticlesRequest) (resp *types.GetArticlesResponse, err error) {
 	getArticlesResp, err := l.svcCtx.ArticleServiceRpc.GetArticles(l.ctx, &articleservice.GetArticlesRequest{
 		TagId:    req.TagId,
-		State:    req.State,
 		PageNum:  int64(req.PageNum),
 		PageSize: int64(req.PageSize),
 	})

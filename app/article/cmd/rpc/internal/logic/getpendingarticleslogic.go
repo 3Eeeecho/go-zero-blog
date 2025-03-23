@@ -2,11 +2,12 @@ package logic
 
 import (
 	"context"
-	"errors"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,9 +30,13 @@ func (l *GetPendingArticlesLogic) GetPendingArticles(in *pb.GetPendingArticlesRe
 	user, err := l.svcCtx.UserRpc.GetUserRole(l.ctx, &userpb.GetUserRoleRequest{
 		Id: in.UserId,
 	})
-	if err != nil || user.Role != "admin" {
+	if err != nil {
 		l.Logger.Errorf("user %d is not admin: %v", in.UserId, err)
-		return nil, errors.New("权限不足")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "get user role failed: %v", err)
+	}
+	if user.Role != "admin" {
+		l.Logger.Errorf("user %d is not admin", in.UserId)
+		return nil, xerr.NewErrCode(xerr.ERROR_FORBIDDEN)
 	}
 
 	// 设置分页默认值
@@ -52,26 +57,26 @@ func (l *GetPendingArticlesLogic) GetPendingArticles(in *pb.GetPendingArticlesRe
 	if err != nil {
 		l.Logger.Errorf("get articles failed, page_num: %d, page_size: %d, maps: %v, error: %v",
 			pageNum, pageSize, maps, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get articles failed")
 	}
 
 	// 文章总数
 	total, err := l.svcCtx.ArticleModel.CountByCondition(l.ctx, maps)
 	if err != nil {
 		l.Logger.Errorf("count articles failed,condition:%v,error:%v", maps, err)
-		return nil, errors.New("count articles failed")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "count articles failed")
 	}
 
 	data := make([]*pb.Article, 0, len(articles))
 	//手动填充
 	for _, article := range articles {
 		data = append(data, &pb.Article{
-			Id:         int64(article.Id),
-			TagId:      int64(article.TagId),
+			Id:         article.Id,
+			TagId:      article.TagId,
 			Title:      article.Title,
 			Desc:       article.Desc,
 			Content:    article.Content,
-			State:      int32(article.State),
+			State:      article.State,
 			CreatedBy:  article.CreatedBy,
 			ModifiedBy: article.ModifiedBy,
 		})
