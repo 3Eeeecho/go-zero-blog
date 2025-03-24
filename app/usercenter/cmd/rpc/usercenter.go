@@ -8,6 +8,7 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/server"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
+	"github.com/3Eeeecho/go-zero-blog/pkg/interceptor/rpcserver"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -33,7 +34,7 @@ func main() {
 		}
 	})
 	defer s.Stop()
-
+	s.AddUnaryInterceptors(rpcserver.LoggerInterceptor)
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }

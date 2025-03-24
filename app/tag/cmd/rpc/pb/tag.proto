@@ -5,9 +5,7 @@ package pb;
 option go_package = "./pb";
 
 // 通用响应结构
-message TagCommonResponse {
-  string msg = 1;
-}
+message TagCommonResponse { string msg = 1; }
 
 // Tag 结构体，表示标签实体
 message Tag {
@@ -20,10 +18,10 @@ message Tag {
 
 // --- GetTags ---
 message GetTagsRequest {
-  string name = 1;      // 从查询参数解析
-  int64 state = 2;      // 从查询参数解析
-  int64 page_num = 3;   // 分页参数
-  int64 page_size = 4;  // 分页参数
+  string name = 1;     // 从查询参数解析
+  int64 state = 2;     // 从查询参数解析
+  int64 page_num = 3;  // 分页参数
+  int64 page_size = 4; // 分页参数
 }
 
 message GetTagsResponse {
@@ -36,9 +34,9 @@ message GetTagsResponse {
 
 // --- AddTag ---
 message AddTagRequest {
-  string name = 1;      // 必填
+  string name = 1;       // 必填
   string created_by = 2; // 必填
-  int64 state = 3;      // 可选
+  int64 state = 3;       // 可选
 }
 
 // --- DeleteTag ---
@@ -48,16 +46,15 @@ message DeleteTagRequest {
 
 // --- EditTag ---
 message EditTagRequest {
-  int64 id = 1;          // 路径参数
-  string name = 2;       // 必填
+  int64 id = 1;           // 路径参数
+  string name = 2;        // 必填
   string modified_by = 3; // 必填
-  int64 state = 4;       // 可选
 }
 
 // --- ExportTag ---
 message ExportTagRequest {
-  string name = 1;  // 可选
-  int64 state = 2;  // 可选
+  string name = 1; // 可选
+  int64 state = 2; // 可选
 }
 
 message ExportTagResponse {
@@ -67,42 +64,36 @@ message ExportTagResponse {
 }
 
 // --- ImportTag ---
-message ImportTagRequest {
-  bytes file_content = 1;
-}
+message ImportTagRequest { bytes file_content = 1; }
 
 message ImportTagResponse {
-  string msg = 1 ;
-  string file_url = 2 ; // 文件存储后的 URL
+  string msg = 1;
+  string file_url = 2; // 文件存储后的 URL
 }
 
-message FoundTagRequest{
-  int64 id =1;
-}
+message FoundTagRequest { int64 id = 1; }
 
-message FoundTagResponse{
-  bool found=1;
-}
+message FoundTagResponse { bool found = 1; }
 
 // 定义服务
 service TagService {
   // 获取标签列表
-  rpc GetTags (GetTagsRequest) returns (GetTagsResponse);
+  rpc GetTags(GetTagsRequest) returns (GetTagsResponse);
 
   // 新增文章标签
-  rpc AddTag (AddTagRequest) returns (TagCommonResponse);
+  rpc AddTag(AddTagRequest) returns (TagCommonResponse);
 
   // 修改文章标签
-  rpc EditTag (EditTagRequest) returns (TagCommonResponse);
+  rpc EditTag(EditTagRequest) returns (TagCommonResponse);
 
   // 删除文章标签
-  rpc DeleteTag (DeleteTagRequest) returns (TagCommonResponse);
+  rpc DeleteTag(DeleteTagRequest) returns (TagCommonResponse);
 
   // 导出标签信息
-  rpc ExportTag (ExportTagRequest) returns (ExportTagResponse);
+  rpc ExportTag(ExportTagRequest) returns (ExportTagResponse);
 
   // 导入标签信息
-  rpc ImportTag (ImportTagRequest) returns (ImportTagResponse);
+  rpc ImportTag(ImportTagRequest) returns (ImportTagResponse);
 
-  rpc FoundTag (FoundTagRequest) returns (FoundTagResponse);
+  rpc FoundTag(FoundTagRequest) returns (FoundTagResponse);
 }

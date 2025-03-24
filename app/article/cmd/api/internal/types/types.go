@@ -4,11 +4,10 @@
 package types
 
 type AddArticleRequest struct {
-	TagId     int64  `json:"tag_id"`     // 必填
-	Title     string `json:"title"`      // 必填
-	Desc      string `json:"desc"`       // 必填
-	Content   string `json:"content"`    // 必填
-	CreatedBy int64  `json:"created_by"` // 必填
+	TagId   int64  `json:"tag_id"`  // 必填
+	Title   string `json:"title"`   // 必填
+	Desc    string `json:"desc"`    // 必填
+	Content string `json:"content"` // 必填
 }
 
 type Article struct {
@@ -31,13 +30,12 @@ type DeleteArticleRequest struct {
 }
 
 type EditArticleRequest struct {
-	Id         int64  `json:"id"`             //必填
-	TagId      int64  `json:"tag_id"`         // 必填
-	Title      string `json:"title"`          // 必填
-	Desc       string `json:"desc"`           // 必填
-	Content    string `json:"content"`        // 必填
-	ModifiedBy int64  `json:"modified_by"`    // 必填
-	State      int32  `json:"state,optional"` // 可选
+	Id      int64  `json:"id"`             //必填
+	TagId   int64  `json:"tag_id"`         // 必填
+	Title   string `json:"title"`          // 必填
+	Desc    string `json:"desc"`           // 必填
+	Content string `json:"content"`        // 必填
+	State   int32  `json:"state,optional"` // 可选
 }
 
 type GetArticleRequest struct {

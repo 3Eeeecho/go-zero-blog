@@ -2,12 +2,13 @@ package article
 
 import (
 	"context"
-	"errors"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/articleservice"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,18 +35,15 @@ func (l *GetArticlesLogic) GetArticles(req *types.GetArticlesRequest) (resp *typ
 		PageSize: int64(req.PageSize),
 	})
 	if err != nil {
-		return nil, err
-	}
-	if getArticlesResp == nil {
-		l.Logger.Error("getArticlesResp is nil")
-		return nil, errors.New("getArticlesResp is nil")
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.GetArticlesResponse{}
 
 	err = copier.Copy(resp, getArticlesResp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy getArticlesResp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/article/model"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/tagservice"
+	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/pkg/errors"
 
@@ -30,6 +31,27 @@ func NewEditArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *EditA
 
 // 修改文章
 func (l *EditArticleLogic) EditArticle(in *pb.EditArticleRequest) (*pb.ArticleCommonResponse, error) {
+	// 检查权限
+	hasPermission, err := l.svcCtx.ArticleModel.CheckPermission(l.ctx, in.Id, in.UserId)
+	if err != nil {
+		l.Logger.Errorf("failed to check permission for article %d by user %d: %v", in.Id, in.UserId, err)
+		return nil, err
+	}
+
+	user, err := l.svcCtx.UserRpc.GetUserRole(l.ctx, &userpb.GetUserRoleRequest{
+		Id: in.UserId,
+	})
+	if err != nil {
+		l.Logger.Errorf("user %d is not admin: %v", in.UserId, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "get user role failed: %v", err)
+	}
+
+	//既不是文章作者也不是管理员,不允许操作
+	if !hasPermission && user.Role != "admin" {
+		l.Logger.Errorf("user %d has no permission to delete article %d", in.UserId, in.Id)
+		return nil, xerr.NewErrCode(xerr.ERROR_FORBIDDEN) // 100003: "权限不足"
+	}
+
 	//检查articleID
 	exist, err := l.svcCtx.ArticleModel.ExistArticleByID(l.ctx, in.Id)
 	if err != nil {

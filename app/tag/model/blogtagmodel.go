@@ -7,9 +7,9 @@ import (
 )
 
 type BlogTag struct {
-	Id         int    `gorm:"primaryKey;column:id"`
+	Id         int64  `gorm:"primaryKey;column:id"`
 	Name       string `gorm:"column:name"`
-	State      int    `gorm:"column:state"`
+	State      int64  `gorm:"column:state"`
 	CreatedBy  string `gorm:"column:created_by"`
 	CreatedOn  int64  `gorm:"column:created_on"`
 	ModifiedBy string `gorm:"column:modified_by"`

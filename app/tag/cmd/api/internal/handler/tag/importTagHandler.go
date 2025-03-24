@@ -6,6 +6,7 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/api/internal/logic/tag"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/api/internal/types"
+	"github.com/3Eeeecho/go-zero-blog/pkg/result"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
@@ -29,16 +30,12 @@ func ImportTagHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.ImportTagRequest
 		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			result.ParamErrorResult(r, w, err)
 			return
 		}
 
 		l := tag.NewImportTagLogic(r.Context(), svcCtx)
 		resp, err := l.ImportTag(&req, fileHeader)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		result.HttpResult(r, w, resp, err)
 	}
 }

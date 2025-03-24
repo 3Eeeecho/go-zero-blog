@@ -6,7 +6,9 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/tagservice"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,17 +30,18 @@ func NewDeleteTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteT
 
 func (l *DeleteTagLogic) DeleteTag(req *types.DeleteTagRequest) (resp *types.Response, err error) {
 	delTagResp, err := l.svcCtx.TagServiceRpc.DeleteTag(l.ctx, &tagservice.DeleteTagRequest{
-		Id: int64(req.Id),
+		Id: req.Id,
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.Response{} // 初始化 resp
 	err = copier.Copy(resp, delTagResp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy delTagResp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil
 }

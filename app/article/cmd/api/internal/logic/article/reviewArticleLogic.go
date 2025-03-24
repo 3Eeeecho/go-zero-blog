@@ -7,7 +7,9 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/articleservice"
 	"github.com/3Eeeecho/go-zero-blog/pkg/ctxdata"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,14 +36,14 @@ func (l *ReviewArticleLogic) ReviewArticle(req *types.ReviewArticleRequest) (res
 		ReviewedBy: userID,
 	})
 	if err != nil {
-		l.Logger.Errorf("failed to review article ID %d: %v", req.Id, err)
-		return nil, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.ArticleCommonResponse{}
 	err = copier.Copy(resp, reviewArticleresp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy reviewArticleresp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 
 	return resp, nil

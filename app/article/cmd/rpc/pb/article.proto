@@ -76,11 +76,13 @@ message EditArticleRequest {
   string content = 5;    // 必填
   int64 modified_by = 6; // 必填
   int32 state = 7;       // 可选
+  int64 userId = 8;
 }
 
 // --- DeleteArticle ---
 message DeleteArticleRequest {
   int64 id = 1; // 路径参数
+  int64 userId = 2;
 }
 
 message SubmitArticleRequest { int64 id = 1; }

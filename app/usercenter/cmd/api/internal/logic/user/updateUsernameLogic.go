@@ -7,7 +7,9 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/usercenter"
 	"github.com/3Eeeecho/go-zero-blog/pkg/ctxdata"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,13 +36,14 @@ func (l *UpdateUsernameLogic) UpdateUsername(req *types.UpdateUsernameRequest) (
 		Id:          userId,
 	})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.UpdateUsernameResponse{} // 初始化 resp
 	err = copier.Copy(resp, updateNameResp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy updateNameResp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil
 }

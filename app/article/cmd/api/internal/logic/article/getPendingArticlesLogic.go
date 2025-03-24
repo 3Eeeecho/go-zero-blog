@@ -2,13 +2,14 @@ package article
 
 import (
 	"context"
-	"errors"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/articleservice"
 	"github.com/3Eeeecho/go-zero-blog/pkg/ctxdata"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -36,18 +37,14 @@ func (l *GetPendingArticlesLogic) GetPendingArticles(req *types.GetPendingArticl
 		PageSize: int64(req.PageSize),
 	})
 	if err != nil {
-		return nil, err
-	}
-	if getArticlesPendingResp == nil {
-		l.Logger.Error("getArticlesResp is nil")
-		return nil, errors.New("getArticlesResp is nil")
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.GetPendingArticlesResponse{}
-
 	err = copier.Copy(resp, getArticlesPendingResp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy getArticlesPendingResp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -30,37 +31,43 @@ func NewUpdateUserRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 	}
 }
 
+// UpdateUserRole 更新用户角色逻辑
 func (l *UpdateUserRoleLogic) UpdateUserRole(in *userpb.UpdateUserRoleRequest) (*userpb.UpdateUserRoleResponse, error) {
-	// 检查调用者是否为管理员（从上下文获取ID）
+	// 检查调用者 AdminId 是否有效
 	if in.AdminId == 0 {
 		l.Logger.Errorf("admin ID not found in context")
-		return nil, errors.New("unauthorized: admin ID not provided")
+		return nil, xerr.NewErrCode(xerr.REQUEST_PARAM_ERROR)
 	}
 
-	admin, err := l.svcCtx.UserModel.FindOne(l.ctx, in.AdminId) // 假设 ID 是字符串
+	// 查询管理员信息
+	admin, err := l.svcCtx.UserModel.FindOne(l.ctx, in.AdminId)
 	if err != nil {
-		l.Logger.Errorf("failed to find admin: %s, error: %v", in.AdminId, err)
-		return nil, errors.New("admin not found")
+		l.Logger.Errorf("failed to find admin: %d, error: %v", in.AdminId, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "failed to query admin by id %d: %v", in.AdminId, err)
 	}
-	if admin.Role != RoleAdmin {
-		l.Logger.Errorf("permission denied for user: %s, role: %s", in.AdminId, admin.Role)
-		return nil, errors.New("permission denied: requires admin role")
+	if admin == nil || admin.Role != RoleAdmin {
+		l.Logger.Errorf("permission denied for user: %d, role: %s", in.AdminId, admin.Role)
+		return nil, xerr.NewErrCode(xerr.ERROR_FORBIDDEN)
 	}
 
-	// 验证目标用户
+	// 查询目标用户信息
 	user, err := l.svcCtx.UserModel.FindOne(l.ctx, int64(in.Id))
 	if err != nil {
 		l.Logger.Errorf("failed to find user: %d, error: %v", in.Id, err)
-		return nil, errors.New("user not found")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "failed to query user by id %d: %v", in.Id, err)
+	}
+	if user == nil {
+		l.Logger.Errorf("user not found: %d", in.Id)
+		return nil, xerr.NewErrCode(xerr.USER_NOT_FOUND)
 	}
 
-	// 检查角色有效性
+	// 检查新角色的有效性
 	switch in.Role {
 	case RoleUser, RoleAuthor, RoleAdmin:
 		// 合法角色
 	default:
 		l.Logger.Errorf("invalid role: %s", in.Role)
-		return nil, errors.New("invalid role value")
+		return nil, xerr.NewErrCode(xerr.REQUEST_PARAM_ERROR)
 	}
 
 	// 更新用户角色
@@ -68,10 +75,12 @@ func (l *UpdateUserRoleLogic) UpdateUserRole(in *userpb.UpdateUserRoleRequest) (
 	err = l.svcCtx.UserModel.Update(l.ctx, user)
 	if err != nil {
 		l.Logger.Errorf("failed to update user role: %v", err)
-		return nil, errors.New("failed to update role")
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "update user role failed: %v", err)
 	}
 
-	l.Logger.Infof("user %d role updated to %s by admin %s", in.Id, in.Role, in.AdminId)
+	// 记录角色更新成功的日志
+	l.Logger.Infof("user %d role updated to %s by admin %d", in.Id, in.Role, in.AdminId)
+	// 返回更新角色响应
 	return &userpb.UpdateUserRoleResponse{
 		Msg: "用户权限更改成功",
 	}, nil

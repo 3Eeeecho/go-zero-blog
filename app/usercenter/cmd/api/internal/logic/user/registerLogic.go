@@ -6,7 +6,9 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/usercenter"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,13 +36,14 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		Role:     req.Role,
 	})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.RegisterResponse{}
 	err = copier.Copy(resp, registerResp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy registerResp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil
 }

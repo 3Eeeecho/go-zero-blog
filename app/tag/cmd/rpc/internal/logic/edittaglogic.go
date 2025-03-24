@@ -2,11 +2,12 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/pb"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,30 +26,29 @@ func NewEditTagLogic(ctx context.Context, svcCtx *svc.ServiceContext) *EditTagLo
 	}
 }
 
-// 修改文章标签
+// EditTag 修改文章标签
 func (l *EditTagLogic) EditTag(in *pb.EditTagRequest) (*pb.TagCommonResponse, error) {
 	// 检查标签 ID 是否有效，小于等于 0 则为无效参数
 	if in.Id <= 0 {
 		l.Logger.Errorf("invalid tag id: %d", in.Id)
-		return nil, errors.New("不合法的参数")
+		return nil, xerr.NewErrCode(xerr.REQUEST_PARAM_ERROR)
 	}
 
 	// 检查标签是否存在，避免修改不存在的标签
 	exist, err := l.svcCtx.TagModel.ExistTagByID(l.ctx, in.Id)
 	if err != nil {
 		l.Logger.Errorf("check tag existence failed, id: %d, error: %v", in.Id, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "check tag existence failed: %v", err)
 	}
 	if !exist {
 		l.Logger.Errorf("tag not found, id: %d", in.Id)
-		return nil, errors.New("该标签不存在")
+		return nil, xerr.NewErrCode(xerr.ERROR_NOT_EXIST_TAG)
 	}
 
 	// 构造更新数据，映射到 BlogTag 结构
-	data := map[string]any{
+	data := map[string]interface{}{
 		"name":        in.Name,
 		"modified_by": in.ModifiedBy,
-		"state":       in.State,
 		"modified_on": time.Now().Unix(),
 	}
 
@@ -56,7 +56,7 @@ func (l *EditTagLogic) EditTag(in *pb.EditTagRequest) (*pb.TagCommonResponse, er
 	err = l.svcCtx.TagModel.Edit(l.ctx, in.Id, data)
 	if err != nil {
 		l.Logger.Errorf("failed to edit tag, id: %d, error: %v", in.Id, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "edit tag failed: %v", err)
 	}
 
 	// 修改成功，记录日志并返回成功响应

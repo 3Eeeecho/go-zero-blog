@@ -5,7 +5,8 @@ import (
 
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/pb"
-	"github.com/jinzhu/copier"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,7 +25,7 @@ func NewGetTagsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetTagsLo
 	}
 }
 
-// 获取标签列表
+// GetTags 获取标签列表
 func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, error) {
 	// 设置分页默认值，若未提供则使用默认值
 	pageNum := in.PageNum
@@ -37,7 +38,7 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 	}
 
 	// 构造查询条件，支持按名称和状态过滤
-	conditions := make(map[string]any)
+	conditions := make(map[string]interface{})
 	if in.Name != "" {
 		conditions["name"] = in.Name
 	}
@@ -50,32 +51,35 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 	if err != nil {
 		l.Logger.Errorf("get tags failed, page_num: %d, page_size: %d, conditions: %v, error: %v",
 			pageNum, pageSize, conditions, err)
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get tags failed: %v", err)
 	}
 
 	// 获取标签总数
 	total, err := l.svcCtx.TagModel.CountByCondition(l.ctx, conditions)
 	if err != nil {
-		l.Logger.Errorf("count tags failed,condition:%v,error:%v", conditions, err)
-		return nil, err
+		l.Logger.Errorf("count tags failed, condition: %v, error: %v", conditions, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "count tags failed: %v", err)
 	}
 
-	// 返回成功响应，包含标签列表和分页信息
-	l.Logger.Infof("tags retrieved successfully, page_num: %d, page_size: %d, total: %d", pageNum, pageSize, total)
-
+	// 将标签数据转换为响应格式
 	data := make([]*pb.Tag, len(tags))
-	err = copier.Copy(&data, tags)
-	if err != nil {
-		l.Logger.Errorf("copy tags failed, error: %v", err)
-		return nil, err
+	for i, tag := range tags {
+		data[i] = &pb.Tag{
+			Id:         tag.Id,
+			Name:       tag.Name,
+			State:      tag.State,
+			CreatedBy:  tag.CreatedBy,
+			ModifiedBy: tag.ModifiedBy,
+		}
 	}
 
-	//TODO 返回的state不对
+	// 记录成功日志并返回响应
+	l.Logger.Infof("tags retrieved successfully, page_num: %d, page_size: %d, total: %d", pageNum, pageSize, total)
 	return &pb.GetTagsResponse{
 		Msg:      "获取标签列表成功",
 		Data:     data,
 		Total:    total,
-		PageNum:  int64(pageNum),
-		PageSize: int64(pageSize),
+		PageNum:  pageNum,
+		PageSize: pageSize,
 	}, nil
 }

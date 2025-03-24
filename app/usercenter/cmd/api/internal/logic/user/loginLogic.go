@@ -6,7 +6,9 @@ import (
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/api/internal/types"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/usercenter"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,13 +35,14 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
 	resp = &types.LoginResponse{} // 初始化 resp
 	err = copier.Copy(resp, loginResp)
 	if err != nil {
-		return nil, err
+		l.Logger.Errorf("failed to copy loginResp: %v", err)
+		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil
 }

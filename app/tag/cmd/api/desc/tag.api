@@ -7,53 +7,52 @@ type Response {
 
 // Tag 结构体，表示标签实体
 type Tag {
-	Id         int    `json:"id"`
+	Id         int64  `json:"id"`
 	Name       string `json:"name"`
 	CreatedBy  string `json:"created_by,optional"`
 	ModifiedBy string `json:"modified_by,optional"`
-	State      int    `json:"state,optional"`
+	State      int32  `json:"state,optional"`
 }
 
 // --- GetTags ---
 type GetTagsRequest {
 	Name     string ` json:"name,optional"` // 从查询参数解析
-	State    int    ` json:"state,optional"` // 从查询参数解析
-	PageNum  int    `" json:"page_num,optional"` // 分页参数
-	PageSize int    ` json:"page_size,optional"` // 分页参数
+	State    int32  ` json:"state,optional"` // 从查询参数解析
+	PageNum  int64  `" json:"page_num,optional"` // 分页参数
+	PageSize int64  ` json:"page_size,optional"` // 分页参数
 }
 
 type GetTagsResponse {
 	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data,optional"`
 	Total    int64       `json:"total"`
-	PageNum  int         `json:"page_num"`
-	PageSize int         `json:"page_size"`
+	PageNum  int64       `json:"page_num"`
+	PageSize int64       `json:"page_size"`
 }
 
 //--- AddTag ---
 type AddTagRequest {
 	Name      string `json:"name"` // 必填
 	CreatedBy string `json:"created_by"` // 必填
-	State     int    `json:"state,optional"` // 可选
+	State     int32  `json:"state,optional"` // 可选
 }
 
 // --- DeleteTag ---
 type DeleteTagRequest {
-	Id int `path:"id"`
+	Id int64 `json:"id"`
 }
 
 // --- EditTag ---
 type EditTagRequest {
-	Id         int    `path:"id"`
+	Id         int64  `json:"id"`
 	Name       string `json:"name"` // 必填
 	ModifiedBy string `json:"modified_by"` // 必填
-	State      int    `json:"state,optional"` // 可选
 }
 
 // --- ExportTag ---
 type ExportTagRequest {
 	Name  string `json:"name,optional"` // 可选
-	State int    `json:"state,optional"` // 可选
+	State int32  `json:"state,optional"` // 可选
 }
 
 type ExportTagResponse {
@@ -76,41 +75,41 @@ service tag-api {
 		description: "根据请求的参数（如标签名、状态）获取标签数据"
 	)
 	@handler GetTags
-	get /tag (GetTagsRequest) returns (GetTagsResponse)
+	get /tags/getall (GetTagsRequest) returns (GetTagsResponse)
 
 	@doc (
 		summary:     "新增文章标签"
 		description: "创建新的标签"
 	)
 	@handler AddTag
-	post /tag (AddTagRequest) returns (Response)
+	post /tags/add (AddTagRequest) returns (Response)
 
 	@doc (
 		summary:     "修改文章标签"
 		description: "编辑已有标签的信息"
 	)
 	@handler EditTag
-	put /tag/:id (EditTagRequest) returns (Response)
+	put /tags/edit (EditTagRequest) returns (Response)
 
 	@doc (
 		summary:     "删除文章标签"
 		description: "删除指定标签"
 	)
 	@handler DeleteTag
-	delete /tag/:id returns (Response)
+	delete /tags/delete returns (Response)
 
 	@doc (
 		summary:     "导出标签信息"
 		description: "生成 Excel 文件并返回下载地址"
 	)
 	@handler ExportTag
-	post /tag/export (ExportTagRequest) returns (ExportTagResponse)
+	post /tags/export (ExportTagRequest) returns (ExportTagResponse)
 
 	@doc (
 		summary:     "导入标签信息"
 		description: "导入 Excel 文件并存储在本地"
 	)
 	@handler ImportTag
-	post /tag/import (ImportTagRequest) returns (Response)
+	post /tags/import (ImportTagRequest) returns (Response)
 }
 

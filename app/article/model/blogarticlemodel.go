@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/3Eeeecho/go-zero-blog/app/tag/model"
+	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
@@ -33,8 +35,9 @@ type (
 		GetArticle(ctx context.Context, id int64) (*BlogArticle, error)
 		GetArticles(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogArticle, error)
 		CountByCondition(ctx context.Context, maps any) (int64, error)
-		Delete(ctx context.Context, id int64) error
+		Delete(ctx context.Context, id int64) *gorm.DB
 		Update(ctx context.Context, id int64, data any) error
+		CheckPermission(ctx context.Context, articleId, operatorId int64) (bool, error)
 		//CleanAll(ctx context.Context) (bool, error) 软删除暂不考虑，后面在添加
 	}
 
@@ -107,10 +110,30 @@ func (m *defaultArticleModel) CountByCondition(ctx context.Context, maps any) (i
 	return count, nil
 }
 
-func (m *defaultArticleModel) Delete(ctx context.Context, id int64) error {
-	return m.db.WithContext(ctx).Model(&BlogArticle{}).Where("id = ?", id).Delete(&BlogArticle{}).Error
+func (m *defaultArticleModel) Delete(ctx context.Context, id int64) *gorm.DB {
+	return m.db.WithContext(ctx).Model(&BlogArticle{}).Where("id = ?", id).Delete(&BlogArticle{})
 }
 
 func (m *defaultArticleModel) Update(ctx context.Context, id int64, data any) error {
 	return m.db.WithContext(ctx).Model(&BlogArticle{}).Where("id = ?", id).Updates(data).Error
+}
+
+// CheckOperatorPermission 检查操作用户是否有权限（创建者或管理员）
+func (m *defaultArticleModel) CheckPermission(ctx context.Context, articleId, operatorId int64) (bool, error) {
+	// 查询文章
+	var article BlogArticle
+	result := m.db.WithContext(ctx).Select("id, created_by").Where("id = ?", articleId).First(&article)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return false, xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND) // 102001: "该文章不存在"
+		}
+		return false, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "failed to get article id %d: %v", articleId, result.Error)
+	}
+
+	// 检查是否为创建者
+	if article.CreatedBy == operatorId {
+		return true, nil
+	}
+
+	return false, nil
 }

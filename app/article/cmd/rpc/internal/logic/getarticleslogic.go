@@ -58,19 +58,18 @@ func (l *GetArticlesLogic) GetArticles(in *pb.GetArticlesRequest) (*pb.GetArticl
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "count articles failed")
 	}
 
-	data := make([]*pb.Article, 0, len(articles))
-	//手动填充
-	for _, article := range articles {
-		data = append(data, &pb.Article{
-			Id:         int64(article.Id),
-			TagId:      int64(article.TagId),
+	data := make([]*pb.Article, len(articles))
+	for i, article := range articles {
+		data[i] = &pb.Article{
+			Id:         article.Id,
+			TagId:      article.TagId,
 			Title:      article.Title,
 			Desc:       article.Desc,
 			Content:    article.Content,
-			State:      int32(article.State),
+			State:      article.State,
 			CreatedBy:  article.CreatedBy,
 			ModifiedBy: article.ModifiedBy,
-		})
+		}
 	}
 
 	// 返回成功响应

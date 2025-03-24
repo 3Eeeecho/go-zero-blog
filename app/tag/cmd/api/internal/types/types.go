@@ -6,23 +6,22 @@ package types
 type AddTagRequest struct {
 	Name      string `json:"name"`           // 必填
 	CreatedBy string `json:"created_by"`     // 必填
-	State     int    `json:"state,optional"` // 可选
+	State     int32  `json:"state,optional"` // 可选
 }
 
 type DeleteTagRequest struct {
-	Id int `path:"id"`
+	Id int64 `json:"id"`
 }
 
 type EditTagRequest struct {
-	Id         int    `path:"id"`
-	Name       string `json:"name"`           // 必填
-	ModifiedBy string `json:"modified_by"`    // 必填
-	State      int    `json:"state,optional"` // 可选
+	Id         int64  `json:"id"`
+	Name       string `json:"name"`        // 必填
+	ModifiedBy string `json:"modified_by"` // 必填
 }
 
 type ExportTagRequest struct {
 	Name  string `json:"name,optional"`  // 可选
-	State int    `json:"state,optional"` // 可选
+	State int32  `json:"state,optional"` // 可选
 }
 
 type ExportTagResponse struct {
@@ -33,17 +32,17 @@ type ExportTagResponse struct {
 
 type GetTagsRequest struct {
 	Name     string ` json:"name,optional"`      // 从查询参数解析
-	State    int    ` json:"state,optional"`     // 从查询参数解析
-	PageNum  int    `" json:"page_num,optional"` // 分页参数
-	PageSize int    ` json:"page_size,optional"` // 分页参数
+	State    int32  ` json:"state,optional"`     // 从查询参数解析
+	PageNum  int64  `" json:"page_num,optional"` // 分页参数
+	PageSize int64  ` json:"page_size,optional"` // 分页参数
 }
 
 type GetTagsResponse struct {
 	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data,optional"`
 	Total    int64       `json:"total"`
-	PageNum  int         `json:"page_num"`
-	PageSize int         `json:"page_size"`
+	PageNum  int64       `json:"page_num"`
+	PageSize int64       `json:"page_size"`
 }
 
 type ImportTagRequest struct {
@@ -54,9 +53,9 @@ type Response struct {
 }
 
 type Tag struct {
-	Id         int    `json:"id"`
+	Id         int64  `json:"id"`
 	Name       string `json:"name"`
 	CreatedBy  string `json:"created_by,optional"`
 	ModifiedBy string `json:"modified_by,optional"`
-	State      int    `json:"state,optional"`
+	State      int32  `json:"state,optional"`
 }
