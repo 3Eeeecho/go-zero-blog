@@ -59,6 +59,9 @@ func init() {
 	message[ERROR_UPLOAD_CREATE_DIR_FAIL] = "创建上传目录失败"
 	message[ERROR_INVALID_FILE] = "打开上传文件失败"
 
+	//文章评论模块
+	message[ERROR_NOT_EXIST_COMMENT] = "该评论不存在"
+
 	// 其他模块
 	message[ERROR_CREATE_NEWSHEAT_FAIL] = "导入标签时创建表格失败"
 }

@@ -1,6 +1,6 @@
 package state
 
-type ArticleState int
+type ArticleState int32
 
 const (
 	Draft ArticleState = iota

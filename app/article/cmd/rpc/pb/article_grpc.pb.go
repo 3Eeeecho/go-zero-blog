@@ -27,6 +27,8 @@ const (
 	ArticleService_GetPendingArticles_FullMethodName = "/pb.ArticleService/GetPendingArticles"
 	ArticleService_SubmitArticle_FullMethodName      = "/pb.ArticleService/SubmitArticle"
 	ArticleService_ReviewArticle_FullMethodName      = "/pb.ArticleService/ReviewArticle"
+	ArticleService_AddComment_FullMethodName         = "/pb.ArticleService/AddComment"
+	ArticleService_GetComments_FullMethodName        = "/pb.ArticleService/GetComments"
 )
 
 // ArticleServiceClient is the client API for ArticleService service.
@@ -48,6 +50,10 @@ type ArticleServiceClient interface {
 	GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error)
 	SubmitArticle(ctx context.Context, in *SubmitArticleRequest, opts ...grpc.CallOption) (*SubmitArticleResponse, error)
 	ReviewArticle(ctx context.Context, in *ReviewArticleRequest, opts ...grpc.CallOption) (*ReviewArticleResponse, error)
+	// 添加评论
+	AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)
+	// 获取评论列表
+	GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
 }
 
 type articleServiceClient struct {
@@ -138,6 +144,26 @@ func (c *articleServiceClient) ReviewArticle(ctx context.Context, in *ReviewArti
 	return out, nil
 }
 
+func (c *articleServiceClient) AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddCommentResponse)
+	err := c.cc.Invoke(ctx, ArticleService_AddComment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCommentsResponse)
+	err := c.cc.Invoke(ctx, ArticleService_GetComments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticleServiceServer is the server API for ArticleService service.
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility.
@@ -157,6 +183,10 @@ type ArticleServiceServer interface {
 	GetPendingArticles(context.Context, *GetPendingArticlesRequest) (*GetPendingArticlesResponse, error)
 	SubmitArticle(context.Context, *SubmitArticleRequest) (*SubmitArticleResponse, error)
 	ReviewArticle(context.Context, *ReviewArticleRequest) (*ReviewArticleResponse, error)
+	// 添加评论
+	AddComment(context.Context, *AddCommentRequest) (*AddCommentResponse, error)
+	// 获取评论列表
+	GetComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -190,6 +220,12 @@ func (UnimplementedArticleServiceServer) SubmitArticle(context.Context, *SubmitA
 }
 func (UnimplementedArticleServiceServer) ReviewArticle(context.Context, *ReviewArticleRequest) (*ReviewArticleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReviewArticle not implemented")
+}
+func (UnimplementedArticleServiceServer) AddComment(context.Context, *AddCommentRequest) (*AddCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddComment not implemented")
+}
+func (UnimplementedArticleServiceServer) GetComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetComments not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 func (UnimplementedArticleServiceServer) testEmbeddedByValue()                        {}
@@ -356,6 +392,42 @@ func _ArticleService_ReviewArticle_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticleService_AddComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).AddComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_AddComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).AddComment(ctx, req.(*AddCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_GetComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetComments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_GetComments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetComments(ctx, req.(*GetCommentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticleService_ServiceDesc is the grpc.ServiceDesc for ArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -394,6 +466,14 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReviewArticle",
 			Handler:    _ArticleService_ReviewArticle_Handler,
+		},
+		{
+			MethodName: "AddComment",
+			Handler:    _ArticleService_AddComment_Handler,
+		},
+		{
+			MethodName: "GetComments",
+			Handler:    _ArticleService_GetComments_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

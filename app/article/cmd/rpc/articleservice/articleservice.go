@@ -15,14 +15,19 @@ import (
 
 type (
 	AddArticleRequest          = pb.AddArticleRequest
+	AddCommentRequest          = pb.AddCommentRequest
+	AddCommentResponse         = pb.AddCommentResponse
 	Article                    = pb.Article
 	ArticleCommonResponse      = pb.ArticleCommonResponse
+	Comment                    = pb.Comment
 	DeleteArticleRequest       = pb.DeleteArticleRequest
 	EditArticleRequest         = pb.EditArticleRequest
 	GetArticleRequest          = pb.GetArticleRequest
 	GetArticleResponse         = pb.GetArticleResponse
 	GetArticlesRequest         = pb.GetArticlesRequest
 	GetArticlesResponse        = pb.GetArticlesResponse
+	GetCommentsRequest         = pb.GetCommentsRequest
+	GetCommentsResponse        = pb.GetCommentsResponse
 	GetPendingArticlesRequest  = pb.GetPendingArticlesRequest
 	GetPendingArticlesResponse = pb.GetPendingArticlesResponse
 	ReviewArticleRequest       = pb.ReviewArticleRequest
@@ -44,6 +49,10 @@ type (
 		GetPendingArticles(ctx context.Context, in *GetPendingArticlesRequest, opts ...grpc.CallOption) (*GetPendingArticlesResponse, error)
 		SubmitArticle(ctx context.Context, in *SubmitArticleRequest, opts ...grpc.CallOption) (*SubmitArticleResponse, error)
 		ReviewArticle(ctx context.Context, in *ReviewArticleRequest, opts ...grpc.CallOption) (*ReviewArticleResponse, error)
+		// 添加评论
+		AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)
+		// 获取评论列表
+		GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
 	}
 
 	defaultArticleService struct {
@@ -100,4 +109,16 @@ func (m *defaultArticleService) SubmitArticle(ctx context.Context, in *SubmitArt
 func (m *defaultArticleService) ReviewArticle(ctx context.Context, in *ReviewArticleRequest, opts ...grpc.CallOption) (*ReviewArticleResponse, error) {
 	client := pb.NewArticleServiceClient(m.cli.Conn())
 	return client.ReviewArticle(ctx, in, opts...)
+}
+
+// 添加评论
+func (m *defaultArticleService) AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.AddComment(ctx, in, opts...)
+}
+
+// 获取评论列表
+func (m *defaultArticleService) GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.GetComments(ctx, in, opts...)
 }

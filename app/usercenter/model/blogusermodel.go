@@ -29,7 +29,7 @@ type (
 )
 
 func (BlogUser) TableName() string {
-	return "blog_users"
+	return "users"
 }
 
 func NewBlogUsersModel(db *gorm.DB) BlogUsersModel {

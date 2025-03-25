@@ -48,7 +48,6 @@ func (l *LoginLogic) Login(in *userpb.LoginRequest) (*userpb.LoginResponse, erro
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.USER_NOT_FOUND), "user not found, username: %s", in.Username)
 	}
 
-	//TODO 解密和校验包装成函数
 	// 采用AES256加密校验
 	// 解密客户端传来的密码
 	key := []byte(l.svcCtx.Config.Crypto.Key)

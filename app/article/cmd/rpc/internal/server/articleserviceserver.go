@@ -67,3 +67,15 @@ func (s *ArticleServiceServer) ReviewArticle(ctx context.Context, in *pb.ReviewA
 	l := logic.NewReviewArticleLogic(ctx, s.svcCtx)
 	return l.ReviewArticle(in)
 }
+
+// 添加评论
+func (s *ArticleServiceServer) AddComment(ctx context.Context, in *pb.AddCommentRequest) (*pb.AddCommentResponse, error) {
+	l := logic.NewAddCommentLogic(ctx, s.svcCtx)
+	return l.AddComment(in)
+}
+
+// 获取评论列表
+func (s *ArticleServiceServer) GetComments(ctx context.Context, in *pb.GetCommentsRequest) (*pb.GetCommentsResponse, error) {
+	l := logic.NewGetCommentsLogic(ctx, s.svcCtx)
+	return l.GetComments(in)
+}

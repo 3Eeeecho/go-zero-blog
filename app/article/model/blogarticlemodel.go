@@ -25,7 +25,7 @@ type BlogArticle struct {
 }
 
 func (BlogArticle) TableName() string {
-	return "blog_articles"
+	return "articles"
 }
 
 type (

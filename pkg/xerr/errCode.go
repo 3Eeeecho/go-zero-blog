@@ -36,6 +36,7 @@ const (
 	ERROR_GET_ARTICLES_FAIL        uint32 = 102008 // 获取多个文章失败
 	ERROR_GET_ARTICLE_FAIL         uint32 = 102009 // 获取单个文章失败
 	ERROR_GEN_ARTICLE_POSTER_FAIL  uint32 = 102010 // 生成文章海报失败
+
 )
 
 // 标签模块 (103xxx)
@@ -70,7 +71,11 @@ const (
 	ERROR_INVALID_FILE              uint32 = 105005 // 打开上传文件失败
 )
 
-// 其他模块 (106xxx)
 const (
-	ERROR_CREATE_NEWSHEAT_FAIL uint32 = 106001 // 导入标签时创建表格失败
+	ERROR_NOT_EXIST_COMMENT uint32 = 106011 //文章评论不存在
+)
+
+// 其他模块 (107xxx)
+const (
+	ERROR_CREATE_NEWSHEAT_FAIL uint32 = 107001 // 导入标签时创建表格失败
 )

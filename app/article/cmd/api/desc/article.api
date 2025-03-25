@@ -88,6 +88,38 @@ type ReviewArticleRequest {
 	Approved bool  `json:"approved"`
 }
 
+// --- Comment ---
+type CommentReq {
+	ArticleId int64  `json:"article_id"`
+	Content   string `json:"content"`
+	ParentId  int64  `json:"parent_id,optional"` // 可选，回复某条评论
+}
+
+type CommentResp {
+	Msg string `json:"msg"`
+}
+
+type Comment {
+	Id        int64     `json:"id"`
+	ArticleId int64     `json:"article_id"`
+	UserId    int64     `json:"user_id"`
+	Content   string    `json:"content"`
+	ParentId  int64     `json:"parent_id,optional"`
+	Children  []Comment `json:"children,optional"` // 嵌套回复
+}
+
+type GetCommentsReq {
+	ArticleId int64 `json:"article_id"`
+	PageNum   int64 `json:"page_num,default=1"`
+	PageSize  int64 `json:"page_size,default=10"`
+}
+
+type GetCommentsResp {
+	Msg      string    `json:"msg"`
+	Comments []Comment `json:"comments"`
+	Total    int64     `json:"total"`
+}
+
 @server (
 	group: article
 	jwt:   JwtAuth
@@ -135,10 +167,32 @@ service article-api {
 	@handler DeleteArticle
 	delete /articles/:id (DeleteArticleRequest) returns (ArticleCommonResponse)
 
+	@doc (
+		summary:     "提交新文章"
+		description: "用户提交一篇新文章，包括标题、内容和标签，需 JWT 认证"
+	)
 	@handler SubmitArticle
 	post /articles/submit (SubmitArticleRequest) returns (ArticleCommonResponse)
 
+	@doc (
+		summary:     "审核文章"
+		description: "管理员审核指定文章，修改其状态（待审核/通过/拒绝），需权限验证"
+	)
 	@handler ReviewArticle
 	put /articles/review (ReviewArticleRequest) returns (ArticleCommonResponse)
+
+	@doc (
+		summary:     "添加评论"
+		description: "用户对文章发表评论，支持回复其他评论，需 JWT 认证"
+	)
+	@handler AddComment
+	post /articles/comment (CommentReq) returns (CommentResp)
+
+	@doc (
+		summary:     "获取评论列表"
+		description: "分页获取指定文章的评论列表，支持嵌套回复展示"
+	)
+	@handler GetComments
+	get /articles/comments (GetCommentsReq) returns (GetCommentsResp)
 }
 

@@ -46,17 +46,31 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: article.DeleteArticleHandler(serverCtx),
 			},
 			{
+				// 添加评论
+				Method:  http.MethodPost,
+				Path:    "/articles/comment",
+				Handler: article.AddCommentHandler(serverCtx),
+			},
+			{
+				// 获取评论列表
+				Method:  http.MethodGet,
+				Path:    "/articles/comments",
+				Handler: article.GetCommentsHandler(serverCtx),
+			},
+			{
 				// 获取待审核文章列表
 				Method:  http.MethodGet,
 				Path:    "/articles/pending",
 				Handler: article.GetPendingArticlesHandler(serverCtx),
 			},
 			{
+				// 审核文章
 				Method:  http.MethodPut,
 				Path:    "/articles/review",
 				Handler: article.ReviewArticleHandler(serverCtx),
 			},
 			{
+				// 提交新文章
 				Method:  http.MethodPost,
 				Path:    "/articles/submit",
 				Handler: article.SubmitArticleHandler(serverCtx),

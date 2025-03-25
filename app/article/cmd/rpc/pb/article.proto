@@ -97,6 +97,45 @@ message ReviewArticleRequest {
 
 message ReviewArticleResponse { string msg = 1; }
 
+// --- Comment ---
+
+// Comment 表示单条评论
+message Comment {
+  int64 id = 1;                  // 评论 ID
+  int64 article_id = 2;          // 文章 ID
+  int64 user_id = 3;             // 用户 ID
+  string content = 4;            // 评论内容
+  int64 parent_id = 5;           // 父评论 ID（0 表示顶级评论）
+  repeated Comment children = 6; // 子评论列表（嵌套回复）
+}
+
+// AddCommentRequest 添加评论请求
+message AddCommentRequest {
+  int64 article_id = 1; // 文章 ID
+  string content = 2;   // 评论内容
+  int64 parent_id = 3;  // 父评论 ID（可选，0 表示顶级评论）
+  int64 user_id = 4;
+}
+
+// AddCommentResponse 添加评论响应
+message AddCommentResponse {
+  string msg = 1; // 响应消息
+}
+
+// GetCommentsRequest 获取评论列表请求
+message GetCommentsRequest {
+  int64 article_id = 1; // 文章 ID
+  int64 page_num = 2;   // 页码，默认为 1
+  int64 page_size = 3;  // 每页大小，默认为 10
+}
+
+// GetCommentsResponse 获取评论列表响应
+message GetCommentsResponse {
+  string msg = 1;                // 响应消息
+  repeated Comment comments = 2; // 评论列表
+  int64 total = 3;               // 总评论数
+}
+
 // 定义服务
 service ArticleService {
   // 获取单篇文章的详细信息
@@ -119,4 +158,9 @@ service ArticleService {
 
   rpc SubmitArticle(SubmitArticleRequest) returns (SubmitArticleResponse);
   rpc ReviewArticle(ReviewArticleRequest) returns (ReviewArticleResponse);
+
+  // 添加评论
+  rpc AddComment(AddCommentRequest) returns (AddCommentResponse);
+  // 获取评论列表
+  rpc GetComments(GetCommentsRequest) returns (GetCommentsResponse);
 }

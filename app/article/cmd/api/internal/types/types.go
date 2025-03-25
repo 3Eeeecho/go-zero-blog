@@ -25,6 +25,25 @@ type ArticleCommonResponse struct {
 	Msg string `json:"msg"`
 }
 
+type Comment struct {
+	Id        int64     `json:"id"`
+	ArticleId int64     `json:"article_id"`
+	UserId    int64     `json:"user_id"`
+	Content   string    `json:"content"`
+	ParentId  int64     `json:"parent_id,optional"`
+	Children  []Comment `json:"children,optional"` // 嵌套回复
+}
+
+type CommentReq struct {
+	ArticleId int64  `json:"article_id"`
+	Content   string `json:"content"`
+	ParentId  int64  `json:"parent_id,optional"` // 可选，回复某条评论
+}
+
+type CommentResp struct {
+	Msg string `json:"msg"`
+}
+
 type DeleteArticleRequest struct {
 	Id int64 `path:"id"`
 }
@@ -59,6 +78,18 @@ type GetArticlesResponse struct {
 	Total    int64       `json:"total"`
 	PageNum  int         `json:"page_num"`
 	PageSize int         `json:"page_size"`
+}
+
+type GetCommentsReq struct {
+	ArticleId int64 `json:"article_id"`
+	PageNum   int64 `json:"page_num,default=1"`
+	PageSize  int64 `json:"page_size,default=10"`
+}
+
+type GetCommentsResp struct {
+	Msg      string    `json:"msg"`
+	Comments []Comment `json:"comments"`
+	Total    int64     `json:"total"`
 }
 
 type GetPendingArticlesRequest struct {
