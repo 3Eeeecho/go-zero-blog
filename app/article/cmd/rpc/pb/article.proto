@@ -136,6 +136,20 @@ message GetCommentsResponse {
   int64 total = 3;               // 总评论数
 }
 
+message ViewArticleRequest {
+  int64 article_id = 1; // 文章 ID
+}
+
+message LikeArticleRequest {
+  int64 article_id = 1; // 文章 ID
+  int64 user_id = 2;
+}
+
+message UnlikeArticleRequest {
+  int64 article_id = 1; // 文章 ID
+  int64 user_id = 2;
+}
+
 // 定义服务
 service ArticleService {
   // 获取单篇文章的详细信息
@@ -157,10 +171,17 @@ service ArticleService {
       returns (GetPendingArticlesResponse);
 
   rpc SubmitArticle(SubmitArticleRequest) returns (SubmitArticleResponse);
+
   rpc ReviewArticle(ReviewArticleRequest) returns (ReviewArticleResponse);
 
   // 添加评论
   rpc AddComment(AddCommentRequest) returns (AddCommentResponse);
   // 获取评论列表
   rpc GetComments(GetCommentsRequest) returns (GetCommentsResponse);
+
+  rpc ViewArticle(ViewArticleRequest) returns (ArticleCommonResponse);
+
+  rpc LikeArticle(LikeArticleRequest) returns (ArticleCommonResponse);
+
+  rpc UnlikeArtilce(UnlikeArticleRequest) returns (ArticleCommonResponse);
 }

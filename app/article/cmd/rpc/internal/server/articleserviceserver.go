@@ -79,3 +79,18 @@ func (s *ArticleServiceServer) GetComments(ctx context.Context, in *pb.GetCommen
 	l := logic.NewGetCommentsLogic(ctx, s.svcCtx)
 	return l.GetComments(in)
 }
+
+func (s *ArticleServiceServer) ViewArticle(ctx context.Context, in *pb.ViewArticleRequest) (*pb.ArticleCommonResponse, error) {
+	l := logic.NewViewArticleLogic(ctx, s.svcCtx)
+	return l.ViewArticle(in)
+}
+
+func (s *ArticleServiceServer) LikeArticle(ctx context.Context, in *pb.LikeArticleRequest) (*pb.ArticleCommonResponse, error) {
+	l := logic.NewLikeArticleLogic(ctx, s.svcCtx)
+	return l.LikeArticle(in)
+}
+
+func (s *ArticleServiceServer) UnlikeArtilce(ctx context.Context, in *pb.UnlikeArticleRequest) (*pb.ArticleCommonResponse, error) {
+	l := logic.NewUnlikeArtilceLogic(ctx, s.svcCtx)
+	return l.UnlikeArtilce(in)
+}

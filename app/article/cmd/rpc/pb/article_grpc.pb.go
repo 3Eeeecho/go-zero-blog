@@ -29,6 +29,9 @@ const (
 	ArticleService_ReviewArticle_FullMethodName      = "/pb.ArticleService/ReviewArticle"
 	ArticleService_AddComment_FullMethodName         = "/pb.ArticleService/AddComment"
 	ArticleService_GetComments_FullMethodName        = "/pb.ArticleService/GetComments"
+	ArticleService_ViewArticle_FullMethodName        = "/pb.ArticleService/ViewArticle"
+	ArticleService_LikeArticle_FullMethodName        = "/pb.ArticleService/LikeArticle"
+	ArticleService_UnlikeArtilce_FullMethodName      = "/pb.ArticleService/UnlikeArtilce"
 )
 
 // ArticleServiceClient is the client API for ArticleService service.
@@ -54,6 +57,9 @@ type ArticleServiceClient interface {
 	AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)
 	// 获取评论列表
 	GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
+	ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+	LikeArticle(ctx context.Context, in *LikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+	UnlikeArtilce(ctx context.Context, in *UnlikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 }
 
 type articleServiceClient struct {
@@ -164,6 +170,36 @@ func (c *articleServiceClient) GetComments(ctx context.Context, in *GetCommentsR
 	return out, nil
 }
 
+func (c *articleServiceClient) ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ArticleCommonResponse)
+	err := c.cc.Invoke(ctx, ArticleService_ViewArticle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) LikeArticle(ctx context.Context, in *LikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ArticleCommonResponse)
+	err := c.cc.Invoke(ctx, ArticleService_LikeArticle_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) UnlikeArtilce(ctx context.Context, in *UnlikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ArticleCommonResponse)
+	err := c.cc.Invoke(ctx, ArticleService_UnlikeArtilce_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticleServiceServer is the server API for ArticleService service.
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility.
@@ -187,6 +223,9 @@ type ArticleServiceServer interface {
 	AddComment(context.Context, *AddCommentRequest) (*AddCommentResponse, error)
 	// 获取评论列表
 	GetComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error)
+	ViewArticle(context.Context, *ViewArticleRequest) (*ArticleCommonResponse, error)
+	LikeArticle(context.Context, *LikeArticleRequest) (*ArticleCommonResponse, error)
+	UnlikeArtilce(context.Context, *UnlikeArticleRequest) (*ArticleCommonResponse, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -226,6 +265,15 @@ func (UnimplementedArticleServiceServer) AddComment(context.Context, *AddComment
 }
 func (UnimplementedArticleServiceServer) GetComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComments not implemented")
+}
+func (UnimplementedArticleServiceServer) ViewArticle(context.Context, *ViewArticleRequest) (*ArticleCommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ViewArticle not implemented")
+}
+func (UnimplementedArticleServiceServer) LikeArticle(context.Context, *LikeArticleRequest) (*ArticleCommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LikeArticle not implemented")
+}
+func (UnimplementedArticleServiceServer) UnlikeArtilce(context.Context, *UnlikeArticleRequest) (*ArticleCommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnlikeArtilce not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 func (UnimplementedArticleServiceServer) testEmbeddedByValue()                        {}
@@ -428,6 +476,60 @@ func _ArticleService_GetComments_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticleService_ViewArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ViewArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).ViewArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_ViewArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).ViewArticle(ctx, req.(*ViewArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_LikeArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LikeArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).LikeArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_LikeArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).LikeArticle(ctx, req.(*LikeArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_UnlikeArtilce_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnlikeArticleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).UnlikeArtilce(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_UnlikeArtilce_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).UnlikeArtilce(ctx, req.(*UnlikeArticleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticleService_ServiceDesc is the grpc.ServiceDesc for ArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -474,6 +576,18 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetComments",
 			Handler:    _ArticleService_GetComments_Handler,
+		},
+		{
+			MethodName: "ViewArticle",
+			Handler:    _ArticleService_ViewArticle_Handler,
+		},
+		{
+			MethodName: "LikeArticle",
+			Handler:    _ArticleService_LikeArticle_Handler,
+		},
+		{
+			MethodName: "UnlikeArtilce",
+			Handler:    _ArticleService_UnlikeArtilce_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

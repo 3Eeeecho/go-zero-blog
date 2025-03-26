@@ -30,10 +30,13 @@ type (
 	GetCommentsResponse        = pb.GetCommentsResponse
 	GetPendingArticlesRequest  = pb.GetPendingArticlesRequest
 	GetPendingArticlesResponse = pb.GetPendingArticlesResponse
+	LikeArticleRequest         = pb.LikeArticleRequest
 	ReviewArticleRequest       = pb.ReviewArticleRequest
 	ReviewArticleResponse      = pb.ReviewArticleResponse
 	SubmitArticleRequest       = pb.SubmitArticleRequest
 	SubmitArticleResponse      = pb.SubmitArticleResponse
+	UnlikeArticleRequest       = pb.UnlikeArticleRequest
+	ViewArticleRequest         = pb.ViewArticleRequest
 
 	ArticleService interface {
 		// 获取单篇文章的详细信息
@@ -53,6 +56,9 @@ type (
 		AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)
 		// 获取评论列表
 		GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
+		ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+		LikeArticle(ctx context.Context, in *LikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+		UnlikeArtilce(ctx context.Context, in *UnlikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 	}
 
 	defaultArticleService struct {
@@ -121,4 +127,19 @@ func (m *defaultArticleService) AddComment(ctx context.Context, in *AddCommentRe
 func (m *defaultArticleService) GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error) {
 	client := pb.NewArticleServiceClient(m.cli.Conn())
 	return client.GetComments(ctx, in, opts...)
+}
+
+func (m *defaultArticleService) ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.ViewArticle(ctx, in, opts...)
+}
+
+func (m *defaultArticleService) LikeArticle(ctx context.Context, in *LikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.LikeArticle(ctx, in, opts...)
+}
+
+func (m *defaultArticleService) UnlikeArtilce(ctx context.Context, in *UnlikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+	client := pb.NewArticleServiceClient(m.cli.Conn())
+	return client.UnlikeArtilce(ctx, in, opts...)
 }

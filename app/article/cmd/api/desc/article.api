@@ -120,6 +120,10 @@ type GetCommentsResp {
 	Total    int64     `json:"total"`
 }
 
+type LikeArticleRequest {
+	Article_id int64 `path:"id"` // 文章 ID
+}
+
 @server (
 	group: article
 	jwt:   JwtAuth
@@ -194,5 +198,17 @@ service article-api {
 	)
 	@handler GetComments
 	get /articles/comments (GetCommentsReq) returns (GetCommentsResp)
+
+	@doc (
+		summary: "点赞文章"
+	)
+	@handler LikeArticle
+	post /articles/like/:id (LikeArticleRequest) returns (ArticleCommonResponse)
+
+	@doc (
+		summary: "取消点赞文章"
+	)
+	@handler UnlikeArticle
+	delete /articles/like/:id (LikeArticleRequest) returns (ArticleCommonResponse)
 }
 

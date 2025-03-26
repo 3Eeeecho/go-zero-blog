@@ -13,14 +13,15 @@ import (
 )
 
 type ServiceContext struct {
-	Config       config.Config
-	ArticleModel model.BlogArticleModel
-	CommentModel model.BlogCommentModel
-	TagRpc       tagservice.TagService
-	UserRpc      usercenter.Usercenter
-	Redis        *redis.Redis
-	MQConn       *amqp091.Connection
-	MQChannel    *amqp091.Channel
+	Config           config.Config
+	ArticleModel     model.BlogArticleModel
+	CommentModel     model.BlogCommentModel
+	ArticleLikeModel model.BlogArticleLikeModel
+	TagRpc           tagservice.TagService
+	UserRpc          usercenter.Usercenter
+	Redis            *redis.Redis
+	MQConn           *amqp091.Connection
+	MQChannel        *amqp091.Channel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -46,14 +47,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		Config:       c,
-		ArticleModel: model.NewBlogArticleModel(db),
-		CommentModel: model.NewBlogCommentModel(db),
-		TagRpc:       tagservice.NewTagService(zrpc.MustNewClient(c.TagServiceRpcConf)),
-		UserRpc:      usercenter.NewUsercenter(zrpc.MustNewClient(c.UserServiceRpcConf)),
-		Redis:        rdb,
-		MQConn:       conn,
-		MQChannel:    ch,
+		Config:           c,
+		ArticleModel:     model.NewBlogArticleModel(db),
+		CommentModel:     model.NewBlogCommentModel(db),
+		ArticleLikeModel: model.NewBlogArticleLikeModel(db),
+		TagRpc:           tagservice.NewTagService(zrpc.MustNewClient(c.TagServiceRpcConf)),
+		UserRpc:          usercenter.NewUsercenter(zrpc.MustNewClient(c.UserServiceRpcConf)),
+		Redis:            rdb,
+		MQConn:           conn,
+		MQChannel:        ch,
 	}
 }
 

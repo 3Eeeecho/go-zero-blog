@@ -58,6 +58,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: article.GetCommentsHandler(serverCtx),
 			},
 			{
+				// 点赞文章
+				Method:  http.MethodPost,
+				Path:    "/articles/like/:id",
+				Handler: article.LikeArticleHandler(serverCtx),
+			},
+			{
+				// 取消点赞文章
+				Method:  http.MethodDelete,
+				Path:    "/articles/like/:id",
+				Handler: article.UnlikeArticleHandler(serverCtx),
+			},
+			{
 				// 获取待审核文章列表
 				Method:  http.MethodGet,
 				Path:    "/articles/pending",

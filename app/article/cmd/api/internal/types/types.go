@@ -105,6 +105,10 @@ type GetPendingArticlesResponse struct {
 	PageSize int         `json:"page_size"`
 }
 
+type LikeArticleRequest struct {
+	Article_id int64 `path:"id"` // 文章 ID
+}
+
 type ReviewArticleRequest struct {
 	Id       int64 `json:"id"`
 	Approved bool  `json:"approved"`

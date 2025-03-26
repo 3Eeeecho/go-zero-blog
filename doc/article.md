@@ -162,7 +162,73 @@ type ArticleCommonResponse struct {
 }
 ```
 
-### 6. 获取待审核文章列表
+### 6. 添加评论
+
+1. route definition
+
+- Url: /articles/comment
+- Method: POST
+- Request: `CommentReq`
+- Response: `CommentResp`
+
+2. request definition
+
+
+
+```golang
+type CommentReq struct {
+	ArticleId int64 `json:"article_id"`
+	Content string `json:"content"`
+	ParentId int64 `json:"parent_id,optional"` // 可选，回复某条评论
+}
+```
+
+
+3. response definition
+
+
+
+```golang
+type CommentResp struct {
+	Msg string `json:"msg"`
+}
+```
+
+### 7. 获取评论列表
+
+1. route definition
+
+- Url: /articles/comments
+- Method: GET
+- Request: `GetCommentsReq`
+- Response: `GetCommentsResp`
+
+2. request definition
+
+
+
+```golang
+type GetCommentsReq struct {
+	ArticleId int64 `json:"article_id"`
+	PageNum int64 `json:"page_num,default=1"`
+	PageSize int64 `json:"page_size,default=10"`
+}
+```
+
+
+3. response definition
+
+
+
+```golang
+type GetCommentsResp struct {
+	Msg string `json:"msg"`
+	Comments []Comment `json:"comments"`
+	Total int64 `json:"total"`
+}
+```
+
+### 8. 获取待审核文章列表
 
 1. route definition
 
@@ -197,7 +263,7 @@ type GetPendingArticlesResponse struct {
 }
 ```
 
-### 7. N/A
+### 9. 审核文章
 
 1. route definition
 
@@ -228,7 +294,7 @@ type ArticleCommonResponse struct {
 }
 ```
 
-### 8. N/A
+### 10. 提交新文章
 
 1. route definition
 
