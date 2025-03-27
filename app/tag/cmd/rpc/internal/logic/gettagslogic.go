@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/pb"
@@ -37,12 +39,32 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 		pageSize = int64(l.svcCtx.Config.App.PageSize) // 使用默认配置
 	}
 
+	cacheKey := fmt.Sprintf("tag:list:name_%s:state_%d:page_%d_%d", in.Name, in.State, pageNum, pageSize)
+
+	// 从 Redis 获取
+	cached, err := l.svcCtx.Redis.Get(cacheKey)
+	if err == nil && cached != "" {
+		var resp pb.GetTagsResponse
+		err := json.Unmarshal([]byte(cached), &resp)
+		//正确解析
+		if err == nil {
+			l.Logger.Info("cache hit getTags!")
+			return &resp, nil
+		}
+		l.Logger.Errorf("json unmarshal failed,err:%v", err)
+	}
+
+	if err != nil {
+		//发生错误,记录下来
+		l.Logger.Errorf("cache hit redis failed,err:%v", err)
+	}
+
 	// 构造查询条件，支持按名称和状态过滤
-	conditions := make(map[string]interface{})
+	conditions := make(map[string]any)
 	if in.Name != "" {
 		conditions["name"] = in.Name
 	}
-	if in.State != 0 { // 假设 0 表示未指定状态
+	if in.State != 1 { // 假设 1 表示启用状态,默认为启用
 		conditions["state"] = in.State
 	}
 
@@ -55,11 +77,7 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 	}
 
 	// 获取标签总数
-	total, err := l.svcCtx.TagModel.CountByCondition(l.ctx, conditions)
-	if err != nil {
-		l.Logger.Errorf("count tags failed, condition: %v, error: %v", conditions, err)
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "count tags failed: %v", err)
-	}
+	total := int64(len(tags))
 
 	// 将标签数据转换为响应格式
 	data := make([]*pb.Tag, len(tags))
@@ -73,13 +91,19 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 		}
 	}
 
-	// 记录成功日志并返回响应
-	l.Logger.Infof("tags retrieved successfully, page_num: %d, page_size: %d, total: %d", pageNum, pageSize, total)
-	return &pb.GetTagsResponse{
+	resp := &pb.GetTagsResponse{
 		Msg:      "获取标签列表成功",
 		Data:     data,
 		Total:    total,
 		PageNum:  pageNum,
 		PageSize: pageSize,
-	}, nil
+	}
+
+	// 存入 Redis
+	jsonData, _ := json.Marshal(resp)
+	l.svcCtx.Redis.Set(cacheKey, string(jsonData))
+
+	// 记录成功日志并返回响应
+	l.Logger.Infof("get tags successfully, page_num: %d, page_size: %d, total: %d", pageNum, pageSize, total)
+	return resp, nil
 }

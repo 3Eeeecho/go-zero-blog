@@ -44,15 +44,8 @@ func (l *LikeArticleLogic) LikeArticle(in *pb.LikeArticleRequest) (*pb.ArticleCo
 
 	// 先检查 Redis
 	exists, err := l.svcCtx.Redis.Sismember(cacheKey, userIDStr)
-	if err != nil {
-		l.Logger.Errorf("failed to check like in redis, error: %v", err)
-	} else if exists {
-		l.Logger.Infof("cache hit for like articleId: %d", in.ArticleId)
-		return nil, xerr.NewErrCodeMsg(xerr.REQUEST_PARAM_ERROR, "已点赞过此文章")
-	}
-
-	// Redis 未命中或失效时检查数据库
 	if err != nil || !exists {
+		// Redis 未命中或失效时检查数据库
 		dbExists, dbErr := l.svcCtx.ArticleLikeModel.Exists(l.ctx, in.ArticleId, in.UserId)
 		if dbErr != nil {
 			l.Logger.Errorf("failed to check like in db, article_id: %d, user_id: %d, error: %v", in.ArticleId, in.UserId, dbErr)

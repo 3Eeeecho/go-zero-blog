@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
@@ -59,6 +60,9 @@ func (l *DeleteArticleLogic) DeleteArticle(in *pb.DeleteArticleRequest) (*pb.Art
 		l.Logger.Errorf("article not exist, id: %d", in.Id)
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "articles not exist")
 	}
+
+	l.svcCtx.Redis.Del(fmt.Sprintf("article:detail:%d", in.Id))
+	l.svcCtx.Redis.Del("article:list:tag_*:page_*") // 粗粒度失效
 
 	l.Logger.Infof("article deleted successfully, id: %d", in.Id)
 	return &pb.ArticleCommonResponse{

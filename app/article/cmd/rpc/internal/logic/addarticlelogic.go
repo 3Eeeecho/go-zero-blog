@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
@@ -64,6 +65,7 @@ func (l *AddArticleLogic) AddArticle(in *pb.AddArticleRequest) (*pb.ArticleCommo
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "insert article failed")
 	}
 
+	l.svcCtx.Redis.Del(fmt.Sprintf("article:list:tag_%d:page_*", in.TagId)) // 通配符失效
 	l.Logger.Info("article added with ID: %d", id)
 
 	return &pb.ArticleCommonResponse{

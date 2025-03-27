@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
@@ -94,6 +95,8 @@ func (l *EditArticleLogic) EditArticle(in *pb.EditArticleRequest) (*pb.ArticleCo
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "edit article failed")
 	}
 
+	l.svcCtx.Redis.Del(fmt.Sprintf("article:detail:%d", in.Id))
+	l.svcCtx.Redis.Del(fmt.Sprintf("article:list:tag_%d:page_*", in.TagId))
 	// 返回成功响应
 	l.Logger.Infof("article edited successfully, id: %d", in.Id)
 
