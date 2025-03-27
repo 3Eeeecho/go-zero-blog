@@ -618,11 +618,11 @@ func (x *AddArticleRequest) GetCreatedBy() int64 {
 type EditArticleRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id"`                                   // 路径参数
-	TagId         int64                  `protobuf:"varint,2,opt,name=tag_id,json=tagId,proto3" json:"tag_id"`                // 必填
-	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title"`                              // 必填
-	Desc          string                 `protobuf:"bytes,4,opt,name=desc,proto3" json:"desc"`                                // 必填
-	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content"`                          // 必填
-	ModifiedBy    int64                  `protobuf:"varint,6,opt,name=modified_by,json=modifiedBy,proto3" json:"modified_by"` // 必填
+	TagId         int64                  `protobuf:"varint,2,opt,name=tag_id,json=tagId,proto3" json:"tag_id"`                // 可选
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title"`                              // 可选
+	Desc          string                 `protobuf:"bytes,4,opt,name=desc,proto3" json:"desc"`                                // 可选
+	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content"`                          // 可选
+	ModifiedBy    int64                  `protobuf:"varint,6,opt,name=modified_by,json=modifiedBy,proto3" json:"modified_by"` // 可选
 	State         int32                  `protobuf:"varint,7,opt,name=state,proto3" json:"state"`                             // 可选
 	UserId        int64                  `protobuf:"varint,8,opt,name=userId,proto3" json:"userId"`
 	unknownFields protoimpl.UnknownFields

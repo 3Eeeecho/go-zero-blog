@@ -70,11 +70,11 @@ message AddArticleRequest {
 // --- EditArticle ---
 message EditArticleRequest {
   int64 id = 1;          // 路径参数
-  int64 tag_id = 2;      // 必填
-  string title = 3;      // 必填
-  string desc = 4;       // 必填
-  string content = 5;    // 必填
-  int64 modified_by = 6; // 必填
+  int64 tag_id = 2;      // 可选
+  string title = 3;      // 可选
+  string desc = 4;       // 可选
+  string content = 5;    // 可选
+  int64 modified_by = 6; // 可选
   int32 state = 7;       // 可选
   int64 userId = 8;
 }

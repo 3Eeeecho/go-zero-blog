@@ -28,16 +28,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: article.AddArticleHandler(serverCtx),
 			},
 			{
-				// 修改文章
-				Method:  http.MethodPut,
-				Path:    "/articles",
-				Handler: article.EditArticleHandler(serverCtx),
-			},
-			{
 				// 获取单篇文章的详细信息
 				Method:  http.MethodGet,
 				Path:    "/articles/:id",
 				Handler: article.GetArticleHandler(serverCtx),
+			},
+			{
+				// 修改文章
+				Method:  http.MethodPut,
+				Path:    "/articles/:id",
+				Handler: article.EditArticleHandler(serverCtx),
 			},
 			{
 				// 删除文章
@@ -78,7 +78,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				// 审核文章
 				Method:  http.MethodPut,
-				Path:    "/articles/review",
+				Path:    "/articles/review/:id",
 				Handler: article.ReviewArticleHandler(serverCtx),
 			},
 			{

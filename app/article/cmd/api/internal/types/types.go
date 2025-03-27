@@ -49,12 +49,12 @@ type DeleteArticleRequest struct {
 }
 
 type EditArticleRequest struct {
-	Id      int64  `json:"id"`             //必填
-	TagId   int64  `json:"tag_id"`         // 必填
-	Title   string `json:"title"`          // 必填
-	Desc    string `json:"desc"`           // 必填
-	Content string `json:"content"`        // 必填
-	State   int32  `json:"state,optional"` // 可选
+	Id      int64  `path:"id"`               //必填
+	TagId   int64  `json:"tag_id,optional"`  // 可选
+	Title   string `json:"title,optional"`   // 可选
+	Desc    string `json:"desc,optional"`    // 可选
+	Content string `json:"content,optional"` // 可选
+	State   int32  `json:"state,optional"`   // 可选
 }
 
 type GetArticleRequest struct {
@@ -110,7 +110,7 @@ type LikeArticleRequest struct {
 }
 
 type ReviewArticleRequest struct {
-	Id       int64 `json:"id"`
+	Id       int64 `path:"id"`
 	Approved bool  `json:"approved"`
 }
 

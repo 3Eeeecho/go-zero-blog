@@ -66,11 +66,11 @@ type AddArticleRequest {
 
 // --- EditArticle ---
 type EditArticleRequest {
-	Id      int64  `json:"id"` //必填
-	TagId   int64  `json:"tag_id"` // 必填
-	Title   string `json:"title"` // 必填
-	Desc    string `json:"desc"` // 必填
-	Content string `json:"content"` // 必填
+	Id      int64  `path:"id"` //必填
+	TagId   int64  `json:"tag_id,optional"` // 可选
+	Title   string `json:"title,optional"` // 可选
+	Desc    string `json:"desc,optional"` // 可选
+	Content string `json:"content,optional"` // 可选
 	State   int32  `json:"state,optional"` // 可选
 }
 
@@ -84,7 +84,7 @@ type SubmitArticleRequest {
 }
 
 type ReviewArticleRequest {
-	Id       int64 `json:"id"`
+	Id       int64 `path:"id"`
 	Approved bool  `json:"approved"`
 }
 
@@ -162,7 +162,7 @@ service article-api {
 		description: "通过文章ID和更新的参数修改文章信息"
 	)
 	@handler EditArticle
-	put /articles (EditArticleRequest) returns (ArticleCommonResponse)
+	put /articles/:id (EditArticleRequest) returns (ArticleCommonResponse)
 
 	@doc (
 		summary:     "删除文章"
@@ -183,7 +183,7 @@ service article-api {
 		description: "管理员审核指定文章，修改其状态（待审核/通过/拒绝），需权限验证"
 	)
 	@handler ReviewArticle
-	put /articles/review (ReviewArticleRequest) returns (ArticleCommonResponse)
+	put /articles/review/:id (ReviewArticleRequest) returns (ArticleCommonResponse)
 
 	@doc (
 		summary:     "添加评论"
