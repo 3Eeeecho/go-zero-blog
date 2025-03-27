@@ -2,10 +2,13 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 
@@ -28,6 +31,22 @@ func NewGetArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetArt
 
 // 获取单篇文章的详细信息
 func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleResponse, error) {
+	cacheKey := fmt.Sprintf("article:detail:%d", in.Id)
+
+	// 从 Redis 获取
+	cached, err := l.svcCtx.Redis.Get(cacheKey)
+	if err == nil && cached != "" {
+		var resp pb.GetArticleResponse
+		json.Unmarshal([]byte(cached), &resp)
+		l.Logger.Infof("cache hit for article, key: %s", cacheKey)
+		return &resp, nil
+	}
+
+	// 未命中缓存或 Redis 错误，查询数据库
+	if err != redis.Nil { // redis.Nil 表示缓存不存在，不记录为错误
+		l.Logger.Errorf("failed to get from redis, key: %s, error: %v", cacheKey, err)
+	}
+
 	exist, err := l.svcCtx.ArticleModel.ExistArticleByID(l.ctx, in.Id)
 	if err != nil {
 		l.Logger.Errorf("check article existence failed, id: %d, error: %v", in.Id, err)
@@ -49,6 +68,10 @@ func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleRe
 	if err != nil {
 		return nil, err
 	}
+
+	// 存入 Redis
+	jsonData, _ := json.Marshal(article)
+	l.svcCtx.Redis.Set(cacheKey, string(jsonData))
 
 	// 返回成功响应
 	l.Logger.Infof("get article successfully, id: %d", in.Id)

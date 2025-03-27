@@ -2,10 +2,13 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
+	"github.com/go-redis/redis"
 	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -37,6 +40,21 @@ func (l *GetArticlesLogic) GetArticles(in *pb.GetArticlesRequest) (*pb.GetArticl
 		pageSize = 10 // 默认每页10条
 	}
 
+	// 尝试从 Redis 获取
+	cacheKey := fmt.Sprintf("article:list:tag_%d:page_%d_%d", in.TagId, pageNum, pageSize)
+	cached, err := l.svcCtx.Redis.Get(cacheKey)
+	if err == nil && cached != "" {
+		var resp pb.GetArticlesResponse
+		json.Unmarshal([]byte(cached), &resp)
+		l.Logger.Infof("cache hit for articles, key: %s", cacheKey)
+		return &resp, nil
+	}
+
+	// 未命中缓存或 Redis 错误，查询数据库
+	if err != redis.Nil { // redis.Nil 表示缓存不存在，不记录为错误
+		l.Logger.Errorf("failed to get from redis, key: %s, error: %v", cacheKey, err)
+	}
+
 	// 构造过滤条件
 	maps := make(map[string]any)
 	if in.TagId != 0 {
@@ -49,13 +67,6 @@ func (l *GetArticlesLogic) GetArticles(in *pb.GetArticlesRequest) (*pb.GetArticl
 		l.Logger.Errorf("get articles failed, page_num: %d, page_size: %d, maps: %v, error: %v",
 			pageNum, pageSize, maps, err)
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get articles failed")
-	}
-
-	// 文章总数
-	total, err := l.svcCtx.ArticleModel.CountByCondition(l.ctx, maps)
-	if err != nil {
-		l.Logger.Errorf("count articles failed,condition:%v,error:%v", maps, err)
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "count articles failed")
 	}
 
 	data := make([]*pb.Article, len(articles))
@@ -72,14 +83,18 @@ func (l *GetArticlesLogic) GetArticles(in *pb.GetArticlesRequest) (*pb.GetArticl
 		}
 	}
 
-	// 返回成功响应
-	l.Logger.Infof("articles retrieved successfully, page_num: %d, page_size: %d", pageNum, pageSize)
-
-	return &pb.GetArticlesResponse{
+	// 存入 Redis
+	resp := &pb.GetArticlesResponse{
 		Msg:      "获取文章列表成功",
 		Data:     data,
-		Total:    total,
+		Total:    int64(len(articles)),
 		PageNum:  pageNum,
 		PageSize: pageSize,
-	}, nil
+	}
+	jsonData, _ := json.Marshal(resp)
+	l.svcCtx.Redis.Set(cacheKey, string(jsonData))
+
+	// 返回成功响应
+	l.Logger.Infof("articles retrieved successfully, page_num: %d, page_size: %d", pageNum, pageSize)
+	return resp, nil
 }

@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
@@ -36,22 +38,40 @@ func (l *UnlikeArtilceLogic) UnlikeArtilce(in *pb.UnlikeArticleRequest) (*pb.Art
 		return nil, xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND)
 	}
 
-	// 检查是否已点赞
-	exists, err := l.svcCtx.ArticleLikeModel.Exists(l.ctx, in.ArticleId, in.UserId)
-	if err != nil {
-		l.Logger.Errorf("failed to check like status, article_id: %d, user_id: %d, error: %v", in.ArticleId, in.UserId, err)
-		return nil, xerr.NewErrCode(xerr.DB_ERROR)
-	}
+	cacheKey := fmt.Sprintf("article:likes:%d", in.ArticleId)
+	userIdStr := strconv.FormatInt(in.UserId, 10)
+
+	// 优先检查 Redis
+	exists, _ := l.svcCtx.Redis.Sismember(cacheKey, userIdStr)
 	if !exists {
-		l.Logger.Errorf("user has not liked this article, article_id: %d, user_id: %d", in.ArticleId, in.UserId)
-		return nil, xerr.NewErrCodeMsg(xerr.REQUEST_PARAM_ERROR, "未点赞此文章")
+		// Redis 明确未点赞，检查数据库
+		dbExists, dbErr := l.svcCtx.ArticleLikeModel.Exists(l.ctx, in.ArticleId, in.UserId)
+		if dbErr != nil {
+			l.Logger.Errorf("failed to check like in db, article_id: %d, user_id: %d, error: %v", in.ArticleId, in.UserId, dbErr)
+			return nil, xerr.NewErrCode(xerr.DB_ERROR)
+		}
+		if !dbExists {
+			return nil, xerr.NewErrCodeMsg(xerr.REQUEST_PARAM_ERROR, "未点赞此文章")
+		}
+		// 数据库有记录，Redis 需要修复
+		exists = true
 	}
 
-	// 删除点赞记录
+	// 先删数据库
 	err = l.svcCtx.ArticleLikeModel.Delete(l.ctx, in.ArticleId, in.UserId)
 	if err != nil {
 		l.Logger.Errorf("failed to delete like, article_id: %d, user_id: %d, error: %v", in.ArticleId, in.UserId, err)
 		return nil, xerr.NewErrCode(xerr.DB_ERROR)
+	}
+
+	// 再删 Redis
+	if exists {
+		_, err = l.svcCtx.Redis.Srem(cacheKey, userIdStr)
+		if err != nil {
+			l.Logger.Errorf("failed to remove like in redis, article_id: %d, user_id: %d, error: %v", in.ArticleId, in.UserId, err)
+			// 不回滚数据库，记录日志即可
+		}
+		l.Logger.Infof("cache hit for unlike articleId: %d", in.ArticleId)
 	}
 
 	l.Logger.Infof("article unliked successfully, article_id: %d, user_id: %d", in.ArticleId, in.UserId)

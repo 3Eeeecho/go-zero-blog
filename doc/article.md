@@ -228,7 +228,67 @@ type GetCommentsResp struct {
 }
 ```
 
-### 8. 获取待审核文章列表
+### 8. 点赞文章
+
+1. route definition
+
+- Url: /articles/like/:id
+- Method: POST
+- Request: `LikeArticleRequest`
+- Response: `ArticleCommonResponse`
+
+2. request definition
+
+
+
+```golang
+type LikeArticleRequest struct {
+	Article_id int64 `path:"id"` // 文章 ID
+}
+```
+
+
+3. response definition
+
+
+
+```golang
+type ArticleCommonResponse struct {
+	Msg string `json:"msg"`
+}
+```
+
+### 9. 取消点赞文章
+
+1. route definition
+
+- Url: /articles/like/:id
+- Method: DELETE
+- Request: `LikeArticleRequest`
+- Response: `ArticleCommonResponse`
+
+2. request definition
+
+
+
+```golang
+type LikeArticleRequest struct {
+	Article_id int64 `path:"id"` // 文章 ID
+}
+```
+
+
+3. response definition
+
+
+
+```golang
+type ArticleCommonResponse struct {
+	Msg string `json:"msg"`
+}
+```
+
+### 10. 获取待审核文章列表
 
 1. route definition
 
@@ -263,7 +323,7 @@ type GetPendingArticlesResponse struct {
 }
 ```
 
-### 9. 审核文章
+### 11. 审核文章
 
 1. route definition
 
@@ -294,7 +354,7 @@ type ArticleCommonResponse struct {
 }
 ```
 
-### 10. 提交新文章
+### 12. 提交新文章
 
 1. route definition
 
