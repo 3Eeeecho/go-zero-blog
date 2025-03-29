@@ -8,8 +8,7 @@ import (
 type Config struct {
 	zrpc.RpcServerConf
 	Mysql struct {
-		Dsn         string
-		TablePrefix string
+		Dsn string
 	}
 	App struct { // 应用相关配置
 		PageSize int

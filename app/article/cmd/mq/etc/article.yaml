@@ -4,11 +4,11 @@ Port: 8888
 Mode: dev
 
 Mysql:
-  Dsn: "root:root@tcp(localhost:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
+  Dsn: "root:root@tcp(mysql:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
   TablePrefix: "blog_"
 
 RabbitMQ:
-  URL: "amqp://guest:guest@localhost:5672/"
+  URL: "amqp://guest:guest@rabbitmq:5672/"
   SubmissionQueue: "article_submission_queue"
 
 ArticleServiceRpcConf:

@@ -8,8 +8,7 @@ import (
 type Config struct {
 	zrpc.RpcServerConf
 	Mysql struct {
-		Dsn         string // 数据库连接字符串
-		TablePrefix string // 表前缀
+		Dsn string // 数据库连接字符串
 	}
 	CustomRedis redis.RedisConf // Redis 配置，使用 go-zero 内置结构体
 	JwtAuth     struct {

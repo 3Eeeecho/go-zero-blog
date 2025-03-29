@@ -51,4 +51,3 @@ service user-api {
 	@handler UpdateUserRole
 	put /role (UpdateUserRoleRequest) returns (UpdateUserRoleResponse)
 }
-

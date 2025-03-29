@@ -3,13 +3,12 @@ ListenOn: 0.0.0.0:2001
 Mode: dev
 
 Mysql:
-  Dsn: "root:root@tcp(localhost:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
-  TablePrefix: "blog_"
+  Dsn: "root:root@tcp(mysql:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
 
 CustomRedis:
   Host: "127.0.0.1:6379"
-  Pass: ""         # Password 为空时用空字符串
-  Type: "node"     # 单节点 Redis，go-zero 默认要求
+  Pass: "" # Password 为空时用空字符串
+  Type: "node" # 单节点 Redis，go-zero 默认要求
   IdleTimeout: 200 # 单位：秒
 
 JwtAuth:
