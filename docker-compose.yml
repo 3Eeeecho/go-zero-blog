@@ -102,6 +102,7 @@ services:
       GOPROXY: https://goproxy.cn,direct
     volumes:
       - .:/app  # 挂载代码用于热重载
+      #- ./logs:/app/logs
     depends_on:
       mysql:
         condition: service_healthy

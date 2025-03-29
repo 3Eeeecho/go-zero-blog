@@ -3,6 +3,10 @@ ListenOn: 0.0.0.0:2002
 Mode: dev
 MaxBytes: 10485760
 
+Log:
+  Mode: file
+  Level: info
+
 Mysql:
   Dsn: "root:root@tcp(mysql:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
 

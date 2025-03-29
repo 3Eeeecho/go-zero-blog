@@ -3,6 +3,10 @@ Host: 0.0.0.0
 Port: 8002
 Mode: dev
 
+Log:
+  Mode: file
+  Level: info
+
 JwtAuth:
   AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"
   AccessExpire: 3600

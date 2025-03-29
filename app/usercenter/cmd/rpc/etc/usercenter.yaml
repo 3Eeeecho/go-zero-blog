@@ -2,6 +2,10 @@ Name: usercenter.rpc
 ListenOn: 0.0.0.0:2001
 Mode: dev
 
+Log:
+  Mode: file
+  Level: info
+
 Mysql:
   Dsn: "root:root@tcp(mysql:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
 

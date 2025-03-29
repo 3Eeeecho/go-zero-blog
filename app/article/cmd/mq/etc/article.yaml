@@ -3,6 +3,10 @@ Host: 0.0.0.0
 Port: 8888
 Mode: dev
 
+Log:
+  Mode: file
+  Level: info
+
 Mysql:
   Dsn: "root:root@tcp(mysql:3306)/blog?charset=utf8mb4&parseTime=True&loc=Local"
   TablePrefix: "blog_"
