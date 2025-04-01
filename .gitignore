@@ -1,2 +1,5 @@
-data/
+data/**
 runtime/
+dockerfile
+todo.md
+.dockerignore

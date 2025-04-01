@@ -94,15 +94,12 @@ services:
 
   #前端api + 业务rpc
   go-zero-blog:
-    image: go-zero-blog:latest
+    image: crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:latest
     container_name: go-zero-blog
     environment:
       # 时区上海 - Timezone Shanghai
       TZ: Asia/Shanghai
       GOPROXY: https://goproxy.cn,direct
-    volumes:
-      - .:/app  # 挂载代码用于热重载
-      #- ./logs:/app/logs
     depends_on:
       mysql:
         condition: service_healthy

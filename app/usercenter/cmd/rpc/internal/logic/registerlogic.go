@@ -68,7 +68,7 @@ func (l *RegisterLogic) Register(in *userpb.RegisterRequest) (*userpb.RegisterRe
 	newUser := &model.BlogUser{
 		Username: in.Username,
 		Password: string(hashedPassword),
-		Role:     in.Role,
+		Role:     "user",
 	}
 	// 将新用户插入数据库
 	err = l.svcCtx.UserModel.Insert(l.ctx, newUser)

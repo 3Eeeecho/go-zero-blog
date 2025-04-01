@@ -5,11 +5,11 @@ type User {
 	Id       int    `gorm:"primaryKey;column:id"`
 	Username string `gorm:"column:username"`
 	Password string `gorm:"column:password"` // 实际应加密存储
-	Role string `gorm:"column:role"`
+	Role     string `gorm:"column:role"`
 }
 
 type BaseResponse {
-	Msg  string `json:"msg"`
+	Msg string `json:"msg"`
 }
 
 // --- Login ---
@@ -29,9 +29,8 @@ type (
 	RegisterRequest {
 		Username string `json:"username"` // 必填
 		Password string `json:"password"` // 必填
-		Role string `json:"role"`
 	}
-		RegisterResponse {
+	RegisterResponse {
 		Token   string `json:"token"`
 		Expires int    `json:"expiration"`
 	}
@@ -63,7 +62,7 @@ type (
 		Role string `json:"role"` // "user", "author", "admin"
 	}
 
-	 UpdateUserRoleResponse {
+	UpdateUserRoleResponse {
 		Msg string `json:"msg"`
 	}
 )

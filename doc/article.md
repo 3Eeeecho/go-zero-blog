@@ -67,42 +67,7 @@ type ArticleCommonResponse struct {
 }
 ```
 
-### 3. 修改文章
-
-1. route definition
-
-- Url: /articles
-- Method: PUT
-- Request: `EditArticleRequest`
-- Response: `ArticleCommonResponse`
-
-2. request definition
-
-
-
-```golang
-type EditArticleRequest struct {
-	Id int64 `json:"id"` //必填
-	TagId int64 `json:"tag_id"` // 必填
-	Title string `json:"title"` // 必填
-	Desc string `json:"desc"` // 必填
-	Content string `json:"content"` // 必填
-	State int32 `json:"state,optional"` // 可选
-}
-```
-
-
-3. response definition
-
-
-
-```golang
-type ArticleCommonResponse struct {
-	Msg string `json:"msg"`
-}
-```
-
-### 4. 获取单篇文章的详细信息
+### 3. 获取单篇文章的详细信息
 
 1. route definition
 
@@ -118,6 +83,41 @@ type ArticleCommonResponse struct {
 ```golang
 type GetArticleRequest struct {
 	Id int64 `path:"id"` //必填
+}
+```
+
+
+3. response definition
+
+
+
+```golang
+type ArticleCommonResponse struct {
+	Msg string `json:"msg"`
+}
+```
+
+### 4. 修改文章
+
+1. route definition
+
+- Url: /articles/:id
+- Method: PUT
+- Request: `EditArticleRequest`
+- Response: `ArticleCommonResponse`
+
+2. request definition
+
+
+
+```golang
+type EditArticleRequest struct {
+	Id int64 `path:"id"` //必填
+	TagId int64 `json:"tag_id,optional"` // 可选
+	Title string `json:"title,optional"` // 可选
+	Desc string `json:"desc,optional"` // 可选
+	Content string `json:"content,optional"` // 可选
+	State int32 `json:"state,optional"` // 可选
 }
 ```
 
@@ -327,7 +327,7 @@ type GetPendingArticlesResponse struct {
 
 1. route definition
 
-- Url: /articles/review
+- Url: /articles/review/:id
 - Method: PUT
 - Request: `ReviewArticleRequest`
 - Response: `ArticleCommonResponse`
@@ -338,7 +338,7 @@ type GetPendingArticlesResponse struct {
 
 ```golang
 type ReviewArticleRequest struct {
-	Id int64 `json:"id"`
+	Id int64 `path:"id"`
 	Approved bool `json:"approved"`
 }
 ```

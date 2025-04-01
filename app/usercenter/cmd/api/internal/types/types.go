@@ -20,7 +20,6 @@ type LoginResponse struct {
 type RegisterRequest struct {
 	Username string `json:"username"` // 必填
 	Password string `json:"password"` // 必填
-	Role     string `json:"role"`
 }
 
 type RegisterResponse struct {
