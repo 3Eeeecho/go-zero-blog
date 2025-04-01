@@ -94,12 +94,15 @@ services:
 
   #前端api + 业务rpc
   go-zero-blog:
-    image: crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:latest
+    image: crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:dev
     container_name: go-zero-blog
     environment:
       # 时区上海 - Timezone Shanghai
       TZ: Asia/Shanghai
       GOPROXY: https://goproxy.cn,direct
+    volumes:
+      - ./:/app  # 挂载本地代码
+      - go-mod:/go/pkg/mod  # 缓存 Go 模块
     depends_on:
       mysql:
         condition: service_healthy
@@ -114,3 +117,7 @@ services:
 networks:
   go-zero-network:
     driver: bridge
+
+# 声明所有使用的命名卷
+volumes:
+  go-mod:

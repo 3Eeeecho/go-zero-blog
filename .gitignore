@@ -3,3 +3,4 @@ runtime/
 dockerfile
 todo.md
 .dockerignore
+logs/

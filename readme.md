@@ -42,7 +42,11 @@
    docker login --username=<你的用户名> crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com
 3. 拉取镜像（可选）
    ```bash 
-   docker pull crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:latest
+   docker pull crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:dev
 4. 启动服务
    ```bash
    docker-compose up --build
+
+启动服务后,blog需要一点时间下载go依赖模块,可以输入指令来查看是否运行
+   ```bash
+   docker logs go-zero-blog
