@@ -37,6 +37,7 @@
    ```bash
    git clone https://github.com/3Eeeecho/go-zero-blog.git
    cd go-zero-blog
+   go mod tidy
 2. 登录阿里云容器镜像服务
    ```bash
    docker login --username=<你的用户名> crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com
@@ -45,7 +46,7 @@
    docker pull crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:dev
 4. 启动服务
    ```bash
-   docker-compose up --build
+   docker-compose up --build -d
 
 启动服务后,blog需要一点时间下载go依赖模块,可以输入指令来查看是否运行
    ```bash
