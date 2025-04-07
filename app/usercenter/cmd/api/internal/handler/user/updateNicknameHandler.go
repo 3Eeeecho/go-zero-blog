@@ -11,10 +11,10 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-// 修改密码
-func UpdatePasswordHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// 修改用户名
+func UpdateNicknameHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UpdatePasswordRequest
+		var req types.UpdateNicknameRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			result.ParamErrorResult(r, w, err)
 			return
@@ -27,8 +27,8 @@ func UpdatePasswordHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := user.NewUpdatePasswordLogic(r.Context(), svcCtx)
-		resp, err := l.UpdatePassword(&req)
+		l := user.NewUpdateNicknameLogic(r.Context(), svcCtx)
+		resp, err := l.UpdateNickname(&req)
 		result.HttpResult(r, w, resp, err)
 	}
 }

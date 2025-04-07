@@ -34,22 +34,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/:id",
+				Handler: user.GetUserInfoHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/batch",
+				Handler: user.GetUsersInfoHandler(serverCtx),
+			},
+			{
 				// 修改密码
 				Method:  http.MethodPut,
 				Path:    "/password",
 				Handler: user.UpdatePasswordHandler(serverCtx),
 			},
 			{
-				// 更新用户权限
-				Method:  http.MethodPut,
-				Path:    "/role",
-				Handler: user.UpdateUserRoleHandler(serverCtx),
-			},
-			{
 				// 修改用户名
 				Method:  http.MethodPut,
 				Path:    "/username",
-				Handler: user.UpdateUsernameHandler(serverCtx),
+				Handler: user.UpdateNicknameHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtAuth.AccessSecret),

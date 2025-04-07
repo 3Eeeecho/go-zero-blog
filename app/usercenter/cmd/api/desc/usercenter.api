@@ -34,8 +34,8 @@ service user-api {
 		summary: "修改用户名"
 		desc:    "更新用户的新用户名，需要 JWT 认证"
 	)
-	@handler UpdateUsernameHandler
-	put /username (UpdateUsernameRequest) returns (UpdateUsernameResponse)
+	@handler UpdateNicknameHandler
+	put /nickname (UpdateNicknameRequest) returns (UpdateNicknameResponse)
 
 	@doc (
 		summary: "修改密码"
@@ -44,11 +44,10 @@ service user-api {
 	@handler UpdatePasswordHandler
 	put /password (UpdatePasswordRequest) returns (UpdatePasswordResponse)
 
-	@doc (
-		summary: "更新用户权限"
-		desc:    "更新用户的权限，需要管理员操作"
-	)
-	@handler UpdateUserRole
-	put /role (UpdateUserRoleRequest) returns (UpdateUserRoleResponse)
+	@handler GetUserInfo
+	get /:id (GetUserInfoRequest) returns (GetUserInfoResponse)
+
+	@handler GetUsersInfo
+	post /batch (GetUsersInfoRequest) returns (GetUsersInfoResponse)
 }
 

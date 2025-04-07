@@ -13,6 +13,7 @@ type (
 		FindOne(ctx context.Context, id int64) (*BlogUser, error)
 		FindByUsername(ctx context.Context, username string) (*BlogUser, error)
 		FindByUserId(ctx context.Context, id int64) (*BlogUser, error)
+		FindByUserIds(ctx context.Context, ids []int64) ([]*BlogUser, error)
 		Update(ctx context.Context, user *BlogUser) error
 	}
 
@@ -25,6 +26,7 @@ type (
 		Username string `gorm:"column:username"`
 		Password string `gorm:"column:password"`
 		Role     string `gorm:"column:role"`
+		Nickname string `gorm:"column:nickname"`
 	}
 )
 
@@ -64,10 +66,6 @@ func (m *defaultUserModel) FindByUsername(ctx context.Context, username string) 
 	return &user, nil
 }
 
-func (m *defaultUserModel) Update(ctx context.Context, user *BlogUser) error {
-	return m.db.WithContext(ctx).Save(user).Error
-}
-
 func (m *defaultUserModel) FindByUserId(ctx context.Context, id int64) (*BlogUser, error) {
 	var user BlogUser
 	err := m.db.WithContext(ctx).Where("id = ?", id).First(&user).Error
@@ -78,4 +76,20 @@ func (m *defaultUserModel) FindByUserId(ctx context.Context, id int64) (*BlogUse
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (m *defaultUserModel) FindByUserIds(ctx context.Context, ids []int64) ([]*BlogUser, error) {
+	var user []*BlogUser
+	err := m.db.WithContext(ctx).Select("id", "nickname", "role").Where("id IN ?", ids).Find(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil // 未找到记录，返回 nil
+		}
+		return nil, err
+	}
+	return user, nil
+}
+
+func (m *defaultUserModel) Update(ctx context.Context, user *BlogUser) error {
+	return m.db.WithContext(ctx).Save(user).Error
 }

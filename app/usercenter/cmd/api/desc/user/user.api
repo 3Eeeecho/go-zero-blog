@@ -1,68 +1,78 @@
 syntax = "v1"
 
 // --- User ---
-type User {
-	Id       int    `gorm:"primaryKey;column:id"`
-	Username string `gorm:"column:username"`
-	Password string `gorm:"column:password"` // 实际应加密存储
-	Role     string `gorm:"column:role"`
+type User struct {
+    Id       int64  `gorm:"primaryKey;column:id" validate:"required"` // 用户ID必填
+    Username string `gorm:"column:username" validate:"required,min=3,max=20"` // 用户名必填，长度3-20
+    Password string `gorm:"column:password" validate:"required,min=6"` // 密码必填，最小长度6（实际应加密存储）
+    Role     string `gorm:"column:role" validate:"required,oneof=admin user"` // 角色必填，只能是admin或user
+    Nickname string `gorm:"column:nickname" validate:"required,min=1,max=50"` // 昵称必填，长度1-50
 }
 
-type BaseResponse {
-	Msg string `json:"msg"`
+type UserInfo struct {
+    Id       int64  `gorm:"primaryKey;column:id" validate:"required"` // 用户ID必填
+    Nickname string `gorm:"column:nickname" validate:"required,min=1,max=50"` // 昵称必填，长度1-50
+}
+
+type BaseResponse struct {
+    Msg string `json:"msg"`
 }
 
 // --- Login ---
-type (
-	LoginRequest {
-		Username string `json:"username"` // 必填
-		Password string `json:"password"` // 必填
-	}
-	LoginResponse {
-		Token   string `json:"token"`
-		Expires int    `json:"expiration"`
-	}
-) 
+type LoginRequest struct {
+    Username string `json:"username" validate:"required,min=3,max=20"` // 用户名必填，长度3-20
+    Password string `json:"password" validate:"required,min=6"` // 密码必填，最小长度6
+}
+
+type LoginResponse struct {
+    Token    string `json:"token" validate:"required"` // Token必填
+    Expires  int64  `json:"expiration" validate:"required,gt=0"` // 过期时间必填，大于0
+}
 
 // --- Register ---
-type (
-	RegisterRequest {
-		Username string `json:"username"` // 必填
-		Password string `json:"password"` // 必填
-	}
-	RegisterResponse {
-		Token   string `json:"token"`
-		Expires int    `json:"expiration"`
-	}
-)
+type RegisterRequest struct {
+    Username string `json:"username" validate:"required,min=3,max=20"` // 用户名必填，长度3-20
+    Password string `json:"password" validate:"required,min=6"` // 密码必填，最小长度6
+    Nickname string `json:"nickname" validate:"required,min=1,max=50"` // 昵称必填，长度1-50
+}
 
-type (
-	UpdateUsernameRequest {
-		NewUsername string `json:"username"`
-	}
-	UpdateUsernameResponse {
-		BaseResponse
-	}
-)
+type RegisterResponse struct {
+    Token    string `json:"token" validate:"required"` // Token必填
+    Expires  int64  `json:"expiration" validate:"required,gt=0"` // 过期时间必填，大于0
+}
 
-type (
-	UpdatePasswordRequest {
-		NewPassword string `json:"password"` // 加密后的密码
-	}
-	UpdatePasswordResponse {
-		BaseResponse
-	}
-)
+// --- Update Nickname ---
+type UpdateNicknameRequest struct {
+    NewNickname string `json:"nickname" validate:"required,min=1,max=50"` // 新昵称必填，长度1-50
+}
 
-// --- UpdateUserRole ---
+type UpdateNicknameResponse struct {
+    BaseResponse
+}
 
-type (
-	UpdateUserRoleRequest {
-		Id   int    `json:"id"`
-		Role string `json:"role"` // "user", "author", "admin"
-	}
+// --- Update Password ---
+type UpdatePasswordRequest struct {
+    NewPassword string `json:"password" validate:"required,min=6"` // 新密码必填，最小长度6（加密后）
+}
 
-	UpdateUserRoleResponse {
-		Msg string `json:"msg"`
-	}
-)
+type UpdatePasswordResponse struct {
+    BaseResponse
+}
+
+// --- GetUserInfo ---
+type GetUserInfoRequest struct {
+    Id int64 `path:"id" validate:"required,gt=0"` // 用户ID必填，大于0
+}
+
+type GetUserInfoResponse struct {
+    User UserInfo `json:"userinfo" validate:"required"` // 用户信息必填
+}
+
+// --- BatchGetUsersInfo ---
+type GetUsersInfoRequest struct {
+    Ids []int64 `json:"ids" validate:"required,gt=0,dive,gt=0"` // ID列表必填，非空，每个ID大于0
+}
+
+type GetUsersInfoResponse struct {
+    Users []UserInfo `json:"usersinfo" validate:"required,dive"` // 用户信息列表必填，每个元素需验证
+}

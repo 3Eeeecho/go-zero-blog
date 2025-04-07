@@ -16,34 +16,34 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// 新增文章标签
-				Method:  http.MethodPost,
-				Path:    "/tags/add",
-				Handler: tag.AddTagHandler(serverCtx),
+				// 获取标签列表
+				Method:  http.MethodGet,
+				Path:    "/tags",
+				Handler: tag.GetTagsHandler(serverCtx),
 			},
 			{
-				// 删除文章标签
-				Method:  http.MethodDelete,
-				Path:    "/tags/delete",
-				Handler: tag.DeleteTagHandler(serverCtx),
+				// 新增文章标签
+				Method:  http.MethodPost,
+				Path:    "/tags",
+				Handler: tag.AddTagHandler(serverCtx),
 			},
 			{
 				// 修改文章标签
 				Method:  http.MethodPut,
-				Path:    "/tags/edit",
+				Path:    "/tags/:id",
 				Handler: tag.EditTagHandler(serverCtx),
+			},
+			{
+				// 删除文章标签
+				Method:  http.MethodDelete,
+				Path:    "/tags/:id",
+				Handler: tag.DeleteTagHandler(serverCtx),
 			},
 			{
 				// 导出标签信息
 				Method:  http.MethodPost,
 				Path:    "/tags/export",
 				Handler: tag.ExportTagHandler(serverCtx),
-			},
-			{
-				// 获取标签列表
-				Method:  http.MethodGet,
-				Path:    "/tags/getall",
-				Handler: tag.GetTagsHandler(serverCtx),
 			},
 			{
 				// 导入标签信息

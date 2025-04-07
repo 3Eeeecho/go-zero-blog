@@ -10,6 +10,13 @@ message User {
   string username = 2;
   string password = 3; // 实际应加密存储
   string role = 4;
+  string nickname=5;
+}
+
+message UserInfo{
+  int64 id=1;
+  string nickname=2;
+  string role=3;
 }
 
 // --- 登录 ---
@@ -27,6 +34,7 @@ message LoginResponse {
 message RegisterRequest {
   string username = 1;
   string password = 2;
+  string nickname=3;
 }
 
 message RegisterResponse {
@@ -35,12 +43,12 @@ message RegisterResponse {
 }
 
 // --- 修改用户名 ---
-message UpdateUsernameRequest {
+message UpdateNicknameRequest {
   int64 Id = 1;
-  string new_username = 2;
+  string new_nickname = 2;
 }
 
-message UpdateUsernameResponse { string Msg = 1; }
+message UpdateNicknameResponse { string Msg = 1; }
 
 // --- 修改密码 ---
 message UpdatePasswordRequest {
@@ -58,18 +66,31 @@ message GenerateTokenResp {
   int64 refresh_after = 3; // 建议刷新时间（Unix 时间戳）
 }
 
-// 更新用户角色
-message UpdateUserRoleRequest {
-  int64 Id = 1;
-  string Role = 2;
-  int64 AdminId = 3;
+message GetUserRoleRequest{
+  int64 id=1;
 }
 
-message UpdateUserRoleResponse { string Msg = 1; }
+message GetUserRoleResponse{
+  string role=1;
+}
 
-message GetUserRoleRequest { int64 Id = 1; }
+// --- GetUser ---
+message GetUserInfoRequest { 
+  int64 Id = 1; 
+}
 
-message GetUserRoleResponse { string Role = 1; }
+message GetUserInfoResponse { 
+  UserInfo user=1;
+}
+
+// --- BatchGetUsers ---
+message BatchGetUsersInfoRequest { 
+  repeated int64 ids=1;
+}
+
+message BatchGetUsersInfoResponse { 
+ repeated UserInfo users=1;
+}
 
 // 用户服务定义
 service usercenter {
@@ -78,13 +99,15 @@ service usercenter {
   // 用户注册
   rpc Register(RegisterRequest) returns (RegisterResponse);
   // 修改用户名
-  rpc UpdateUsername(UpdateUsernameRequest) returns (UpdateUsernameResponse);
+  rpc UpdateNickname(UpdateNicknameRequest) returns (UpdateNicknameResponse);
   // 修改密码
   rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse);
   // 生成 token
   rpc GenerateToken(GenerateTokenReq) returns (GenerateTokenResp);
 
-  rpc UpdateUserRole(UpdateUserRoleRequest) returns (UpdateUserRoleResponse);
-
   rpc GetUserRole(GetUserRoleRequest) returns (GetUserRoleResponse);
+
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+
+  rpc GetUsersInfo(BatchGetUsersInfoRequest) returns (BatchGetUsersInfoResponse);
 }

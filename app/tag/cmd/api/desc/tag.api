@@ -16,10 +16,8 @@ type Tag {
 
 // --- GetTags ---
 type GetTagsRequest {
-	Name     string ` json:"name,optional"` // 从查询参数解析
-	State    int32  ` json:"state,optional"` // 从查询参数解析
-	PageNum  int64  `" json:"page_num,optional"` // 分页参数
-	PageSize int64  ` json:"page_size,optional"` // 分页参数
+	PageNum  int64 ` json:"page_num,optional"` // 分页参数
+	PageSize int64 ` json:"page_size,optional"` // 分页参数
 }
 
 type GetTagsResponse {
@@ -39,12 +37,12 @@ type AddTagRequest {
 
 // --- DeleteTag ---
 type DeleteTagRequest {
-	Id int64 `json:"id"`
+	Id int64 `path:"id"`
 }
 
 // --- EditTag ---
 type EditTagRequest {
-	Id         int64  `json:"id"`
+	Id         int64  `path:"id"`
 	Name       string `json:"name"` // 必填
 	ModifiedBy string `json:"modified_by"` // 必填
 }
@@ -75,28 +73,28 @@ service tag-api {
 		description: "根据请求的参数（如标签名、状态）获取标签数据"
 	)
 	@handler GetTags
-	get /tags/getall (GetTagsRequest) returns (GetTagsResponse)
+	get /tags (GetTagsRequest) returns (GetTagsResponse)
 
 	@doc (
 		summary:     "新增文章标签"
 		description: "创建新的标签"
 	)
 	@handler AddTag
-	post /tags/add (AddTagRequest) returns (Response)
+	post /tags (AddTagRequest) returns (Response)
 
 	@doc (
 		summary:     "修改文章标签"
 		description: "编辑已有标签的信息"
 	)
 	@handler EditTag
-	put /tags/edit (EditTagRequest) returns (Response)
+	put /tags/:id (EditTagRequest) returns (Response)
 
 	@doc (
 		summary:     "删除文章标签"
 		description: "删除指定标签"
 	)
 	@handler DeleteTag
-	delete /tags/delete returns (Response)
+	delete /tags/:id returns (Response)
 
 	@doc (
 		summary:     "导出标签信息"

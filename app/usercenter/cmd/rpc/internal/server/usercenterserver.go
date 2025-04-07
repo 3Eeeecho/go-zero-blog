@@ -36,9 +36,9 @@ func (s *UsercenterServer) Register(ctx context.Context, in *userpb.RegisterRequ
 }
 
 // 修改用户名
-func (s *UsercenterServer) UpdateUsername(ctx context.Context, in *userpb.UpdateUsernameRequest) (*userpb.UpdateUsernameResponse, error) {
-	l := logic.NewUpdateUsernameLogic(ctx, s.svcCtx)
-	return l.UpdateUsername(in)
+func (s *UsercenterServer) UpdateNickname(ctx context.Context, in *userpb.UpdateNicknameRequest) (*userpb.UpdateNicknameResponse, error) {
+	l := logic.NewUpdateNicknameLogic(ctx, s.svcCtx)
+	return l.UpdateNickname(in)
 }
 
 // 修改密码
@@ -53,12 +53,17 @@ func (s *UsercenterServer) GenerateToken(ctx context.Context, in *userpb.Generat
 	return l.GenerateToken(in)
 }
 
-func (s *UsercenterServer) UpdateUserRole(ctx context.Context, in *userpb.UpdateUserRoleRequest) (*userpb.UpdateUserRoleResponse, error) {
-	l := logic.NewUpdateUserRoleLogic(ctx, s.svcCtx)
-	return l.UpdateUserRole(in)
-}
-
 func (s *UsercenterServer) GetUserRole(ctx context.Context, in *userpb.GetUserRoleRequest) (*userpb.GetUserRoleResponse, error) {
 	l := logic.NewGetUserRoleLogic(ctx, s.svcCtx)
 	return l.GetUserRole(in)
+}
+
+func (s *UsercenterServer) GetUserInfo(ctx context.Context, in *userpb.GetUserInfoRequest) (*userpb.GetUserInfoResponse, error) {
+	l := logic.NewGetUserInfoLogic(ctx, s.svcCtx)
+	return l.GetUserInfo(in)
+}
+
+func (s *UsercenterServer) GetUsersInfo(ctx context.Context, in *userpb.BatchGetUsersInfoRequest) (*userpb.BatchGetUsersInfoResponse, error) {
+	l := logic.NewGetUsersInfoLogic(ctx, s.svcCtx)
+	return l.GetUsersInfo(in)
 }

@@ -39,7 +39,7 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 		pageSize = int64(l.svcCtx.Config.App.PageSize) // 使用默认配置
 	}
 
-	cacheKey := fmt.Sprintf("tag:list:name_%s:state_%d:page_%d_%d", in.Name, in.State, pageNum, pageSize)
+	cacheKey := fmt.Sprintf("tag:list:page_%d_%d", pageNum, pageSize)
 
 	// 从 Redis 获取
 	cached, err := l.svcCtx.Redis.Get(cacheKey)
@@ -61,12 +61,8 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 
 	// 构造查询条件，支持按名称和状态过滤
 	conditions := make(map[string]any)
-	if in.Name != "" {
-		conditions["name"] = in.Name
-	}
-	if in.State != 1 { // 假设 1 表示启用状态,默认为启用
-		conditions["state"] = in.State
-	}
+	// 假设 1 表示启用状态,默认为启用
+	conditions["state"] = 1
 
 	// 获取标签列表
 	tags, err := l.svcCtx.TagModel.GetAll(l.ctx, int(pageNum), int(pageSize), conditions)

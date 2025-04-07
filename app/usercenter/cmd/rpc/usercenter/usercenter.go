@@ -14,21 +14,24 @@ import (
 )
 
 type (
-	GenerateTokenReq       = userpb.GenerateTokenReq
-	GenerateTokenResp      = userpb.GenerateTokenResp
-	GetUserRoleRequest     = userpb.GetUserRoleRequest
-	GetUserRoleResponse    = userpb.GetUserRoleResponse
-	LoginRequest           = userpb.LoginRequest
-	LoginResponse          = userpb.LoginResponse
-	RegisterRequest        = userpb.RegisterRequest
-	RegisterResponse       = userpb.RegisterResponse
-	UpdatePasswordRequest  = userpb.UpdatePasswordRequest
-	UpdatePasswordResponse = userpb.UpdatePasswordResponse
-	UpdateUserRoleRequest  = userpb.UpdateUserRoleRequest
-	UpdateUserRoleResponse = userpb.UpdateUserRoleResponse
-	UpdateUsernameRequest  = userpb.UpdateUsernameRequest
-	UpdateUsernameResponse = userpb.UpdateUsernameResponse
-	User                   = userpb.User
+	BatchGetUsersInfoRequest  = userpb.BatchGetUsersInfoRequest
+	BatchGetUsersInfoResponse = userpb.BatchGetUsersInfoResponse
+	GenerateTokenReq          = userpb.GenerateTokenReq
+	GenerateTokenResp         = userpb.GenerateTokenResp
+	GetUserInfoRequest        = userpb.GetUserInfoRequest
+	GetUserInfoResponse       = userpb.GetUserInfoResponse
+	GetUserRoleRequest        = userpb.GetUserRoleRequest
+	GetUserRoleResponse       = userpb.GetUserRoleResponse
+	LoginRequest              = userpb.LoginRequest
+	LoginResponse             = userpb.LoginResponse
+	RegisterRequest           = userpb.RegisterRequest
+	RegisterResponse          = userpb.RegisterResponse
+	UpdateNicknameRequest     = userpb.UpdateNicknameRequest
+	UpdateNicknameResponse    = userpb.UpdateNicknameResponse
+	UpdatePasswordRequest     = userpb.UpdatePasswordRequest
+	UpdatePasswordResponse    = userpb.UpdatePasswordResponse
+	User                      = userpb.User
+	UserInfo                  = userpb.UserInfo
 
 	Usercenter interface {
 		// 用户登录
@@ -36,13 +39,14 @@ type (
 		// 用户注册
 		Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 		// 修改用户名
-		UpdateUsername(ctx context.Context, in *UpdateUsernameRequest, opts ...grpc.CallOption) (*UpdateUsernameResponse, error)
+		UpdateNickname(ctx context.Context, in *UpdateNicknameRequest, opts ...grpc.CallOption) (*UpdateNicknameResponse, error)
 		// 修改密码
 		UpdatePassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*UpdatePasswordResponse, error)
 		// 生成 token
 		GenerateToken(ctx context.Context, in *GenerateTokenReq, opts ...grpc.CallOption) (*GenerateTokenResp, error)
-		UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error)
 		GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error)
+		GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
+		GetUsersInfo(ctx context.Context, in *BatchGetUsersInfoRequest, opts ...grpc.CallOption) (*BatchGetUsersInfoResponse, error)
 	}
 
 	defaultUsercenter struct {
@@ -69,9 +73,9 @@ func (m *defaultUsercenter) Register(ctx context.Context, in *RegisterRequest, o
 }
 
 // 修改用户名
-func (m *defaultUsercenter) UpdateUsername(ctx context.Context, in *UpdateUsernameRequest, opts ...grpc.CallOption) (*UpdateUsernameResponse, error) {
+func (m *defaultUsercenter) UpdateNickname(ctx context.Context, in *UpdateNicknameRequest, opts ...grpc.CallOption) (*UpdateNicknameResponse, error) {
 	client := userpb.NewUsercenterClient(m.cli.Conn())
-	return client.UpdateUsername(ctx, in, opts...)
+	return client.UpdateNickname(ctx, in, opts...)
 }
 
 // 修改密码
@@ -86,12 +90,17 @@ func (m *defaultUsercenter) GenerateToken(ctx context.Context, in *GenerateToken
 	return client.GenerateToken(ctx, in, opts...)
 }
 
-func (m *defaultUsercenter) UpdateUserRole(ctx context.Context, in *UpdateUserRoleRequest, opts ...grpc.CallOption) (*UpdateUserRoleResponse, error) {
-	client := userpb.NewUsercenterClient(m.cli.Conn())
-	return client.UpdateUserRole(ctx, in, opts...)
-}
-
 func (m *defaultUsercenter) GetUserRole(ctx context.Context, in *GetUserRoleRequest, opts ...grpc.CallOption) (*GetUserRoleResponse, error) {
 	client := userpb.NewUsercenterClient(m.cli.Conn())
 	return client.GetUserRole(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error) {
+	client := userpb.NewUsercenterClient(m.cli.Conn())
+	return client.GetUserInfo(ctx, in, opts...)
+}
+
+func (m *defaultUsercenter) GetUsersInfo(ctx context.Context, in *BatchGetUsersInfoRequest, opts ...grpc.CallOption) (*BatchGetUsersInfoResponse, error) {
+	client := userpb.NewUsercenterClient(m.cli.Conn())
+	return client.GetUsersInfo(ctx, in, opts...)
 }

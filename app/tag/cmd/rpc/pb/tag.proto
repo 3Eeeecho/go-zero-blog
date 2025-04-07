@@ -18,10 +18,8 @@ message Tag {
 
 // --- GetTags ---
 message GetTagsRequest {
-  string name = 1;     // 从查询参数解析
-  int64 state = 2;     // 从查询参数解析
-  int64 page_num = 3;  // 分页参数
-  int64 page_size = 4; // 分页参数
+  int64 page_num = 1;  // 分页参数
+  int64 page_size =2; // 分页参数
 }
 
 message GetTagsResponse {

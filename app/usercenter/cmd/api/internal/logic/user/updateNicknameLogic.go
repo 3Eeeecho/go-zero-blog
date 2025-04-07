@@ -14,36 +14,35 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type UpdateUserRoleLogic struct {
+type UpdateNicknameLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-// 更新用户权限
-func NewUpdateUserRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateUserRoleLogic {
-	return &UpdateUserRoleLogic{
+// 修改用户名
+func NewUpdateNicknameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateNicknameLogic {
+	return &UpdateNicknameLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *UpdateUserRoleLogic) UpdateUserRole(req *types.UpdateUserRoleRequest) (resp *types.UpdateUserRoleResponse, err error) {
-	adminId := ctxdata.GetUidFromCtx(l.ctx)
-	updateUserRoleResp, err := l.svcCtx.UsercenterRpc.UpdateUserRole(l.ctx, &usercenter.UpdateUserRoleRequest{
-		Id:      int64(req.Id),
-		AdminId: adminId,
-		Role:    req.Role,
+func (l *UpdateNicknameLogic) UpdateNickname(req *types.UpdateNicknameRequest) (resp *types.UpdateNicknameResponse, err error) {
+	userId := ctxdata.GetUidFromCtx(l.ctx)
+	updateNameResp, err := l.svcCtx.UsercenterRpc.UpdateNickname(l.ctx, &usercenter.UpdateNicknameRequest{
+		NewNickname: req.NewNickname,
+		Id:          userId,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
-	resp = &types.UpdateUserRoleResponse{} // 初始化 resp
-	err = copier.Copy(resp, updateUserRoleResp)
+	resp = &types.UpdateNicknameResponse{} // 初始化 resp
+	err = copier.Copy(resp, updateNameResp)
 	if err != nil {
-		l.Logger.Errorf("failed to copy updateUserRoleResp: %v", err)
+		l.Logger.Errorf("failed to copy updateNameResp: %v", err)
 		return nil, xerr.NewErrCode(xerr.SERVER_COMMON_ERROR)
 	}
 	return resp, nil

@@ -7,6 +7,22 @@ type BaseResponse struct {
 	Msg string `json:"msg"`
 }
 
+type GetUserInfoRequest struct {
+	Id int64 `path:"id"`
+}
+
+type GetUserInfoResponse struct {
+	User UserInfo `json:"userinfo"`
+}
+
+type GetUsersInfoRequest struct {
+	Ids []int64 `json:"ids,required"`
+}
+
+type GetUsersInfoResponse struct {
+	Users []UserInfo `json:"usersinfo"`
+}
+
 type LoginRequest struct {
 	Username string `json:"username"` // 必填
 	Password string `json:"password"` // 必填
@@ -14,17 +30,26 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	Token   string `json:"token"`
-	Expires int    `json:"expiration"`
+	Expires int64  `json:"expiration"`
 }
 
 type RegisterRequest struct {
 	Username string `json:"username"` // 必填
 	Password string `json:"password"` // 必填
+	Nickname string `json:"nickname"` // 必填
 }
 
 type RegisterResponse struct {
 	Token   string `json:"token"`
-	Expires int    `json:"expiration"`
+	Expires int64  `json:"expiration"`
+}
+
+type UpdateNicknameRequest struct {
+	NewNickname string `json:"nickname"`
+}
+
+type UpdateNicknameResponse struct {
+	BaseResponse
 }
 
 type UpdatePasswordRequest struct {
@@ -35,26 +60,15 @@ type UpdatePasswordResponse struct {
 	BaseResponse
 }
 
-type UpdateUserRoleRequest struct {
-	Id   int    `json:"id"`
-	Role string `json:"role"` // "user", "author", "admin"
-}
-
-type UpdateUserRoleResponse struct {
-	Msg string `json:"msg"`
-}
-
-type UpdateUsernameRequest struct {
-	NewUsername string `json:"username"`
-}
-
-type UpdateUsernameResponse struct {
-	BaseResponse
-}
-
 type User struct {
-	Id       int    `gorm:"primaryKey;column:id"`
+	Id       int64  `gorm:"primaryKey;column:id"`
 	Username string `gorm:"column:username"`
 	Password string `gorm:"column:password"` // 实际应加密存储
 	Role     string `gorm:"column:role"`
+	Nickname string `gorm:colunm:nickname"`
+}
+
+type UserInfo struct {
+	Id       int64  `gorm:"primaryKey;column:id"`
+	Nickname string `gorm:column:nickname"`
 }

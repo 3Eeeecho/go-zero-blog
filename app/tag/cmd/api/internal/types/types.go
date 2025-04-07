@@ -10,11 +10,11 @@ type AddTagRequest struct {
 }
 
 type DeleteTagRequest struct {
-	Id int64 `json:"id"`
+	Id int64 `path:"id"`
 }
 
 type EditTagRequest struct {
-	Id         int64  `json:"id"`
+	Id         int64  `path:"id"`
 	Name       string `json:"name"`        // 必填
 	ModifiedBy string `json:"modified_by"` // 必填
 }
@@ -31,10 +31,8 @@ type ExportTagResponse struct {
 }
 
 type GetTagsRequest struct {
-	Name     string ` json:"name,optional"`      // 从查询参数解析
-	State    int32  ` json:"state,optional"`     // 从查询参数解析
-	PageNum  int64  `" json:"page_num,optional"` // 分页参数
-	PageSize int64  ` json:"page_size,optional"` // 分页参数
+	PageNum  int64 ` json:"page_num,optional"`  // 分页参数
+	PageSize int64 ` json:"page_size,optional"` // 分页参数
 }
 
 type GetTagsResponse struct {

@@ -30,8 +30,6 @@ func NewGetTagsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetTagsLo
 
 func (l *GetTagsLogic) GetTags(req *types.GetTagsRequest) (resp *types.GetTagsResponse, err error) {
 	editTagResp, err := l.svcCtx.TagServiceRpc.GetTags(l.ctx, &tagservice.GetTagsRequest{
-		Name:     req.Name,
-		State:    int64(req.State),
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,
 	})
