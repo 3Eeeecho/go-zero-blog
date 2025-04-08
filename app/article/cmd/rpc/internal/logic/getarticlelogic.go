@@ -33,13 +33,19 @@ func NewGetArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetArt
 func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleResponse, error) {
 	cacheKey := fmt.Sprintf("article:detail:%d", in.Id)
 
-	// 从 Redis 获取
+	// 从 Redis 获取缓存
 	cached, err := l.svcCtx.Redis.Get(cacheKey)
 	if err == nil && cached != "" {
 		var resp pb.GetArticleResponse
-		json.Unmarshal([]byte(cached), &resp)
-		l.Logger.Infof("cache hit for article, key: %s", cacheKey)
-		return &resp, nil
+		if err := json.Unmarshal([]byte(cached), &resp); err != nil {
+			l.Logger.Errorf("failed to unmarshal cached data, key: %s, error: %v", cacheKey, err)
+			// 继续查询数据库，不直接返回错误
+		} else {
+			l.Logger.Infof("cache hit for article, key: %s", cacheKey)
+			return &resp, nil
+		}
+	} else if err != redis.Nil {
+		l.Logger.Errorf("failed to get from redis, key: %s, error: %v", cacheKey, err)
 	}
 
 	// 未命中缓存或 Redis 错误，查询数据库
@@ -64,20 +70,30 @@ func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleRe
 	}
 
 	data := &pb.Article{}
-	err = copier.Copy(data, article)
-	if err != nil {
+	if err := copier.Copy(data, article); err != nil {
+		l.Logger.Errorf("copy article to pb failed, error: %v", err)
 		return nil, err
 	}
 
-	// 存入 Redis
-	jsonData, _ := json.Marshal(article)
-	l.svcCtx.Redis.Set(cacheKey, string(jsonData))
+	resp := &pb.GetArticleResponse{
+		Msg:  "获取文章成功",
+		Data: data,
+	}
+
+	// 存入 Redis，设置过期时间（例如 1 小时）
+	jsonData, err := json.Marshal(resp) // 存储整个响应结构体
+	if err != nil {
+		l.Logger.Errorf("failed to marshal response, error: %v", err)
+	} else {
+		// 设置缓存，TTL 为 3600 秒（1小时）
+		if err := l.svcCtx.Redis.Setex(cacheKey, string(jsonData), 3600); err != nil {
+			l.Logger.Errorf("failed to set redis cache, key: %s, error: %v", cacheKey, err)
+		} else {
+			l.Logger.Infof("cache set successfully, key: %s", cacheKey)
+		}
+	}
 
 	// 返回成功响应
 	l.Logger.Infof("get article successfully, id: %d", in.Id)
-
-	return &pb.GetArticleResponse{
-		Msg:  "获取文章成功",
-		Data: data,
-	}, nil
+	return resp, nil
 }

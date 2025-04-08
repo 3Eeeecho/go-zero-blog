@@ -59,6 +59,7 @@ func (l *GetUserInfoLogic) GetUserInfo(in *userpb.GetUserInfoRequest) (*userpb.G
 	userInfo := &userpb.UserInfo{
 		Id:       user.Id,
 		Nickname: user.Nickname,
+		Role:     user.Role,
 	}
 
 	// 回写缓存

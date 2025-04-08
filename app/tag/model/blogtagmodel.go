@@ -27,7 +27,7 @@ type (
 		InsertBatch(ctx context.Context, tags []*BlogTag) error
 		ExistTagByID(ctx context.Context, id int64) (bool, error)
 		ExistTagByName(ctx context.Context, name string) (bool, error)
-		GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error)
+		GetOnCondition(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error)
 		CountByCondition(ctx context.Context, maps any) (int64, error)
 		Delete(ctx context.Context, id int64) error
 		Edit(ctx context.Context, id int64, data any) error
@@ -82,7 +82,7 @@ func (m *defaultTagModel) ExistTagByName(ctx context.Context, name string) (bool
 	return tag.Id > 0, nil
 }
 
-func (m *defaultTagModel) GetAll(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error) {
+func (m *defaultTagModel) GetOnCondition(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogTag, error) {
 	var (
 		tags []*BlogTag
 		err  error
@@ -99,7 +99,7 @@ func (m *defaultTagModel) GetAll(ctx context.Context, pageNum, pageSize int, map
 		offset := (pageNum - 1) * pageSize // 修正偏移量
 		err = query.Offset(offset).Limit(pageSize).Find(&tags).Error
 	} else {
-		err = query.Find(&tags).Error
+		return nil, gorm.ErrInvalidValue
 	}
 
 	if err != nil && err != gorm.ErrRecordNotFound {

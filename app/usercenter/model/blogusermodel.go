@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"errors"
 
 	"gorm.io/gorm"
 )
@@ -56,19 +55,19 @@ func (m *defaultUserModel) FindOne(ctx context.Context, id int64) (*BlogUser, er
 
 func (m *defaultUserModel) FindByUsername(ctx context.Context, username string) (*BlogUser, error) {
 	var user BlogUser
-	result := m.db.WithContext(ctx).Where("username = ?", username).First(&user)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil, nil // 用户不存在返回 nil
-	}
-	if result.Error != nil {
-		return nil, result.Error
+	err := m.db.WithContext(ctx).Where("username = ?", username).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil // 未找到记录，返回 nil
+		}
+		return nil, err
 	}
 	return &user, nil
 }
 
 func (m *defaultUserModel) FindByUserId(ctx context.Context, id int64) (*BlogUser, error) {
 	var user BlogUser
-	err := m.db.WithContext(ctx).Where("id = ?", id).First(&user).Error
+	err := m.db.WithContext(ctx).Select("id", "nickname", "role").Where("id = ?", id).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil // 未找到记录，返回 nil

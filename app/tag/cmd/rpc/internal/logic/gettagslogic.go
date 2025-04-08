@@ -65,7 +65,7 @@ func (l *GetTagsLogic) GetTags(in *pb.GetTagsRequest) (*pb.GetTagsResponse, erro
 	conditions["state"] = 1
 
 	// 获取标签列表
-	tags, err := l.svcCtx.TagModel.GetAll(l.ctx, int(pageNum), int(pageSize), conditions)
+	tags, err := l.svcCtx.TagModel.GetOnCondition(l.ctx, int(pageNum), int(pageSize), conditions)
 	if err != nil {
 		l.Logger.Errorf("get tags failed, page_num: %d, page_size: %d, conditions: %v, error: %v",
 			pageNum, pageSize, conditions, err)

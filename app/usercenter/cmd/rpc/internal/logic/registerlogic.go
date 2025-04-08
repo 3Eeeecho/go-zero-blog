@@ -32,8 +32,8 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 // Register 用户注册逻辑
 func (l *RegisterLogic) Register(in *userpb.RegisterRequest) (*userpb.RegisterResponse, error) {
 	// 检查用户名和密码是否为空
-	if in.Username == "" || in.Password == "" {
-		l.Logger.Errorf("invalid username or password, req: %+v", in)
+	if in.Username == "" || in.Password == "" || in.Nickname == "" {
+		l.Logger.Errorf("invalid params, req: %+v", in)
 		return nil, xerr.NewErrCode(xerr.REQUEST_PARAM_ERROR)
 	}
 
@@ -69,6 +69,7 @@ func (l *RegisterLogic) Register(in *userpb.RegisterRequest) (*userpb.RegisterRe
 		Username: in.Username,
 		Password: string(hashedPassword),
 		Role:     "user",
+		Nickname: in.Nickname,
 	}
 	// 将新用户插入数据库
 	err = l.svcCtx.UserModel.Insert(l.ctx, newUser)

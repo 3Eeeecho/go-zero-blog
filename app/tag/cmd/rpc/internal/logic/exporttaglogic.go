@@ -42,7 +42,7 @@ func (l *ExportTagLogic) ExportTag(in *pb.ExportTagRequest) (*pb.ExportTagRespon
 	}
 
 	// 获取标签列表
-	tags, err := l.svcCtx.TagModel.GetAll(l.ctx, 1, l.svcCtx.Config.App.PageSize, conditions)
+	tags, err := l.svcCtx.TagModel.GetOnCondition(l.ctx, 1, l.svcCtx.Config.App.PageSize, conditions)
 	if err != nil {
 		l.Logger.Errorf("get tags failed, page_num: %d, page_size: %d, conditions: %v, error: %v",
 			1, l.svcCtx.Config.App.PageSize, conditions, err)
