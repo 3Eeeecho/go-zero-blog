@@ -4,8 +4,12 @@ Port: 8003
 Mode: dev
 
 Log:
-  Mode: file
-  Level: info
+  Mode: file # 输出到文件
+  Path: logs/article-api # 日志目录
+  Level: info # 日志级别
+  Encoding: json # 结构化日志
+  KeepDays: 7 # 保留 7 天
+  MaxBackups: 10 # 最多 10 个备份
 
 JwtAuth:
   AccessSecret: "MTg5ODg2OTE1MjAyNS8zLzEyIDE4OjU0OjU3"

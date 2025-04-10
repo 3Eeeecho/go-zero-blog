@@ -35,7 +35,7 @@ type (
 		GetArticle(ctx context.Context, id int64) (*BlogArticle, error)
 		GetArticles(ctx context.Context, pageNum, pageSize int, maps any) ([]*BlogArticle, error)
 		CountByCondition(ctx context.Context, maps any) (int64, error)
-		Delete(ctx context.Context, id int64) *gorm.DB
+		Delete(ctx context.Context, id int64) error
 		Update(ctx context.Context, id int64, data any) error
 		CheckPermission(ctx context.Context, articleId, operatorId int64) (bool, error)
 		IncrementViews(ctx context.Context, id int64) error
@@ -111,8 +111,9 @@ func (m *defaultArticleModel) CountByCondition(ctx context.Context, maps any) (i
 	return count, nil
 }
 
-func (m *defaultArticleModel) Delete(ctx context.Context, id int64) *gorm.DB {
-	return m.db.WithContext(ctx).Model(&BlogArticle{}).Where("id = ?", id).Delete(&BlogArticle{})
+func (m *defaultArticleModel) Delete(ctx context.Context, id int64) error {
+	//TODO 事务(删除文章,一并删除评论和浏览量)
+	return m.db.WithContext(ctx).Model(&BlogArticle{}).Where("id = ?", id).Delete(&BlogArticle{}).Error
 }
 
 func (m *defaultArticleModel) Update(ctx context.Context, id int64, data any) error {

@@ -75,7 +75,7 @@ func (l *LoginLogic) Login(in *userpb.LoginRequest) (*userpb.LoginResponse, erro
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.TOKEN_GENERATE_ERROR), "generate token failed: %v", err)
 	}
 
-	l.Logger.Infof("user registered successfully, username: %s", in.Username)
+	l.Logger.Infof("user login successfully, username: %s", in.Username)
 	return &userpb.LoginResponse{
 		Token:   tokenResp.AccessToken,
 		Expires: tokenResp.AccessExpire,

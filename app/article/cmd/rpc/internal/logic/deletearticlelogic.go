@@ -29,13 +29,14 @@ func NewDeleteArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 
 // 删除文章
 func (l *DeleteArticleLogic) DeleteArticle(in *pb.DeleteArticleRequest) (*pb.ArticleCommonResponse, error) {
-	// 检查权限
+	// 检查是否是文章作者
 	hasPermission, err := l.svcCtx.ArticleModel.CheckPermission(l.ctx, in.Id, in.UserId)
 	if err != nil {
 		l.Logger.Errorf("failed to check permission for article %d by user %d: %v", in.Id, in.UserId, err)
 		return nil, err
 	}
 
+	//检查是否是管理员
 	user, err := l.svcCtx.UserRpc.GetUserRole(l.ctx, &userpb.GetUserRoleRequest{
 		Id: in.UserId,
 	})
@@ -50,15 +51,11 @@ func (l *DeleteArticleLogic) DeleteArticle(in *pb.DeleteArticleRequest) (*pb.Art
 		return nil, xerr.NewErrCode(xerr.ERROR_FORBIDDEN) // 100003: "权限不足"
 	}
 
-	result := l.svcCtx.ArticleModel.Delete(l.ctx, in.Id)
-	if result.Error != nil {
-		l.Logger.Errorf("failed to delete article, id: %d, error: %v", in.Id, result.Error)
+	//删除文章
+	err = l.svcCtx.ArticleModel.Delete(l.ctx, in.Id)
+	if err != nil {
+		l.Logger.Errorf("failed to delete article, id: %d, error: %v", in.Id, err)
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "delete article failed")
-	}
-
-	if result.RowsAffected == 0 {
-		l.Logger.Errorf("article not exist, id: %d", in.Id)
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "articles not exist")
 	}
 
 	l.svcCtx.Redis.Del(fmt.Sprintf("article:detail:%d", in.Id))
