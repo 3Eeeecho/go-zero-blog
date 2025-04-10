@@ -43,7 +43,7 @@
    docker login --username=<你的用户名> crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com
 3. 拉取镜像（可选）
    ```bash 
-   docker pull crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:dev
+   docker pull crpi-cxv5pdmggamg66ye.cn-hangzhou.personal.cr.aliyuncs.com/eecho_go/go-zero-blog:latest
 4. 启动服务
    ```bash
    docker-compose up --build -d
