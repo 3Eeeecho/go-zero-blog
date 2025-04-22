@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
@@ -54,8 +53,6 @@ func (l *EditArticleLogic) EditArticle(in *pb.EditArticleRequest) (*pb.ArticleCo
 	}
 
 	// 4. 清理缓存（延迟双删）
-	fmt.Println("in.Id", in.Id)
-	fmt.Println("in.TagId", in.TagId)
 	utils.CleanArticleCache(l.svcCtx, in.Id, in.TagId)
 
 	// 返回成功响应

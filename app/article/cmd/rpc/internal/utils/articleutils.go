@@ -75,24 +75,8 @@ func cleanCacheWithDelay(ctx context.Context, svcCtx *svc.ServiceContext, articl
 func deleteCache(ctx context.Context, svcCtx *svc.ServiceContext, articleId, tagId int64, logger logx.Logger) {
 	// 删除文章详情缓存
 	detailKey := svcCtx.CacheKeys.GetDetailCacheKey(articleId)
-	logger.Infof("deleting detail cache, key: %s", detailKey)
-
-	// 先检查 key 是否存在
-	exists, err := svcCtx.Redis.ExistsCtx(ctx, detailKey)
-	if err != nil {
-		logger.Errorf("check detail cache existence failed, key: %s, error: %v", detailKey, err)
-		return
-	}
-
-	if exists {
-		// 如果存在，则删除
-		if _, err := svcCtx.Redis.DelCtx(ctx, detailKey); err != nil {
-			logger.Errorf("delete detail cache failed, key: %s, error: %v", detailKey, err)
-		} else {
-			logger.Infof("detail cache deleted successfully, key: %s", detailKey)
-		}
-	} else {
-		logger.Infof("detail cache not exists, key: %s", detailKey)
+	if _, err := svcCtx.Redis.DelCtx(ctx, detailKey); err != nil {
+		logger.Errorf("delete detail cache failed, key: %s, error: %v", detailKey, err)
 	}
 
 	// 删除文章列表缓存
@@ -100,16 +84,12 @@ func deleteCache(ctx context.Context, svcCtx *svc.ServiceContext, articleId, tag
 	if tagId != 0 {
 		if err := deleteListCacheByTag(ctx, svcCtx, tagId, logger); err != nil {
 			logger.Errorf("delete list cache failed for tag %d, error: %v", tagId, err)
-		} else {
-			logger.Infof("list cache deleted successfully for tag %d", tagId)
 		}
 	}
 
 	// 2. 删除所有标签的列表缓存
 	if err := deleteListCacheByTag(ctx, svcCtx, 0, logger); err != nil {
 		logger.Errorf("delete all list cache failed, error: %v", err)
-	} else {
-		logger.Infof("all list cache deleted successfully")
 	}
 }
 
