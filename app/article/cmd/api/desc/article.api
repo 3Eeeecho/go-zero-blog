@@ -23,7 +23,6 @@ type GetArticleRequest {
 }
 
 type GetArticleResponse {
-	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,optional"`
 }
 
@@ -35,7 +34,6 @@ type GetArticlesRequest {
 }
 
 type GetArticlesResponse {
-	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data,optional"` // 文章列表
 	Total    int64       `json:"total"`
 	PageNum  int         `json:"page_num"`
@@ -49,7 +47,6 @@ type GetPendingArticlesRequest {
 }
 
 type GetPendingArticlesResponse {
-	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data,optional"` // 文章列表
 	Total    int64       `json:"total"`
 	PageNum  int         `json:"page_num"`
@@ -67,7 +64,6 @@ type AddArticleRequest {
 // --- EditArticle ---
 type EditArticleRequest {
 	Id      int64  `path:"id"` //必填
-	TagId   int64  `json:"tag_id,optional"` // 可选
 	Title   string `json:"title,optional"` // 可选
 	Desc    string `json:"desc,optional"` // 可选
 	Content string `json:"content,optional"` // 可选
@@ -115,7 +111,6 @@ type GetCommentsReq {
 }
 
 type GetCommentsResp {
-	Msg      string    `json:"msg"`
 	Comments []Comment `json:"comments"`
 	Total    int64     `json:"total"`
 }

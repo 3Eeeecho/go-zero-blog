@@ -50,7 +50,6 @@ type DeleteArticleRequest struct {
 
 type EditArticleRequest struct {
 	Id      int64  `path:"id"`               //必填
-	TagId   int64  `json:"tag_id,optional"`  // 可选
 	Title   string `json:"title,optional"`   // 可选
 	Desc    string `json:"desc,optional"`    // 可选
 	Content string `json:"content,optional"` // 可选
@@ -62,7 +61,6 @@ type GetArticleRequest struct {
 }
 
 type GetArticleResponse struct {
-	Msg  string      `json:"msg"`
 	Data interface{} `json:"data,optional"`
 }
 
@@ -73,7 +71,6 @@ type GetArticlesRequest struct {
 }
 
 type GetArticlesResponse struct {
-	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data,optional"` // 文章列表
 	Total    int64       `json:"total"`
 	PageNum  int         `json:"page_num"`
@@ -87,7 +84,6 @@ type GetCommentsReq struct {
 }
 
 type GetCommentsResp struct {
-	Msg      string    `json:"msg"`
 	Comments []Comment `json:"comments"`
 	Total    int64     `json:"total"`
 }
@@ -98,7 +94,6 @@ type GetPendingArticlesRequest struct {
 }
 
 type GetPendingArticlesResponse struct {
-	Msg      string      `json:"msg"`
 	Data     interface{} `json:"data,optional"` // 文章列表
 	Total    int64       `json:"total"`
 	PageNum  int         `json:"page_num"`

@@ -29,10 +29,20 @@ func NewGetArticlesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAr
 }
 
 func (l *GetArticlesLogic) GetArticles(req *types.GetArticlesRequest) (resp *types.GetArticlesResponse, err error) {
+	// 设置分页默认值
+	pageNum := req.PageNum
+	pageSize := req.PageSize
+	if pageNum <= 0 {
+		pageNum = 1 // 默认第1页
+	}
+	if pageSize <= 0 {
+		pageSize = 10 // 默认每页10条
+	}
+
 	getArticlesResp, err := l.svcCtx.ArticleServiceRpc.GetArticles(l.ctx, &articleservice.GetArticlesRequest{
 		TagId:    req.TagId,
-		PageNum:  int64(req.PageNum),
-		PageSize: int64(req.PageSize),
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)

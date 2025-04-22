@@ -25,8 +25,7 @@ message GetArticleRequest {
 }
 
 message GetArticleResponse {
-  string msg = 1;
-  Article data = 2; // 返回单篇具体文章
+  Article data = 1; // 返回单篇具体文章
 }
 
 // --- GetArticles ---
@@ -37,11 +36,10 @@ message GetArticlesRequest {
 }
 
 message GetArticlesResponse {
-  string msg = 1;
-  repeated Article data = 2; // 返回文章列表
-  int64 total = 3;           // 总条数
-  int64 page_num = 4;        // 当前页码
-  int64 page_size = 5;       // 每页大小
+  repeated Article data = 1; // 返回文章列表
+  int64 total = 2;           // 总条数
+  int64 page_num = 3;        // 当前页码
+  int64 page_size = 4;       // 每页大小
 }
 
 message GetPendingArticlesRequest {
@@ -51,11 +49,10 @@ message GetPendingArticlesRequest {
 }
 
 message GetPendingArticlesResponse {
-  string msg = 1;
-  repeated Article data = 2;
-  int64 total = 3;
-  int64 page_num = 4;  // 当前页码
-  int64 page_size = 5; // 每页大小
+  repeated Article data = 1;
+  int64 total = 2;
+  int64 page_num = 3;  // 当前页码
+  int64 page_size = 4; // 每页大小
 }
 
 // --- AddArticle ---
@@ -131,9 +128,8 @@ message GetCommentsRequest {
 
 // GetCommentsResponse 获取评论列表响应
 message GetCommentsResponse {
-  string msg = 1;                // 响应消息
-  repeated Comment comments = 2; // 评论列表
-  int64 total = 3;               // 总评论数
+  repeated Comment comments = 1; // 评论列表
+  int64 total = 2;               // 总评论数
 }
 
 message ViewArticleRequest {

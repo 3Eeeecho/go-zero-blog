@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
+	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/utils"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
@@ -50,13 +51,13 @@ func (l *ReviewArticleLogic) ReviewArticle(in *pb.ReviewArticleRequest) (*pb.Rev
 		l.Logger.Errorf("article not failed, id: %d", in.Id)
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "get article failed,id: %d", in.Id)
 	}
-	if article.State != StatePending {
+	if article.State != utils.StatePending {
 		l.Logger.Errorf("article ID %d is not in pending state: current state %d", in.Id, article.State)
 		return nil, xerr.NewErrCodeMsg(xerr.SERVER_COMMON_ERROR, "文章不在待审核状态")
 	}
 
 	updates := map[string]any{
-		"state":       map[bool]int8{true: 2, false: 3}[in.Approved], // 1: 通过, 2: 拒绝
+		"state":       map[bool]int32{true: utils.StatePublished, false: utils.StateRejected}[in.Approved], // 1: 通过, 2: 拒绝
 		"modified_by": in.ReviewedBy,
 		"modified_on": time.Now().Unix(),
 	}

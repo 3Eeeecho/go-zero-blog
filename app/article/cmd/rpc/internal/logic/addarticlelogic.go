@@ -2,10 +2,10 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
+	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/utils"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/article/model"
 	"github.com/3Eeeecho/go-zero-blog/app/tag/cmd/rpc/tagservice"
@@ -54,7 +54,7 @@ func (l *AddArticleLogic) AddArticle(in *pb.AddArticleRequest) (*pb.ArticleCommo
 		Content:    in.Content,
 		CreatedBy:  in.CreatedBy,
 		CreatedOn:  time.Now().Unix(),
-		State:      StateDraft,
+		State:      utils.StateDraft,
 		ModifiedOn: 0,
 		DeletedOn:  0,
 	}
@@ -65,7 +65,6 @@ func (l *AddArticleLogic) AddArticle(in *pb.AddArticleRequest) (*pb.ArticleCommo
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "insert article failed")
 	}
 
-	l.svcCtx.Redis.Del(fmt.Sprintf("article:list:tag_%d:page_*", in.TagId)) // 通配符失效
 	l.Logger.Info("article added with ID: %d", id)
 
 	return &pb.ArticleCommonResponse{

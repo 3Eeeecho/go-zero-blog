@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
+	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/utils"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
 	"github.com/pkg/errors"
@@ -41,7 +42,7 @@ func (l *SubmitArticleLogic) SubmitArticle(in *pb.SubmitArticleRequest) (*pb.Sub
 
 	//文章变为待审核状态
 	data := map[string]interface{}{
-		"state": StatePending,
+		"state": utils.StatePending,
 	}
 	err = l.svcCtx.ArticleModel.Update(l.ctx, in.Id, data)
 	if err != nil {

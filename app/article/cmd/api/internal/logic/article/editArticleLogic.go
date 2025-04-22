@@ -32,8 +32,7 @@ func NewEditArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *EditA
 func (l *EditArticleLogic) EditArticle(req *types.EditArticleRequest) (resp *types.ArticleCommonResponse, err error) {
 	userId := ctxdata.GetUidFromCtx(l.ctx)
 	editArticleResp, err := l.svcCtx.ArticleServiceRpc.EditArticle(l.ctx, &articleservice.EditArticleRequest{
-		Id:         int64(req.Id),
-		TagId:      int64(req.TagId),
+		Id:         req.Id,
 		Title:      req.Title,
 		Desc:       req.Desc,
 		Content:    req.Content,

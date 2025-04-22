@@ -3,14 +3,13 @@ package logic
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
-	"github.com/go-redis/redis"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,69 +30,60 @@ func NewGetArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetArt
 
 // 获取单篇文章的详细信息
 func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleResponse, error) {
-	cacheKey := fmt.Sprintf("article:detail:%d", in.Id)
+	cacheKey := l.svcCtx.CacheKeys.GetDetailCacheKey(in.Id)
 
 	// 从 Redis 获取缓存
-	cached, err := l.svcCtx.Redis.Get(cacheKey)
+	cached, err := l.svcCtx.Redis.GetCtx(l.ctx, cacheKey)
 	if err == nil && cached != "" {
-		var resp pb.GetArticleResponse
-		if err := json.Unmarshal([]byte(cached), &resp); err != nil {
+		var detailCache pb.GetArticleResponse
+		if err := json.Unmarshal([]byte(cached), &detailCache); err != nil {
 			l.Logger.Errorf("failed to unmarshal cached data, key: %s, error: %v", cacheKey, err)
 			// 继续查询数据库，不直接返回错误
 		} else {
 			l.Logger.Infof("cache hit for article, key: %s", cacheKey)
-			return &resp, nil
+			return &detailCache, nil
 		}
-	} else if err != redis.Nil {
-		l.Logger.Errorf("failed to get from redis, key: %s, error: %v", cacheKey, err)
 	}
 
-	// 未命中缓存或 Redis 错误，查询数据库
-	if err != redis.Nil { // redis.Nil 表示缓存不存在，不记录为错误
-		l.Logger.Errorf("failed to get from redis, key: %s, error: %v", cacheKey, err)
-	}
-
-	exist, err := l.svcCtx.ArticleModel.ExistArticleByID(l.ctx, in.Id)
-	if err != nil {
-		l.Logger.Errorf("check article existence failed, id: %d, error: %v", in.Id, err)
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get articles failed")
-	}
-	if !exist {
-		l.Logger.Errorf("article not found, id: %d", in.Id)
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "get articles failed")
-	}
-
+	// 缓存未命中，查询数据库
 	article, err := l.svcCtx.ArticleModel.GetArticle(l.ctx, in.Id)
 	if err != nil {
-		l.Logger.Errorf("get article failed,error: %v", err)
+		if err == gorm.ErrRecordNotFound {
+			l.Logger.Errorf("article not found, id: %d", in.Id)
+			return nil, errors.Wrapf(xerr.NewErrCode(xerr.ARTICLE_NOT_FOUND), "get article failed")
+		}
+		l.Logger.Errorf("get article failed, id: %d, error: %v", in.Id, err)
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "get article failed")
 	}
 
 	data := &pb.Article{}
 	if err := copier.Copy(data, article); err != nil {
-		l.Logger.Errorf("copy article to pb failed, error: %v", err)
-		return nil, err
+		l.Logger.Errorf("copy article to pb failed, id: %d, error: %v", in.Id, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.SERVER_COMMON_ERROR), "copy article failed")
 	}
 
 	resp := &pb.GetArticleResponse{
-		Msg:  "获取文章成功",
 		Data: data,
 	}
 
-	// 存入 Redis，设置过期时间（例如 1 小时）
-	jsonData, err := json.Marshal(resp) // 存储整个响应结构体
-	if err != nil {
-		l.Logger.Errorf("failed to marshal response, error: %v", err)
-	} else {
-		// 设置缓存，TTL 为 3600 秒（1小时）
-		if err := l.svcCtx.Redis.Setex(cacheKey, string(jsonData), 3600); err != nil {
-			l.Logger.Errorf("failed to set redis cache, key: %s, error: %v", cacheKey, err)
-		} else {
-			l.Logger.Infof("cache set successfully, key: %s", cacheKey)
-		}
-	}
+	// 异步更新缓存
+	go l.updateDetailCache(cacheKey, resp)
 
 	// 返回成功响应
 	l.Logger.Infof("get article successfully, id: %d", in.Id)
 	return resp, nil
+}
+
+func (l *GetArticleLogic) updateDetailCache(cacheKey string, resp *pb.GetArticleResponse) {
+	// 存入 Redis，设置过期时间
+	data, err := json.Marshal(resp)
+	if err != nil {
+		l.Logger.Errorf("failed to marshal response, key: %s, error: %v", cacheKey, err)
+		return
+	}
+
+	// 设置缓存并设置过期时间
+	if err := l.svcCtx.Redis.Setex(cacheKey, string(data), int(l.svcCtx.CacheTTL.GetDetailCacheTTL().Seconds())); err != nil {
+		l.Logger.Errorf("failed to set cache, key: %s, error: %v", cacheKey, err)
+	}
 }

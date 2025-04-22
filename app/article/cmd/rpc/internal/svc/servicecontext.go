@@ -22,6 +22,8 @@ type ServiceContext struct {
 	Redis            *redis.Redis
 	MQConn           *amqp091.Connection
 	MQChannel        *amqp091.Channel
+	CacheKeys        model.CacheKeys
+	CacheTTL         model.CacheTTL
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

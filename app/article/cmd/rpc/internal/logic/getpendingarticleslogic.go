@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/svc"
+	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/internal/utils"
 	"github.com/3Eeeecho/go-zero-blog/app/article/cmd/rpc/pb"
 	"github.com/3Eeeecho/go-zero-blog/app/usercenter/cmd/rpc/userpb"
 	"github.com/3Eeeecho/go-zero-blog/pkg/xerr"
@@ -51,7 +52,7 @@ func (l *GetPendingArticlesLogic) GetPendingArticles(in *pb.GetPendingArticlesRe
 
 	// 构造过滤条件
 	maps := make(map[string]any)
-	maps["state"] = StatePending
+	maps["state"] = utils.StatePending
 
 	articles, err := l.svcCtx.ArticleModel.GetArticles(l.ctx, int(pageNum), int(pageSize), maps)
 	if err != nil {
@@ -86,7 +87,6 @@ func (l *GetPendingArticlesLogic) GetPendingArticles(in *pb.GetPendingArticlesRe
 	l.Logger.Infof("articles retrieved successfully, page_num: %d, page_size: %d", pageNum, pageSize)
 
 	return &pb.GetPendingArticlesResponse{
-		Msg:      "获取文章列表成功",
 		Data:     data,
 		Total:    total,
 		PageNum:  pageNum,

@@ -90,7 +90,6 @@ func (l *GetCommentsLogic) GetComments(in *pb.GetCommentsRequest) (*pb.GetCommen
 	l.Logger.Infof("comments retrieved, article_id: %d, total: %d, page_num: %d, page_size: %d",
 		in.ArticleId, total, pageNum, pageSize)
 	return &pb.GetCommentsResponse{
-		Msg:      "获取评论列表成功",
 		Comments: pagedComments,
 		Total:    total,
 	}, nil
