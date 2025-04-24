@@ -38,7 +38,7 @@ type (
 		Delete(ctx context.Context, id int64) error
 		Update(ctx context.Context, id int64, data any) error
 		CheckPermission(ctx context.Context, articleId, operatorId int64) (bool, error)
-		IncrementViews(ctx context.Context, id int64) error
+		IncrementViews(id int64, count int64) error
 		//CleanAll(ctx context.Context) (bool, error) 软删除暂不考虑，后面在添加
 	}
 
@@ -140,6 +140,6 @@ func (m *defaultArticleModel) CheckPermission(ctx context.Context, articleId, op
 	return false, nil
 }
 
-func (m *defaultArticleModel) IncrementViews(ctx context.Context, id int64) error {
-	return m.db.WithContext(ctx).Model(&BlogArticle{}).Where("id = ?", id).Update("views", gorm.Expr("views + 1")).Error
+func (m *defaultArticleModel) IncrementViews(id int64, count int64) error {
+	return m.db.Model(&BlogArticle{}).Where("id =?", id).Update("views", gorm.Expr("views + ?", count)).Error
 }

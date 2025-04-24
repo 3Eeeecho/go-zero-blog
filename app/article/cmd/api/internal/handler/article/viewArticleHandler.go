@@ -10,17 +10,17 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-// 获取单篇文章的详细信息
-func GetArticleHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// 浏览文章
+func ViewArticleHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetArticleRequest
+		var req types.ViewArticleRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			result.ParamErrorResult(r, w, err)
 			return
 		}
 
-		l := article.NewGetArticleLogic(r.Context(), svcCtx)
-		resp, err := l.GetArticle(&req)
+		l := article.NewViewArticleLogic(r.Context(), svcCtx)
+		resp, err := l.ViewArticle(&req)
 		result.HttpResult(r, w, resp, err)
 	}
 }

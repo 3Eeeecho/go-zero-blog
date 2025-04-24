@@ -57,7 +57,7 @@ type ArticleServiceClient interface {
 	AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)
 	// 获取评论列表
 	GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
-	ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+	ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ViewArticleResponse, error)
 	LikeArticle(ctx context.Context, in *LikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 	UnlikeArtilce(ctx context.Context, in *UnlikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 }
@@ -170,9 +170,9 @@ func (c *articleServiceClient) GetComments(ctx context.Context, in *GetCommentsR
 	return out, nil
 }
 
-func (c *articleServiceClient) ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+func (c *articleServiceClient) ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ViewArticleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ArticleCommonResponse)
+	out := new(ViewArticleResponse)
 	err := c.cc.Invoke(ctx, ArticleService_ViewArticle_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -223,7 +223,7 @@ type ArticleServiceServer interface {
 	AddComment(context.Context, *AddCommentRequest) (*AddCommentResponse, error)
 	// 获取评论列表
 	GetComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error)
-	ViewArticle(context.Context, *ViewArticleRequest) (*ArticleCommonResponse, error)
+	ViewArticle(context.Context, *ViewArticleRequest) (*ViewArticleResponse, error)
 	LikeArticle(context.Context, *LikeArticleRequest) (*ArticleCommonResponse, error)
 	UnlikeArtilce(context.Context, *UnlikeArticleRequest) (*ArticleCommonResponse, error)
 	mustEmbedUnimplementedArticleServiceServer()
@@ -266,7 +266,7 @@ func (UnimplementedArticleServiceServer) AddComment(context.Context, *AddComment
 func (UnimplementedArticleServiceServer) GetComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComments not implemented")
 }
-func (UnimplementedArticleServiceServer) ViewArticle(context.Context, *ViewArticleRequest) (*ArticleCommonResponse, error) {
+func (UnimplementedArticleServiceServer) ViewArticle(context.Context, *ViewArticleRequest) (*ViewArticleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ViewArticle not implemented")
 }
 func (UnimplementedArticleServiceServer) LikeArticle(context.Context, *LikeArticleRequest) (*ArticleCommonResponse, error) {

@@ -28,10 +28,10 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: article.AddArticleHandler(serverCtx),
 			},
 			{
-				// 获取单篇文章的详细信息
+				// 浏览文章
 				Method:  http.MethodGet,
 				Path:    "/articles/:id",
-				Handler: article.GetArticleHandler(serverCtx),
+				Handler: article.ViewArticleHandler(serverCtx),
 			},
 			{
 				// 修改文章

@@ -56,14 +56,6 @@ type EditArticleRequest struct {
 	State   int32  `json:"state,optional"`   // 可选
 }
 
-type GetArticleRequest struct {
-	Id int64 `path:"id"` //必填
-}
-
-type GetArticleResponse struct {
-	Data interface{} `json:"data,optional"`
-}
-
 type GetArticlesRequest struct {
 	TagId    int64 `json:"tag_id,optional"`    // 可选，标签ID
 	PageNum  int   `json:"page_num,optional"`  // 分页参数
@@ -111,4 +103,12 @@ type ReviewArticleRequest struct {
 
 type SubmitArticleRequest struct {
 	Id int64 `json:"id"`
+}
+
+type ViewArticleRequest struct {
+	Id int64 `path:"id"` //必填
+}
+
+type ViewArticleResponse struct {
+	Data interface{} `json:"data"`
 }

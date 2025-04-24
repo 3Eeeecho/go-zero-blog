@@ -29,6 +29,7 @@ func NewGetArticleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetArt
 }
 
 // 获取单篇文章的详细信息
+// TODO 只需要返回文章详情即可,并不是给用户请求的
 func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleResponse, error) {
 	cacheKey := l.svcCtx.CacheKeys.GetDetailCacheKey(in.Id)
 
@@ -36,7 +37,7 @@ func (l *GetArticleLogic) GetArticle(in *pb.GetArticleRequest) (*pb.GetArticleRe
 	cached, err := l.svcCtx.Redis.GetCtx(l.ctx, cacheKey)
 	if err == nil && cached != "" {
 		var detailCache pb.GetArticleResponse
-		if err := json.Unmarshal([]byte(cached), &detailCache); err != nil {
+		if err = json.Unmarshal([]byte(cached), &detailCache); err != nil {
 			l.Logger.Errorf("failed to unmarshal cached data, key: %s, error: %v", cacheKey, err)
 			// 继续查询数据库，不直接返回错误
 		} else {

@@ -134,6 +134,11 @@ message GetCommentsResponse {
 
 message ViewArticleRequest {
   int64 article_id = 1; // 文章 ID
+  int64 user_id = 2;
+}
+
+message ViewArticleResponse  {
+  Article data = 1; // 文章列表
 }
 
 message LikeArticleRequest {
@@ -175,7 +180,7 @@ service ArticleService {
   // 获取评论列表
   rpc GetComments(GetCommentsRequest) returns (GetCommentsResponse);
 
-  rpc ViewArticle(ViewArticleRequest) returns (ArticleCommonResponse);
+  rpc ViewArticle(ViewArticleRequest) returns (ViewArticleResponse);
 
   rpc LikeArticle(LikeArticleRequest) returns (ArticleCommonResponse);
 

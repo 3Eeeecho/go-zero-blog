@@ -1252,6 +1252,7 @@ func (x *GetCommentsResponse) GetTotal() int64 {
 type ViewArticleRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ArticleId     int64                  `protobuf:"varint,1,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"` // 文章 ID
+	UserId        int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1293,6 +1294,57 @@ func (x *ViewArticleRequest) GetArticleId() int64 {
 	return 0
 }
 
+func (x *ViewArticleRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+type ViewArticleResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          *Article               `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"` // 文章列表
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ViewArticleResponse) Reset() {
+	*x = ViewArticleResponse{}
+	mi := &file_article_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ViewArticleResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ViewArticleResponse) ProtoMessage() {}
+
+func (x *ViewArticleResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_article_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ViewArticleResponse.ProtoReflect.Descriptor instead.
+func (*ViewArticleResponse) Descriptor() ([]byte, []int) {
+	return file_article_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *ViewArticleResponse) GetData() *Article {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type LikeArticleRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ArticleId     int64                  `protobuf:"varint,1,opt,name=article_id,json=articleId,proto3" json:"article_id,omitempty"` // 文章 ID
@@ -1303,7 +1355,7 @@ type LikeArticleRequest struct {
 
 func (x *LikeArticleRequest) Reset() {
 	*x = LikeArticleRequest{}
-	mi := &file_article_proto_msgTypes[21]
+	mi := &file_article_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1315,7 +1367,7 @@ func (x *LikeArticleRequest) String() string {
 func (*LikeArticleRequest) ProtoMessage() {}
 
 func (x *LikeArticleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_article_proto_msgTypes[21]
+	mi := &file_article_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1328,7 +1380,7 @@ func (x *LikeArticleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LikeArticleRequest.ProtoReflect.Descriptor instead.
 func (*LikeArticleRequest) Descriptor() ([]byte, []int) {
-	return file_article_proto_rawDescGZIP(), []int{21}
+	return file_article_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *LikeArticleRequest) GetArticleId() int64 {
@@ -1355,7 +1407,7 @@ type UnlikeArticleRequest struct {
 
 func (x *UnlikeArticleRequest) Reset() {
 	*x = UnlikeArticleRequest{}
-	mi := &file_article_proto_msgTypes[22]
+	mi := &file_article_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1367,7 +1419,7 @@ func (x *UnlikeArticleRequest) String() string {
 func (*UnlikeArticleRequest) ProtoMessage() {}
 
 func (x *UnlikeArticleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_article_proto_msgTypes[22]
+	mi := &file_article_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1380,7 +1432,7 @@ func (x *UnlikeArticleRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnlikeArticleRequest.ProtoReflect.Descriptor instead.
 func (*UnlikeArticleRequest) Descriptor() ([]byte, []int) {
-	return file_article_proto_rawDescGZIP(), []int{22}
+	return file_article_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UnlikeArticleRequest) GetArticleId() int64 {
@@ -1491,10 +1543,13 @@ const file_article_proto_rawDesc = "" +
 	"\tpage_size\x18\x03 \x01(\x03R\bpageSize\"T\n" +
 	"\x13GetCommentsResponse\x12'\n" +
 	"\bcomments\x18\x01 \x03(\v2\v.pb.CommentR\bcomments\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x03R\x05total\"3\n" +
+	"\x05total\x18\x02 \x01(\x03R\x05total\"L\n" +
 	"\x12ViewArticleRequest\x12\x1d\n" +
 	"\n" +
-	"article_id\x18\x01 \x01(\x03R\tarticleId\"L\n" +
+	"article_id\x18\x01 \x01(\x03R\tarticleId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\"6\n" +
+	"\x13ViewArticleResponse\x12\x1f\n" +
+	"\x04data\x18\x01 \x01(\v2\v.pb.ArticleR\x04data\"L\n" +
 	"\x12LikeArticleRequest\x12\x1d\n" +
 	"\n" +
 	"article_id\x18\x01 \x01(\x03R\tarticleId\x12\x17\n" +
@@ -1502,7 +1557,7 @@ const file_article_proto_rawDesc = "" +
 	"\x14UnlikeArticleRequest\x12\x1d\n" +
 	"\n" +
 	"article_id\x18\x01 \x01(\x03R\tarticleId\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x03R\x06userId2\xfd\x06\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId2\xfb\x06\n" +
 	"\x0eArticleService\x12;\n" +
 	"\n" +
 	"GetArticle\x12\x15.pb.GetArticleRequest\x1a\x16.pb.GetArticleResponse\x12>\n" +
@@ -1516,8 +1571,8 @@ const file_article_proto_rawDesc = "" +
 	"\rReviewArticle\x12\x18.pb.ReviewArticleRequest\x1a\x19.pb.ReviewArticleResponse\x12;\n" +
 	"\n" +
 	"AddComment\x12\x15.pb.AddCommentRequest\x1a\x16.pb.AddCommentResponse\x12>\n" +
-	"\vGetComments\x12\x16.pb.GetCommentsRequest\x1a\x17.pb.GetCommentsResponse\x12@\n" +
-	"\vViewArticle\x12\x16.pb.ViewArticleRequest\x1a\x19.pb.ArticleCommonResponse\x12@\n" +
+	"\vGetComments\x12\x16.pb.GetCommentsRequest\x1a\x17.pb.GetCommentsResponse\x12>\n" +
+	"\vViewArticle\x12\x16.pb.ViewArticleRequest\x1a\x17.pb.ViewArticleResponse\x12@\n" +
 	"\vLikeArticle\x12\x16.pb.LikeArticleRequest\x1a\x19.pb.ArticleCommonResponse\x12D\n" +
 	"\rUnlikeArtilce\x12\x18.pb.UnlikeArticleRequest\x1a\x19.pb.ArticleCommonResponseB\x06Z\x04./pbb\x06proto3"
 
@@ -1533,7 +1588,7 @@ func file_article_proto_rawDescGZIP() []byte {
 	return file_article_proto_rawDescData
 }
 
-var file_article_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
+var file_article_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
 var file_article_proto_goTypes = []any{
 	(*ArticleCommonResponse)(nil),      // 0: pb.ArticleCommonResponse
 	(*Article)(nil),                    // 1: pb.Article
@@ -1556,8 +1611,9 @@ var file_article_proto_goTypes = []any{
 	(*GetCommentsRequest)(nil),         // 18: pb.GetCommentsRequest
 	(*GetCommentsResponse)(nil),        // 19: pb.GetCommentsResponse
 	(*ViewArticleRequest)(nil),         // 20: pb.ViewArticleRequest
-	(*LikeArticleRequest)(nil),         // 21: pb.LikeArticleRequest
-	(*UnlikeArticleRequest)(nil),       // 22: pb.UnlikeArticleRequest
+	(*ViewArticleResponse)(nil),        // 21: pb.ViewArticleResponse
+	(*LikeArticleRequest)(nil),         // 22: pb.LikeArticleRequest
+	(*UnlikeArticleRequest)(nil),       // 23: pb.UnlikeArticleRequest
 }
 var file_article_proto_depIdxs = []int32{
 	1,  // 0: pb.GetArticleResponse.data:type_name -> pb.Article
@@ -1565,37 +1621,38 @@ var file_article_proto_depIdxs = []int32{
 	1,  // 2: pb.GetPendingArticlesResponse.data:type_name -> pb.Article
 	15, // 3: pb.Comment.children:type_name -> pb.Comment
 	15, // 4: pb.GetCommentsResponse.comments:type_name -> pb.Comment
-	2,  // 5: pb.ArticleService.GetArticle:input_type -> pb.GetArticleRequest
-	4,  // 6: pb.ArticleService.GetArticles:input_type -> pb.GetArticlesRequest
-	8,  // 7: pb.ArticleService.AddArticle:input_type -> pb.AddArticleRequest
-	9,  // 8: pb.ArticleService.EditArticle:input_type -> pb.EditArticleRequest
-	10, // 9: pb.ArticleService.DeleteArticle:input_type -> pb.DeleteArticleRequest
-	6,  // 10: pb.ArticleService.GetPendingArticles:input_type -> pb.GetPendingArticlesRequest
-	11, // 11: pb.ArticleService.SubmitArticle:input_type -> pb.SubmitArticleRequest
-	13, // 12: pb.ArticleService.ReviewArticle:input_type -> pb.ReviewArticleRequest
-	16, // 13: pb.ArticleService.AddComment:input_type -> pb.AddCommentRequest
-	18, // 14: pb.ArticleService.GetComments:input_type -> pb.GetCommentsRequest
-	20, // 15: pb.ArticleService.ViewArticle:input_type -> pb.ViewArticleRequest
-	21, // 16: pb.ArticleService.LikeArticle:input_type -> pb.LikeArticleRequest
-	22, // 17: pb.ArticleService.UnlikeArtilce:input_type -> pb.UnlikeArticleRequest
-	3,  // 18: pb.ArticleService.GetArticle:output_type -> pb.GetArticleResponse
-	5,  // 19: pb.ArticleService.GetArticles:output_type -> pb.GetArticlesResponse
-	0,  // 20: pb.ArticleService.AddArticle:output_type -> pb.ArticleCommonResponse
-	0,  // 21: pb.ArticleService.EditArticle:output_type -> pb.ArticleCommonResponse
-	0,  // 22: pb.ArticleService.DeleteArticle:output_type -> pb.ArticleCommonResponse
-	7,  // 23: pb.ArticleService.GetPendingArticles:output_type -> pb.GetPendingArticlesResponse
-	12, // 24: pb.ArticleService.SubmitArticle:output_type -> pb.SubmitArticleResponse
-	14, // 25: pb.ArticleService.ReviewArticle:output_type -> pb.ReviewArticleResponse
-	17, // 26: pb.ArticleService.AddComment:output_type -> pb.AddCommentResponse
-	19, // 27: pb.ArticleService.GetComments:output_type -> pb.GetCommentsResponse
-	0,  // 28: pb.ArticleService.ViewArticle:output_type -> pb.ArticleCommonResponse
-	0,  // 29: pb.ArticleService.LikeArticle:output_type -> pb.ArticleCommonResponse
-	0,  // 30: pb.ArticleService.UnlikeArtilce:output_type -> pb.ArticleCommonResponse
-	18, // [18:31] is the sub-list for method output_type
-	5,  // [5:18] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	1,  // 5: pb.ViewArticleResponse.data:type_name -> pb.Article
+	2,  // 6: pb.ArticleService.GetArticle:input_type -> pb.GetArticleRequest
+	4,  // 7: pb.ArticleService.GetArticles:input_type -> pb.GetArticlesRequest
+	8,  // 8: pb.ArticleService.AddArticle:input_type -> pb.AddArticleRequest
+	9,  // 9: pb.ArticleService.EditArticle:input_type -> pb.EditArticleRequest
+	10, // 10: pb.ArticleService.DeleteArticle:input_type -> pb.DeleteArticleRequest
+	6,  // 11: pb.ArticleService.GetPendingArticles:input_type -> pb.GetPendingArticlesRequest
+	11, // 12: pb.ArticleService.SubmitArticle:input_type -> pb.SubmitArticleRequest
+	13, // 13: pb.ArticleService.ReviewArticle:input_type -> pb.ReviewArticleRequest
+	16, // 14: pb.ArticleService.AddComment:input_type -> pb.AddCommentRequest
+	18, // 15: pb.ArticleService.GetComments:input_type -> pb.GetCommentsRequest
+	20, // 16: pb.ArticleService.ViewArticle:input_type -> pb.ViewArticleRequest
+	22, // 17: pb.ArticleService.LikeArticle:input_type -> pb.LikeArticleRequest
+	23, // 18: pb.ArticleService.UnlikeArtilce:input_type -> pb.UnlikeArticleRequest
+	3,  // 19: pb.ArticleService.GetArticle:output_type -> pb.GetArticleResponse
+	5,  // 20: pb.ArticleService.GetArticles:output_type -> pb.GetArticlesResponse
+	0,  // 21: pb.ArticleService.AddArticle:output_type -> pb.ArticleCommonResponse
+	0,  // 22: pb.ArticleService.EditArticle:output_type -> pb.ArticleCommonResponse
+	0,  // 23: pb.ArticleService.DeleteArticle:output_type -> pb.ArticleCommonResponse
+	7,  // 24: pb.ArticleService.GetPendingArticles:output_type -> pb.GetPendingArticlesResponse
+	12, // 25: pb.ArticleService.SubmitArticle:output_type -> pb.SubmitArticleResponse
+	14, // 26: pb.ArticleService.ReviewArticle:output_type -> pb.ReviewArticleResponse
+	17, // 27: pb.ArticleService.AddComment:output_type -> pb.AddCommentResponse
+	19, // 28: pb.ArticleService.GetComments:output_type -> pb.GetCommentsResponse
+	21, // 29: pb.ArticleService.ViewArticle:output_type -> pb.ViewArticleResponse
+	0,  // 30: pb.ArticleService.LikeArticle:output_type -> pb.ArticleCommonResponse
+	0,  // 31: pb.ArticleService.UnlikeArtilce:output_type -> pb.ArticleCommonResponse
+	19, // [19:32] is the sub-list for method output_type
+	6,  // [6:19] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_article_proto_init() }
@@ -1609,7 +1666,7 @@ func file_article_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_article_proto_rawDesc), len(file_article_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   23,
+			NumMessages:   24,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -80,7 +80,7 @@ func (s *ArticleServiceServer) GetComments(ctx context.Context, in *pb.GetCommen
 	return l.GetComments(in)
 }
 
-func (s *ArticleServiceServer) ViewArticle(ctx context.Context, in *pb.ViewArticleRequest) (*pb.ArticleCommonResponse, error) {
+func (s *ArticleServiceServer) ViewArticle(ctx context.Context, in *pb.ViewArticleRequest) (*pb.ViewArticleResponse, error) {
 	l := logic.NewViewArticleLogic(ctx, s.svcCtx)
 	return l.ViewArticle(in)
 }

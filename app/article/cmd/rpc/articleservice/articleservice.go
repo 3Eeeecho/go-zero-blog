@@ -37,6 +37,7 @@ type (
 	SubmitArticleResponse      = pb.SubmitArticleResponse
 	UnlikeArticleRequest       = pb.UnlikeArticleRequest
 	ViewArticleRequest         = pb.ViewArticleRequest
+	ViewArticleResponse        = pb.ViewArticleResponse
 
 	ArticleService interface {
 		// 获取单篇文章的详细信息
@@ -56,7 +57,7 @@ type (
 		AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)
 		// 获取评论列表
 		GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
-		ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
+		ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ViewArticleResponse, error)
 		LikeArticle(ctx context.Context, in *LikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 		UnlikeArtilce(ctx context.Context, in *UnlikeArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error)
 	}
@@ -129,7 +130,7 @@ func (m *defaultArticleService) GetComments(ctx context.Context, in *GetComments
 	return client.GetComments(ctx, in, opts...)
 }
 
-func (m *defaultArticleService) ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ArticleCommonResponse, error) {
+func (m *defaultArticleService) ViewArticle(ctx context.Context, in *ViewArticleRequest, opts ...grpc.CallOption) (*ViewArticleResponse, error) {
 	client := pb.NewArticleServiceClient(m.cli.Conn())
 	return client.ViewArticle(ctx, in, opts...)
 }

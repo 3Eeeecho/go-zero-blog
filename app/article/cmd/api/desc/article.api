@@ -17,13 +17,12 @@ type Article {
 	ModifiedBy int64  `json:"modified_by,optional"`
 }
 
-// --- GetArticle ---
-type GetArticleRequest {
+type ViewArticleRequest {
 	Id int64 `path:"id"` //必填
 }
 
-type GetArticleResponse {
-	Data interface{} `json:"data,optional"`
+type ViewArticleResponse {
+	Data interface{} `json:"data"`
 }
 
 // --- GetArticles ---
@@ -125,11 +124,10 @@ type LikeArticleRequest {
 )
 service article-api {
 	@doc (
-		summary:     "获取单篇文章的详细信息"
-		description: "根据文章ID获取文章数据"
+		summary: "浏览文章"
 	)
-	@handler GetArticle
-	get /articles/:id (GetArticleRequest) returns (ArticleCommonResponse)
+	@handler ViewArticle
+	get /articles/:id (ViewArticleRequest) returns (ArticleCommonResponse)
 
 	@doc (
 		summary:     "获取全部文章列表"
@@ -204,6 +202,6 @@ service article-api {
 		summary: "取消点赞文章"
 	)
 	@handler UnlikeArticle
-	delete /articles/like/:id (LikeArticleRequest) returns (ArticleCommonResponse)
+	delete /articles/like/:id (LikeArticleRequest) returns (ViewArticleResponse)
 }
 
